@@ -5,6 +5,7 @@ import {AuthContext} from "./utils/AuthContext";
 import Home from './pages/Home';
 import AllTitles from './pages/festivals/Index';
 import SingleTitle from './pages/festivals/Show';
+import './index.css'
 
 //import components
 import Navbar from './components/Navbar';

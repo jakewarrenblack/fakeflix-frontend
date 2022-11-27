@@ -5,6 +5,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        'sans': ['Montserrat', 'Helvetica', 'Arial', 'sans-serif']
+      },
       colors: {
         grey: {
           1: '#808080',

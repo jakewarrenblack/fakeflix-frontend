@@ -10,11 +10,20 @@ const Navbar = (props) => {
 
     console.log('token', token)
     return (
-        <div>
-            <Link to='/'><h1 className="text-3xl font-bold underline">Home</h1></Link> |
-            <Link to='/titles'>Titles</Link>
-            {token && <button onClick={logout}>Logout</button>}
-        </div>
+        <nav className="flex flex-row bg-navBlack justify-between items-center text-white py-6 px-14">
+            <div className={'w-1/4 flex justify-between items-center'}>
+                <Link to='/'><img className={'w-24'} src="/fakeflix.png"/></Link>
+                <Link to='/'>Home</Link>
+                <Link to='/titles'>Films</Link>
+                <Link to='/titles'>Series</Link>
+                <Link to='/titles'>My List</Link>
+                <Link to='/titles'>View All</Link>
+            </div>
+            <div className={'w-1/5 flex justify-end'}>
+                {token && <button onClick={logout}>Logout</button>}
+            </div>
+
+        </nav>
     );
 };
 

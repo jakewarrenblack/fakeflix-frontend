@@ -8,7 +8,7 @@ const All = ({type}) => {
     const {token} = useContext(AuthContext)
 
     useEffect(() => {
-        axios.get(type ? `${process.env.REACT_APP_URL}/titles/type/${type}` : `${process.env.REACT_APP_URL}/titles/all`,
+        axios.get(type ? `${process.env.REACT_APP_URL}/titles/type/${type}?limit=10` : `${process.env.REACT_APP_URL}/titles/all?limit=500`,
             {
                     headers: {
                         Authorization : `Bearer ${token}`

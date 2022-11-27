@@ -29,7 +29,6 @@ const App = () => {
                     <Route path='titles' element={<AllTitles />} />
                     <Route path='titles/:id' element={<AllTitles />} />
                 </Route>
-
             </Routes>
         </Router>
         </AuthContext.Provider>

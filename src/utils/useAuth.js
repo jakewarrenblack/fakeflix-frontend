@@ -36,6 +36,7 @@ export const useAuth = () => {
 
     const logout = () => {
         removeToken()
+        navigate('/')
     };
 
     return { token, login, logout };

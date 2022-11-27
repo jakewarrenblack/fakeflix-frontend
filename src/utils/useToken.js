@@ -11,6 +11,7 @@ const useToken = () => {
 
     const removeToken = () => {
         localStorage.removeItem('token')
+        setToken(null)
     };
 
     return {

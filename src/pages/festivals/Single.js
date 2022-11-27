@@ -3,7 +3,8 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import TitleCard from '../../components/TitleCard';
 
-const Show = () => {
+// TODO: Receive either a show or a film as prop, no need to duplicate this
+const Single = (props) => {
     const { id } = useParams();
     const [ title, setTitle] = useState(null);
 
@@ -30,4 +31,4 @@ const Show = () => {
     );
 };
 
-export default Show;
+export default Single;

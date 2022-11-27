@@ -3,12 +3,12 @@ import {useState, useEffect, useContext} from 'react';
 import TitleCard from '../../components/TitleCard';
 import {AuthContext} from "../../utils/AuthContext";
 
-const Index = () => {
+const All = ({type}) => {
     const [ titles, setTitles ] = useState(null);
     const {token} = useContext(AuthContext)
 
     useEffect(() => {
-        axios.get(`${process.env.REACT_APP_URL}/titles/all`,
+        axios.get(type ? `${process.env.REACT_APP_URL}/titles/type/${type}` : `${process.env.REACT_APP_URL}/titles/all`,
             {
                     headers: {
                         Authorization : `Bearer ${token}`
@@ -23,7 +23,7 @@ const Index = () => {
              .catch((err) => {
                  console.error(err);
              });
-    }, []);
+    }, [type]);
 
 
     if(!titles) return 'Loading...';
@@ -34,10 +34,10 @@ const Index = () => {
 
     return (
         <>
-            <h2>Titles</h2>
+            <h2>{type?.toUpperCase() ?? 'ALL LISTINGS'}</h2>
             { titleList }
         </>
     );
 };
 
-export default Index;
+export default All;

@@ -1,15 +1,17 @@
 import axios from 'axios';
-import { useState, useEffect } from 'react';
+import {useState, useEffect, useContext} from 'react';
 import TitleCard from '../../components/TitleCard';
+import {AuthContext} from "../../utils/AuthContext";
 
 const Index = () => {
     const [ titles, setTitles ] = useState(null);
+    const {token} = useContext(AuthContext)
 
     useEffect(() => {
         axios.get(`${process.env.REACT_APP_URL}/titles/all`,
             {
                     headers: {
-                        Authorization : `Bearer ${localStorage.getItem("token")}`
+                        Authorization : `Bearer ${token}`
                     }
 
                 }

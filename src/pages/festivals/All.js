@@ -29,13 +29,14 @@ const All = ({type}) => {
     if(!titles) return 'Loading...';
 
     const titleList = titles.map((title) => {
-        return <TitleCard title={title} />;
+        return <div className={'inline-block'}><TitleCard title={title} /></div>
     });
-
     return (
         <>
             <h2>{type?.toUpperCase() ?? 'ALL LISTINGS'}</h2>
+            <div className={'relative w-100 whitespace-nowrap overflow-x-scroll overflow-y-visible'}>
             { titleList }
+            </div>
         </>
     );
 };

@@ -13,7 +13,7 @@ const Home = () => {
             className={'h-full bg-cover brightness-50 absolute w-full'}
         />
             <div className={'relative flex justify-center'}>
-                <div className={'bg-black bg-opacity-75 px-16 py-20 w-[450px] rounded mt-32'}>
+                <div className={'bg-black bg-opacity-75 px-16 py-20 min-w-[450px] rounded mt-32'}>
                     {/*<h1>Home</h1>*/}
                     {form == 'login' && <LoginForm switchForms={() => switchForms('register')} />}
                     {form == 'register' && <RegisterForm switchForms={() => switchForms('login')} />}

@@ -15,11 +15,14 @@ import {NotFound} from "./pages/NotFound";
 
 const App = () => {
     const [token, setToken] = useState(null)
+    const [message, setMessage] = useState(null)
 
     return (
         <AuthContext.Provider value={{
             token,
-            setToken
+            setToken,
+            message ,
+            setMessage
         }}>
         <Router>
             <Navbar/>

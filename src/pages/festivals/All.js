@@ -2,11 +2,12 @@ import axios from 'axios';
 import {useState, useEffect, useContext} from 'react';
 import TitleCard from '../../components/TitleCard';
 import {AuthContext} from "../../utils/AuthContext";
+import {useAuth} from "../../utils/useAuth";
 
 const All = ({type}) => {
     const [ titles, setTitles ] = useState(null);
     const {token} = useContext(AuthContext)
-
+    const {logout} = useAuth()
     useEffect(() => {
         axios.get(type ? `${process.env.REACT_APP_URL}/titles/type/${type}?limit=10` : `${process.env.REACT_APP_URL}/titles/all?limit=500`,
             {
@@ -22,6 +23,9 @@ const All = ({type}) => {
              })
              .catch((err) => {
                  console.error(err);
+
+                 // unauthorised
+                 if(err.response.status == 401) logout('gigigigigigigig')
              });
     }, [type]);
 

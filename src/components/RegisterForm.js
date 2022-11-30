@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import {useAuth} from "../utils/useAuth";
 
-const LoginForm = ({switchForms}) => {
+const RegisterForm = ({switchForms}) => {
     const [form, setForm] = useState({
         email: "",
         password: ""
@@ -32,12 +32,10 @@ const LoginForm = ({switchForms}) => {
         })
     };
 
-    // if(authenticated) return "You are logged in";
-
 
     return (
         <div className={'flex flex-col'}>
-            <h2 className={'text-white text-3xl font-bold mb-8'}>Sign In</h2>
+            <h2 className={'text-white text-3xl font-bold mb-8'}>Sign Up</h2>
             <input className={'bg-grey-3 h-11 rounded mb-4 p-6 font-semibold placeholder:text-grey-1 text-white'} type="email" placeholder="Email" name="email" value={form.email} onChange={handleForm} />
             <input className={'bg-grey-3 h-11 rounded mb-10 p-6 font-semibold placeholder:text-grey-1 text-white'} type="password" placeholder="Password" name="password" value={form.password} onChange={handleForm} />
 
@@ -48,4 +46,4 @@ const LoginForm = ({switchForms}) => {
     );
 };
 
-export default LoginForm;
+export default RegisterForm;

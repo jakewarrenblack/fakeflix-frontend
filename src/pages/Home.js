@@ -1,14 +1,24 @@
 import LoginForm from "../components/LoginForm";
-import {useContext} from "react";
+import {useContext, useState} from "react";
 import {AuthContext} from "../utils/AuthContext";
+import RegisterForm from "../components/RegisterForm";
+
 
 const Home = () => {
-    const {message} = useContext(AuthContext)
+    const [form, switchForms] = useState('login')
     return (
         <>
-            {message && <h1>{message}</h1>}
-            <h1>Home</h1>
-            <LoginForm />
+        <div
+            style={{background: 'url(/movies_bg.jpg) center'}}
+            className={'h-full bg-cover brightness-50 absolute w-full'}
+        />
+            <div className={'relative flex justify-center'}>
+                <div className={'bg-black bg-opacity-75 px-16 py-20 w-[450px] rounded mt-32'}>
+                    {/*<h1>Home</h1>*/}
+                    {form == 'login' && <LoginForm switchForms={() => switchForms('register')} />}
+                    {form == 'register' && <RegisterForm switchForms={() => switchForms('login')} />}
+                </div>
+            </div>
         </>
     );
 };

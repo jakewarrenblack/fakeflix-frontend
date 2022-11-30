@@ -25,7 +25,7 @@ const All = ({type}) => {
                  console.error(err);
 
                  // unauthorised
-                 if(err.response.status == 401) logout('gigigigigigigig')
+                 if(err.response.status == 401) logout()
              });
     }, [type]);
 

@@ -7,7 +7,6 @@ import {AuthContext} from "./AuthContext";
 export const useAuth = () => {
     const { token, setToken, removeToken } = useToken();
     const navigate = useNavigate()
-    const {setMessage} = useContext(AuthContext)
 
     // On render, check if we're already logged in
     useEffect(() => {
@@ -28,7 +27,7 @@ export const useAuth = () => {
                 console.log(response.data);
                 setToken(response.data.token)
                 // If login is successful, go to the /titles page
-                navigate('/titles')
+                navigate('/movies')
             })
             .catch((err) => {
                 console.error('ERROR!!:', err);
@@ -38,10 +37,9 @@ export const useAuth = () => {
             });
     };
 
-    const logout = (msg) => {
+    const logout = () => {
         removeToken()
-        setMessage('Unauthorised! Please login to access that route.')
-        navigate('/', msg)
+        navigate('/')
     };
 
     return { token, login, logout };

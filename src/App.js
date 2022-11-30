@@ -15,14 +15,12 @@ import {NotFound} from "./pages/NotFound";
 
 const App = () => {
     const [token, setToken] = useState(null)
-    const [message, setMessage] = useState(null)
 
     return (
+        <div className={'h-screen overflow-hidden'}>
         <AuthContext.Provider value={{
             token,
             setToken,
-            message ,
-            setMessage
         }}>
         <Router>
             <Navbar/>
@@ -42,6 +40,7 @@ const App = () => {
             </Routes>
         </Router>
         </AuthContext.Provider>
+        </div>
     );
 };
 

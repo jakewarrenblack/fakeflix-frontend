@@ -10,9 +10,9 @@ const Home = () => {
         <>
         <div
             style={{background: 'url(/movies_bg.jpg) center'}}
-            className={'h-full bg-cover brightness-50 absolute w-full'}
+            className={'h-full bg-cover fixed -z-0 brightness-50 w-full'}
         />
-            <div className={'relative flex justify-center'}>
+            <div className={'relative h-full w-full flex justify-center'}>
                 <div className={'bg-black bg-opacity-75 px-16 py-20 min-w-[450px] rounded mt-32'}>
                     {/*<h1>Home</h1>*/}
                     {form == 'login' && <LoginForm switchForms={() => switchForms('register')} />}

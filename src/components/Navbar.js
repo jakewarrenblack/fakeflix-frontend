@@ -32,7 +32,7 @@ const Navbar = () => {
 
     console.log('token', token)
     return (
-        <nav className="flex flex-row bg-navBlack justify-between items-center text-grey-6 py-6 px-14 font-semibold">
+        <nav className="flex flex-row bg-navBlack justify-between items-center text-grey-6 py-6 px-14 font-semibold fixed w-screen z-10">
             <div className={'w-1/4 flex justify-between items-center group'}>
                 <Link to='/'><img className={'w-24'} src="/fakeflix.png"/></Link>
                 {

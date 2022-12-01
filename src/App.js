@@ -17,7 +17,7 @@ const App = () => {
     const [token, setToken] = useState(null)
 
     return (
-        <div className={'h-screen overflow-hidden'}>
+        <div>
         <AuthContext.Provider value={{
             token,
             setToken,

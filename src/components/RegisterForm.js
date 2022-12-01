@@ -2,6 +2,8 @@ import { useState } from 'react';
 import {useAuth} from "../utils/useAuth";
 import Input from "./Input";
 import Select from "./Select";
+import StripeForm from "./StripeForm";
+import StripeCheckout from "react-stripe-checkout";
 
 const RegisterForm = ({switchForms}) => {
     const [form, setForm] = useState(	{
@@ -26,7 +28,7 @@ const RegisterForm = ({switchForms}) => {
     });
     const [errorMessage, setErrorMessage] = useState("");
 
-    const {login} = useAuth()
+    const {register} = useAuth()
 
     const styles = { color: "red", backgroundColor:"white" };
 
@@ -46,11 +48,10 @@ const RegisterForm = ({switchForms}) => {
         console.log("Email: ", form.email);
         console.log("Password: ", form.password);
 
-        login({
-            email: form.email,
-            password: form.password
-        })
+        register(form)
     };
+
+    const [formIndex, setFormIndex] = useState(1)
 
 
 
@@ -79,25 +80,25 @@ const RegisterForm = ({switchForms}) => {
             {/* String for now, we will be able to see avatars and select one */}
             <Input disabled={true} type={'text'} name={'avatar'} value={form.avatar} handleForm={handleForm} placeholder={'Avatar'}/>
 
-            <Select name={'type'} displayName={'User Type'} handleForm={handleForm} values={[
+            <Select value={form.type} name={'type'} displayName={'User Type'} handleForm={handleForm} values={[
                 {value: 'admin', name: 'Admin'},
                 {value: 'user', name: 'Sub User'},
                 {value: 'child', name: 'Child'}
             ]}/>
 
-            <Select name={'language'} displayName={'Language'} handleForm={handleForm} values={[
+            <Select value={form.language} name={'language'} displayName={'Language'} handleForm={handleForm} values={[
                 {value: 'EN', name: 'EN'},
                 {value: 'DE', name: 'DE'},
                 {value: 'FR', name: 'FR'}
             ]}/>
 
-            <Select name={'maturity_setting'} displayName={'Maturity Setting'} handleForm={handleForm} values={[
+            <Select value={form.maturity_setting} name={'maturity_setting'} displayName={'Maturity Setting'} handleForm={handleForm} values={[
                 {value: 'unrestricted', name: 'Unrestricted (18+)'},
                 {value: 'semi-restricted', name: 'Semi-Restricted'},
                 {value: 'restricted', name: 'Restricted (Default if child)'}
             ]}/>
 
-            <Select name={'subscription'} displayName={'Subscription'} handleForm={handleForm} values={[
+            <Select value={form.subscription} name={'subscription'} displayName={'Subscription'} handleForm={handleForm} values={[
                 {value: 'Movies & Shows', name: 'Movies & Shows'},
                 {value: 'Shows', name: 'Shows'},
                 {value: 'Movies', name: 'Movies'}
@@ -106,20 +107,25 @@ const RegisterForm = ({switchForms}) => {
             <div className={'flex justify-between w-3/4 mb-4'}>
                 <div className={'mb-4'}>
                     <label className={'text-white'} htmlFor="autoplay_enabled">Autoplay Enabled </label>
-                    <input type="checkbox" name="autoplay_enabled" onChange={handleForm} value=""/>
+                    <input type="checkbox" name="autoplay_enabled" onChange={handleForm} value="false"/>
                 </div>
 
                 <div className={'mb-4'}>
                     <label className={'text-white'} htmlFor="database_admin">Database admin </label>
-                    <input disabled type="checkbox" onChange={handleForm} name="database_admin" value=""/>
+                    <input disabled type="checkbox" onChange={handleForm} name="database_admin" value="false"/>
                 </div>
             </div>
 
-            <button className={'flex justify-center items-center bg-red h-11 rounded mb-10 p-6 font-semibold text-white'} onClick={submitForm}>Sign Up</button>
+            {/*<button className={'flex justify-center items-center bg-red h-11 rounded mb-10 p-6 font-semibold text-white'} onClick={submitForm}>Sign Up</button>*/}
+            {/*<button className={'flex justify-center items-center bg-red h-11 rounded mb-10 p-6 font-semibold text-white'} onClick={() => setFormIndex(formIndex+1)}>Continue to Payment</button>*/}
+
+            {/* Register and payment are now the same in the backend, pass user data to stripe form */}
+            <StripeForm {...form} />
             <p style={styles}>{errorMessage}</p>
 
             <p className={'text-grey-1'}>Existing user? <b onClick={switchForms} className={'text-white hover:cursor-pointer'}>Sign in.</b></p>
         </div>
+
     );
 };
 

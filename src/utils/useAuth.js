@@ -42,5 +42,18 @@ export const useAuth = () => {
         navigate('/')
     };
 
-    return { token, login, logout };
+    const register = (form) => {
+        axios.post(`${process.env.REACT_APP_URL}/users/register`, form)
+            .then((response) => {
+                //login({email: response.data.email, password: response.data.password})
+                console.log(response.data);
+            })
+            .catch((err) => {
+                console.error('ERROR!!:', err);
+                alert('Error')
+
+            });
+    };
+
+    return { token, login, logout, register };
 };

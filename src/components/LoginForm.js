@@ -37,8 +37,8 @@ const LoginForm = ({switchForms}) => {
         <div className={'flex flex-col'}>
             <h2 className={'text-white text-3xl font-bold mb-8'}>Sign In</h2>
 
-            <Input type="email" placeholder="Email" name="email" value={form.email} onChange={handleForm}/>
-            <Input type="password" placeholder="Password" name="password" value={form.password} onChange={handleForm}/>
+            <Input type={"email"}  name={"email"} value={form.email} onChange={handleForm} placeholder={"Email"}/>
+            <Input type={"password"}  name={"password"} value={form.password} onChange={handleForm} placeholder={"Password"}/>
 
             <button className={'flex justify-center items-center bg-red h-11 rounded mb-10 p-6 font-semibold text-white'} onClick={submitForm}>Sign In</button>
             <p style={styles}>{errorMessage}</p>

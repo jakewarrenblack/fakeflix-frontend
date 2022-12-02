@@ -4,19 +4,28 @@ import axios from "axios";
 
 const stripeForm = (userData) => {
     const publishableKey = "pk_test_51IUfgkLBrNI420two8HTA94zQIVcsx22GAmLMLTfT3wf7N0A1IjFelWkkUwpOiKdpVyckQ5AuLlh0TpeERzXBLI7002HeA9ZcB";
+    const subscription = userData.subscription
+
+    const subscriptions = {
+        'Movies': 5.99,
+        'Shows': 5.99,
+        'Movies & Shows': 12.99
+    }
+
+    const amount = parseInt(subscriptions[userData.subscription])*100
 
     const onToken = token => {
         const body = {
             // TODO:
             // replace me with calculated amount from form
             // this is currently in the backend, move it
-            amount: 999,
+            amount,
             token: token
-        };  axios
+        };
+
+        axios
             .post(`http://localhost:3000/api/users/register`, {
                 // Combine the user data with the stripe token, which is needed for checkout
-                // FIXME:
-                // Spread operator not needed?
                 ...userData,
                 body
             })
@@ -34,10 +43,9 @@ const stripeForm = (userData) => {
             componentClass={'button'}
             label="Submit"
             name="Fakeflix"
-            // TODO:
-            description="Replace me with the subscription type"
+            description={subscription}
             panelLabel="Finish and pay" //Submit button in modal
-            amount={999}
+            amount={amount}
             token={onToken}
             stripeKey={publishableKey}
             image="fakeflix.png"

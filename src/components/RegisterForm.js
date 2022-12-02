@@ -1,11 +1,21 @@
-import { useState } from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {useAuth} from "../utils/useAuth";
 import Input from "./Input";
 import Select from "./Select";
 import StripeForm from "./StripeForm";
 import StripeCheckout from "react-stripe-checkout";
+import ModalDialog from "./ModalDialog";
+import axios from "axios";
+import clsx from "clsx";
 
 const RegisterForm = ({switchForms}) => {
+    const [selectedAvatar, setSelectedAvatar] = useState({})
+    const [adminFieldVisible, setAdminFieldVisible] = useState(false)
+    const [adminId, setAdminId] = useState()
+    const [adminMessage, setAdminMessage] = useState('')
+
+    const adminInput = useRef()
+
     const [form, setForm] = useState(	{
         "firstName": "",
         "lastName": "",
@@ -15,7 +25,7 @@ const RegisterForm = ({switchForms}) => {
         "type": "admin",
         "database_admin": false,
         // Hardcode for now, I'll have to pull these in to select one on registration
-        "avatar": "d3c74ece8c741e0b2bfbbabe",
+        "avatar": 'd3c74ece8c741e0b2bfbbabe',
         "language": "EN",
         "maturity_setting": 'unrestricted',
         "autoplay_enabled": true,
@@ -24,11 +34,27 @@ const RegisterForm = ({switchForms}) => {
         "my_list": [
 
         ],
+        // Only sub-users and child accounts need an admin ID, admins don't need to provide an admin ID
+        "admin": null,
         "pin": null
     });
     const [errorMessage, setErrorMessage] = useState("");
 
-    const {register} = useAuth()
+    // Controlled by the avatars modal
+    useEffect(() => {
+        setForm(form => ({
+            ...form,
+            avatar: selectedAvatar._id
+        }))
+    }, [selectedAvatar])
+
+    // Controlled by the 'verify admin' input field, which appears when 'type' is not 'admin'
+    useEffect(() => {
+        setForm(form => ({
+            ...form,
+            admin: adminId
+        }))
+    }, [adminId])
 
     const styles = { color: "red", backgroundColor:"white" };
 
@@ -38,53 +64,87 @@ const RegisterForm = ({switchForms}) => {
 
         console.log(e)
 
+        // If user has selected a type other than admin, reveal the 'admin id' field, as they need to provide this
+        if(name === 'type'){
+            setAdminFieldVisible(!adminFieldVisible)
+        }
+
         setForm(prevState => ({
             ...prevState,
             [name]: value
         }));
     };
 
-    const submitForm = () => {
-        console.log("Email: ", form.email);
-        console.log("Password: ", form.password);
+    const verifyAdminEmail = (email) => {
+        setAdminMessage('')
+        email = email?.value
 
-        register(form)
-    };
+        axios.post(`${process.env.REACT_APP_URL}/users/verifyAdmin`, {
+            email
+        }).then((res) => {
+            console.log(res.data)
+            setAdminId(res.data.id)
+            setAdminMessage(res.data.msg)
+        }).catch((e) => {
+            console.log(e)
+            setAdminMessage(e.response.data.msg)
 
-    const [formIndex, setFormIndex] = useState(1)
+        })
 
 
+    }
 
     return (
         <div className={'flex flex-col'}>
             <h2 className={'text-white text-3xl font-bold mb-8'}>Sign Up</h2>
 
-            <div className={'flex'}>
-                <div className={'mr-2'}>
+            <div className={'flex space-x-4'}>
+                <div className={'w-1/2'}>
                     <Input type={'text'} name={'firstName'} value={form.firstName} handleForm={handleForm} placeholder={'First name'}/>
                 </div>
-                <Input type={'text'} name={'lastName'} value={form.lastName} handleForm={handleForm} placeholder={'Last name'}/>
+                <div className={'w-1/2'}>
+                    <Input type={'text'} name={'lastName'} value={form.lastName} handleForm={handleForm} placeholder={'Last name'}/>
+                </div>
             </div>
 
-            <div className={'flex'}>
-                <div className={'mr-2'}>
+            <div className={'flex space-x-4'}>
+                <div className={' w-1/2'}>
                     <Input type={'text'} name={'username'} value={form.username} handleForm={handleForm} placeholder={'Username'}/>
                 </div>
-                <Input type={'email'} name={'email'} value={form.email} handleForm={handleForm} placeholder={'Email'}/>
+                <div className={'w-1/2'}>
+                    <Input type={'email'} name={'email'} value={form.email} handleForm={handleForm} placeholder={'Email'}/>
+                </div>
             </div>
 
             <Input type={'password'} name={'password'} value={form.password} handleForm={handleForm} placeholder={'Password'}/>
 
             <Input type={'text'} name={'pin'} value={form.pin} handleForm={handleForm} placeholder={'Pin'}/>
 
-            {/* String for now, we will be able to see avatars and select one */}
-            <Input disabled={true} type={'text'} name={'avatar'} value={form.avatar} handleForm={handleForm} placeholder={'Avatar'}/>
+            <ModalDialog setSelection={setSelectedAvatar}/>
+
+            {selectedAvatar?.img && <img className={'m-auto my-5'} src={selectedAvatar.img} width={'25%'} />}
 
             <Select value={form.type} name={'type'} displayName={'User Type'} handleForm={handleForm} values={[
                 {value: 'admin', name: 'Admin'},
                 {value: 'user', name: 'Sub User'},
                 {value: 'child', name: 'Child'}
             ]}/>
+
+            {/* Allow user to provide an email instead of an admin ID, more user-friendly */}
+            {/* TODO: Nested form here, allow entering email, press submit when finished and verify that this admin email is valid */}
+            {adminFieldVisible &&
+
+            <>
+
+                    <span className={'text-white'}>Enter your admin's email address:</span>
+                    <div className={'bg-grey-3 h-11 rounded w-full'}>
+                        <input ref={adminInput} required className={'h-full  bg-transparent font-semibold placeholder:text-grey-1 text-white w-3/4 border-r-red border-r-2 border-b-0 border-t-0 border-l-0'} type={'email'} name={'admin_email'} placeholder={'admin@example.com'}/>
+                        <button onClick={() => verifyAdminEmail(adminInput.current)} className={'w-1/4 font-semibold text-white'}>Confirm</button>
+                    </div>
+                    <span className={clsx(adminMessage && adminMessage.includes('Error') ? 'text-red' : 'text-green-700')}>{adminMessage}</span>
+
+            </>
+            }
 
             <Select value={form.language} name={'language'} displayName={'Language'} handleForm={handleForm} values={[
                 {value: 'EN', name: 'EN'},

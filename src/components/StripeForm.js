@@ -21,7 +21,7 @@ const stripeForm = (userData) => {
         };
 
         axios
-            .post(`http://localhost:3000/api/users/register`, {
+            .post(`${process.env.REACT_APP_URL}/users/register`, {
                 // Combine the user data with the stripe token, which is needed for checkout
                 ...userData,
                 body

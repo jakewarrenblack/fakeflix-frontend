@@ -16,9 +16,6 @@ const stripeForm = (userData) => {
 
     const onToken = token => {
         const body = {
-            // TODO:
-            // replace me with calculated amount from form
-            // this is currently in the backend, move it
             amount,
             token: token
         };
@@ -40,6 +37,7 @@ const stripeForm = (userData) => {
             });
     };  return (
         <StripeCheckout
+            email={userData?.email}
             componentClass={'button'}
             label="Submit"
             name="Fakeflix"

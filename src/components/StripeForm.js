@@ -1,10 +1,13 @@
 import React from "react";
 import StripeCheckout from "react-stripe-checkout";
 import axios from "axios";
+import {useAuth} from "../utils/useAuth";
 
-const stripeForm = (userData) => {
+const StripeForm = (userData) => {
     const publishableKey = "pk_test_51IUfgkLBrNI420two8HTA94zQIVcsx22GAmLMLTfT3wf7N0A1IjFelWkkUwpOiKdpVyckQ5AuLlh0TpeERzXBLI7002HeA9ZcB";
     const subscription = userData.subscription
+
+    const {login} = useAuth()
 
     const subscriptions = {
         'Movies': 5.99,
@@ -30,6 +33,8 @@ const stripeForm = (userData) => {
             .then(response => {
                 console.log(response);
                 alert("Payment Success");
+
+                login({email: userData.email, password: userData.password})
             })
             .catch(error => {
                 console.log("Payment Error: ", error);
@@ -52,4 +57,4 @@ const stripeForm = (userData) => {
             <button className={'flex w-full justify-center items-center bg-red h-11 rounded mb-10 p-6 font-semibold text-white'}>Pay Now</button>
         </StripeCheckout>
     );
-};export default stripeForm;
+};export default StripeForm;

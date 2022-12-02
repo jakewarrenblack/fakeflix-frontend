@@ -13,7 +13,7 @@ const stripeForm = (userData) => {
             amount: 999,
             token: token
         };  axios
-            .post(`${process.env.REACT_APP_URL}/users/register`, {
+            .post(`http://localhost:3000/api/users/register`, {
                 // Combine the user data with the stripe token, which is needed for checkout
                 // FIXME:
                 // Spread operator not needed?

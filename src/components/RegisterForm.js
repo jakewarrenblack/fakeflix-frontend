@@ -17,9 +17,9 @@ const RegisterForm = ({switchForms}) => {
         // Hardcode for now, I'll have to pull these in to select one on registration
         "avatar": "d3c74ece8c741e0b2bfbbabe",
         "language": "EN",
-        "maturity_setting": '',
+        "maturity_setting": 'unrestricted',
         "autoplay_enabled": true,
-        "subscription": '',
+        "subscription": 'Movies & Shows',
         // Empty list allowed, doesn't make sense to have values yet.
         "my_list": [
 

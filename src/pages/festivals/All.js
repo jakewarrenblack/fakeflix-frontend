@@ -4,6 +4,8 @@ import TitleCard from '../../components/TitleCard';
 import {AuthContext} from "../../utils/AuthContext";
 import {useAuth} from "../../utils/useAuth";
 import Carousel from "../../components/Carousel";
+// I don't need the hook, just using this for a plain, single element, which is at the bottom of the viewport
+import { InView } from 'react-intersection-observer';
 
 const All = ({type}) => {
     const [ rows, setRows ] = useState([]);
@@ -102,9 +104,8 @@ const All = ({type}) => {
                 })
             }
 
-
-            {/* Tie this button to the bottom of the page, temporary, to be replaced with intersection observer to call this method when bottom of page is reached*/}
-            <button className={'bg-red text-white relative bottom-0'} onClick={() => setPage(page+1)}>Bottom of page anchor</button>
+            {/* Keep me at the bottom of the viewport. When a user reaches the bottom of the page, increase the pagination to load the next 50 titles.*/}
+            <InView onChange={() => setPage(page+1)}/>
         </>
     );
 };

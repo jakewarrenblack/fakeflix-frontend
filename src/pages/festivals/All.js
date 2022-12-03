@@ -6,7 +6,7 @@ import {useAuth} from "../../utils/useAuth";
 import Carousel from "../../components/Carousel";
 
 const All = ({type}) => {
-    const [ rows, setRows ] = useState(null);
+    const [ rows, setRows ] = useState([]);
     const {token} = useContext(AuthContext)
     const {logout} = useAuth()
 
@@ -23,10 +23,9 @@ const All = ({type}) => {
                 }
             )
              .then((response) => {
-                 let rows = response.data
+                 let tempRows = response.data
 
-                 // divide 30 titles into 3 rows of 10
-                 setRows(rows.reduce((tenPerRow, title, index) => {
+                 const dividedRows = tempRows.reduce((tenPerRow, title, index) => {
                      const titleIndex = Math.floor(index/perRow)
 
                      if(!tenPerRow[titleIndex]) {
@@ -35,40 +34,59 @@ const All = ({type}) => {
 
                      tenPerRow[titleIndex].push(title)
 
-                     return tenPerRow
-                 }, []))
+                    return tenPerRow
+                 }, [])
+
+                 // divide 50 titles into 5 rows of 10
+                 // TODO: I need to only combine old and new values when dividedRows has CHANGED
+                 // otherwise, we end up with 2 of the same row
+
+                 // if previously set rows and our recently fetched rows are the same, just set the recent ones
+                 // (user just visited this page)
+                 if(rows?.length && rows === dividedRows){
+                     console.log('prev rows and dividedRows are equal')
+                     setRows(dividedRows)
+                 }
+                 // OR, if we have old rows and new rows which are different, keep the old ones and combine them with the new ones
+                 // (user scrolling down page)
+                 else if(rows?.length && rows !== dividedRows || !rows.length){
+                     console.log('prev rows and dividedRows are NOT equal')
+                     setRows([
+                         ...rows,
+                         ...dividedRows
+                     ])
+                 }
 
 
 
-                 console.log('TITLES', setRows)
+
+                 console.log('TITLES', rows)
              })
              .catch((err) => {
                  console.error(err);
 
                  // unauthorised
-                 if(err.response.status == 401) logout()
+                 if(err.response.status === 401) logout()
              });
 
+    }, [type, page]);
 
 
-    }, [type]);
 
 
-    if(!rows) return 'Loading...';
+    if(rows.length === 0) return 'Loading...';
 
     // TODO: eventually these should also be divided by category? and have e.g. all comedies in one row
-    // TODO: when user scrolls to bottom, use intersection observer or similar to load the next 30
+    // TODO: when user scrolls to bottom, use intersection observer or similar to load the next 50
+    // our bottom page anchor is visible in the viewport, load the next 50
 
-    // const titleList = titles.map((title) => {
-    //     return <div className={'m-5'}><TitleCard title={title} /></div>
-    // });
-
+    console.log(rows)
     return (
         <>
             <h2>{type?.toUpperCase() ?? 'ALL LISTINGS'}</h2>
 
             {
-                // Iterate over our 3 rows of 10
+                // Iterate over our 5 rows of 10
                 rows.map((row) => {
                     // Each row has a containing div, within which is a carousel
                     return <div className={'relative w-100 overflow-hidden'}>
@@ -82,11 +100,11 @@ const All = ({type}) => {
                         </Carousel>
                     </div>
                 })
-            })
+            }
 
 
             {/* Tie this button to the bottom of the page, temporary, to be replaced with intersection observer to call this method when bottom of page is reached*/}
-            {/*<button className={'bg-red text-white fixed bottom-0'} onSubmit={setPage(page+1)}>More</button>*/}
+            <button className={'bg-red text-white relative bottom-0'} onClick={() => setPage(page+1)}>Bottom of page anchor</button>
         </>
     );
 };

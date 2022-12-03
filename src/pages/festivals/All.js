@@ -6,24 +6,41 @@ import {useAuth} from "../../utils/useAuth";
 import Carousel from "../../components/Carousel";
 
 const All = ({type}) => {
-    const [ titles, setTitles ] = useState(null);
+    const [ rows, setRows ] = useState(null);
     const {token} = useContext(AuthContext)
     const {logout} = useAuth()
-    // Show first 30 titles to begin with, 10 per row
-    // When user scrolls down we will eventually use intersection observer to increment this to another 30
+
+    const [page, setPage] = useState(1)
+    const perRow = 10 // 10 items per row
 
     useEffect(() => {
-        axios.get(type ? `${process.env.REACT_APP_URL}/titles/type/${type}?limit=30` : `${process.env.REACT_APP_URL}/titles/all?limit=500`,
+        // default limit is 30
+        axios.get(type ? `${process.env.REACT_APP_URL}/titles/type/${type}?page=${page}` : `${process.env.REACT_APP_URL}/titles/all?limit=500`,
             {
                     headers: {
                         Authorization : `Bearer ${token}`
                     }
-
                 }
             )
              .then((response) => {
-                 console.log(response.data);
-                 setTitles(response.data);
+                 let rows = response.data
+
+                 // divide 30 titles into 3 rows of 10
+                 setRows(rows.reduce((tenPerRow, title, index) => {
+                     const titleIndex = Math.floor(index/perRow)
+
+                     if(!tenPerRow[titleIndex]) {
+                         tenPerRow[titleIndex] = [] // start a new row from here
+                     }
+
+                     tenPerRow[titleIndex].push(title)
+
+                     return tenPerRow
+                 }, []))
+
+
+
+                 console.log('TITLES', setRows)
              })
              .catch((err) => {
                  console.error(err);
@@ -31,32 +48,45 @@ const All = ({type}) => {
                  // unauthorised
                  if(err.response.status == 401) logout()
              });
+
+
+
     }, [type]);
 
 
-    if(!titles) return 'Loading...';
-
-    // TODO: lets say get 30 at a time, 10 per row, need to split them up
+    if(!rows) return 'Loading...';
 
     // TODO: eventually these should also be divided by category? and have e.g. all comedies in one row
-
     // TODO: when user scrolls to bottom, use intersection observer or similar to load the next 30
 
-    const titleList = titles.map((title) => {
-        return <div className={'m-5'}><TitleCard title={title} /></div>
-    });
+    // const titleList = titles.map((title) => {
+    //     return <div className={'m-5'}><TitleCard title={title} /></div>
+    // });
+
     return (
         <>
             <h2>{type?.toUpperCase() ?? 'ALL LISTINGS'}</h2>
-            <div className={'relative w-100 overflow-hidden'}>
-            <Carousel>
-                { titleList }
-            </Carousel>
-            </div>
+
+            {
+                // Iterate over our 3 rows of 10
+                rows.map((row) => {
+                    // Each row has a containing div, within which is a carousel
+                    return <div className={'relative w-100 overflow-hidden'}>
+                        <Carousel>
+                        {
+                            // Each carousel contains 10 cards
+                            row.map((title) => {
+                                return <div className={'m-5'}><TitleCard title={title} /></div>
+                            })
+                        }
+                        </Carousel>
+                    </div>
+                })
+            })
 
 
             {/* Tie this button to the bottom of the page, temporary, to be replaced with intersection observer to call this method when bottom of page is reached*/}
-            {/*<button className={'bg-red text-white fixed bottom-0'}>More</button>*/}
+            {/*<button className={'bg-red text-white fixed bottom-0'} onSubmit={setPage(page+1)}>More</button>*/}
         </>
     );
 };

@@ -1,11 +1,16 @@
-import { NavLink, Link } from 'react-router-dom';
+import {NavLink, Link, useLocation} from 'react-router-dom';
 import {useContext} from "react";
 import {AuthContext} from "../utils/AuthContext";
 import {useAuth} from "../utils/useAuth";
+import clsx from "clsx";
 
 const Navbar = () => {
     const {token} = useContext(AuthContext)
     const {logout} = useAuth()
+
+    const {pathname} = useLocation()
+
+    console.log(pathname)
 
     const links = [
         {
@@ -31,8 +36,9 @@ const Navbar = () => {
     ]
 
     console.log('token', token)
+    // Navbar position should be relative on all pages except for home (to allow scrolling for register), where it should be fixed
     return (
-        <nav className="flex flex-row bg-navBlack justify-between items-center text-grey-6 py-6 px-14 font-semibold fixed w-screen z-10">
+        <nav className={clsx("flex flex-row bg-navBlack justify-between items-center text-grey-6 py-6 px-14 font-semibold w-screen z-10", pathname === '/' ? 'fixed' : 'relative')}>
             <div className={'w-1/4 flex justify-between items-center group'}>
                 <Link to='/'><img className={'w-24'} src="/fakeflix.png"/></Link>
                 {

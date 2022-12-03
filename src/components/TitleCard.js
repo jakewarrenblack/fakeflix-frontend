@@ -27,10 +27,8 @@ const TitleCard = ({title, url}) => {
     }, [title])
 
     return (
-        <div className={'w-[400px] h-[200px] m-2 flex flex-col justify-center'} style={{background: image ? `url(${image})` : 'rgba(217,217,217, 1)'}}>
-            <p className={'text-white'}><b>Title:</b> <Link to={`/title/${title._id}`}>{title.title}</Link> </p>
-            {/*<p><b>Description:</b> {title.description}</p>*/}
-            <hr />
+        <div className={'h-[225px] flex flex-col justify-end bg-cover bg-no-repeat bg-center'} style={{background: image ? `no-repeat center/cover url(${image})` : 'rgba(7,7,8, 1)'}}>
+            <p className={'text-white mb-2 ml-2 font-semibold text-lg'}><Link to={`/title/${title._id}`}>{title.title}</Link> </p>
         </div>
     );
 };

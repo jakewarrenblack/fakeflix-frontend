@@ -2,7 +2,7 @@ import {useEffect, useState, Suspense} from "react";
 import axios from "axios";
 import {useContext} from "react";
 import {AuthContext} from "../utils/AuthContext";
-import {useLocation, useParams} from "react-router-dom";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
 import {useImage} from 'react-image'
 
 const WhosWatching = () => {
@@ -10,6 +10,7 @@ const WhosWatching = () => {
 
     const [users, setUsers] = useState()
     const {token} = useContext(AuthContext)
+    const navigate = useNavigate()
 
     let adminID = location.state.adminID
 
@@ -41,15 +42,21 @@ const WhosWatching = () => {
         // TODO: Unsure of specifics, I will need to do a few things from here,
         // now that we've selected a specific user from the family group
 
-        const img = useImage({
-            srcList: avatar.img
-        })
+        const AvatarImage = () => {
+            // TODO: Give me some loader component
+            const {src} = useImage({
+                srcList: avatar.img
+            })
+
+            return <img src={src} width={'90%'}/>
+        }
+
 
         return (
-            <div className={{display: 'flex', marginTop: 25, justifyContent: 'flex-end'}}>
+            <div onClick={() => navigate('/movies')} className={{display: 'flex', marginTop: 25, justifyContent: 'flex-end'}}>
                 <div className={'flex hover:cursor-pointer hover:brightness-100 brightness-75 justify-center flex-col items-center m-2]'}>
                     <Suspense>
-                        <img src={avatar.img} width={'90%'}/>
+                        <AvatarImage/>
                     </Suspense>
                     <h3 className={'font-semibold mt-2 text-white'}>{username}</h3>
                     {/* Showing a crown icon for admins */}

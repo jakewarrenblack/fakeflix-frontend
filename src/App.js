@@ -12,6 +12,7 @@ import Navbar from './components/Navbar';
 import {useEffect, useState} from "react";
 import ProtectedRoute from "./components/ProtectedRoute";
 import {NotFound} from "./pages/NotFound";
+import WhosWatching from "./pages/WhosWatching";
 
 const App = () => {
     const [token, setToken] = useState(null)
@@ -36,6 +37,10 @@ const App = () => {
 
                     <Route path='all' element={<All />} />
                     <Route path='title/:id' element={<Single />} />
+
+                    {/* Pass admin ID to fetch the admin and all their sub-users, to select an account from */}
+                    {/* Like on netflix, multiple profiles but one admin */}
+                    <Route path='selectProfile' element={<WhosWatching />} />
                 </Route>
             </Routes>
         </Router>

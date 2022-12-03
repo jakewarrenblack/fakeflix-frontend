@@ -34,7 +34,7 @@ const StripeForm = (userData) => {
                 console.log(response);
                 alert("Payment Success");
 
-                login({email: userData.email, password: userData.password})
+                login({email: userData.email, password: userData.password, adminID: userData?.admin})
             })
             .catch(error => {
                 console.log("Payment Error: ", error);

@@ -1,8 +1,9 @@
-import {useEffect, useState} from "react";
+import {useEffect, useState, Suspense} from "react";
 import axios from "axios";
 import {useContext} from "react";
 import {AuthContext} from "../utils/AuthContext";
 import {useLocation, useParams} from "react-router-dom";
+import {useImage} from 'react-image'
 
 const WhosWatching = () => {
     const location = useLocation()
@@ -19,7 +20,7 @@ const WhosWatching = () => {
     useEffect(() => {
         // find users where _id = x or admin_id = x
         // must also populate avatars
-        axios.get(`http://localhost:3000/api/users/manageProfiles/${adminID}?populate=avatar`,
+        axios.get(`${process.env.REACT_APP_URL}/users/manageProfiles/${adminID}?populate=avatar`,
 
             {
                 headers: {
@@ -40,10 +41,16 @@ const WhosWatching = () => {
         // TODO: Unsure of specifics, I will need to do a few things from here,
         // now that we've selected a specific user from the family group
 
+        const img = useImage({
+            srcList: avatar.img
+        })
+
         return (
             <div className={{display: 'flex', marginTop: 25, justifyContent: 'flex-end'}}>
                 <div className={'flex hover:cursor-pointer hover:brightness-100 brightness-75 justify-center flex-col items-center m-2]'}>
-                    <img src={avatar.img} width={'90%'}/>
+                    <Suspense>
+                        <img src={avatar.img} width={'90%'}/>
+                    </Suspense>
                     <h3 className={'font-semibold mt-2 text-white'}>{username}</h3>
                     {/* Showing a crown icon for admins */}
                     {type == 'admin' && '👑'}

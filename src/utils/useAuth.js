@@ -27,7 +27,7 @@ export const useAuth = () => {
         let adminID
 
             // don't need to pass params here, it will search by the currently logged in user
-            await axios.post(`http://localhost:3000/api/users/getProfileByEmail/`, {
+            await axios.post(`${process.env.REACT_APP_URL}/users/getProfileByEmail/`, {
                 email
             }).then((res) => {
 

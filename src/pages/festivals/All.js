@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {useState, useEffect, useContext} from 'react';
+import {useState, useEffect, useContext, useRef} from 'react';
 import TitleCard from '../../components/TitleCard';
 import {AuthContext} from "../../utils/AuthContext";
 import {useAuth} from "../../utils/useAuth";
@@ -15,7 +15,26 @@ const All = ({type}) => {
     const [page, setPage] = useState(1)
     const perRow = 10 // 10 items per row
 
+    // Keeping a ref for what the last prop type was, I want to know if we were previously on shows, but now we're on movies, or vice-versa
+    const usePrevious = (prop) => {
+        const prev = useRef()
+        useEffect(() => {
+            prev.current = prop
+        }, [prop])
+        return prev.current
+    }
+
+    const prevType = usePrevious(type)
+
+    // TODO: don't include the movies from previous request when switching to movies
+    // TOOD: Also, dont automatically direct to movies, at some point I should determine the user's subscription type, and direct accordingly
     useEffect(() => {
+
+        console.log('PREVIOUS TYPE WAS:', prevType)
+
+        const typesChanged = prevType !== undefined && type !== prevType
+
+
         // default limit is 30
         axios.get(type ? `${process.env.REACT_APP_URL}/titles/type/${type}?page=${page}` : `${process.env.REACT_APP_URL}/titles/all?limit=500`,
             {
@@ -45,7 +64,8 @@ const All = ({type}) => {
 
                  // if previously set rows and our recently fetched rows are the same, just set the recent ones
                  // (user just visited this page)
-                 if(rows?.length && rows === dividedRows){
+                 // if types changed, we also just reset. e.g. if we swapped from movies to shows, discard the existing movies and reload all from scratch.
+                 if(rows?.length && rows === dividedRows || typesChanged){
                      console.log('prev rows and dividedRows are equal')
                      setRows(dividedRows)
                  }

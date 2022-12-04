@@ -2,8 +2,9 @@ import {Link, useNavigate} from 'react-router-dom';
 import clsx from "clsx";
 import axios from 'axios'
 import {useEffect, useState} from "react";
+import TitleDialog from "./TitleDialog";
 
-const TitleCard = ({title, url}) => {
+const TitleCard = ({title}) => {
     const [image, setImage] = useState(null)
     const navigate = useNavigate()
 
@@ -23,19 +24,22 @@ const TitleCard = ({title, url}) => {
             //console.log(e)
         })
 
-
-
     }, [title])
 
-    // Link around entire element causing issues for react-slick
+    const passTitle = {
+        ...title,
+        image
+    }
+
     return (
+        // TODO: use Suspense here to lazy load images
+        <div className={'h-[225px] hover:cursor-pointer flex flex-col justify-end bg-cover bg-no-repeat bg-center'} style={{background: image ? `no-repeat center/cover url(${image})` : 'rgba(7,7,8, 1)'}}>
+            <Link to={`/title/${title._id}`}>
+                <p className={'text-white mb-2 ml-2 font-semibold text-lg'}>{title.title} ({title.type})</p>
 
-
-
-                <div className={'h-[225px] hover:cursor-pointer flex flex-col justify-end bg-cover bg-no-repeat bg-center'} style={{background: image ? `no-repeat center/cover url(${image})` : 'rgba(7,7,8, 1)'}}>
-                    <Link to={`/title/${title._id}`}><p className={'text-white mb-2 ml-2 font-semibold text-lg'}>{title.title}</p></Link>
-                </div>
-            // </Link>
+            </Link>
+            <TitleDialog {...passTitle}/>
+        </div>
     );
 };
 

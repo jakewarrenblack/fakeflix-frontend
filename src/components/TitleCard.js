@@ -27,9 +27,11 @@ const TitleCard = ({title, url}) => {
     }, [title])
 
     return (
-        <div className={'h-[225px] flex flex-col justify-end bg-cover bg-no-repeat bg-center'} style={{background: image ? `no-repeat center/cover url(${image})` : 'rgba(7,7,8, 1)'}}>
-            <p className={'text-white mb-2 ml-2 font-semibold text-lg'}><Link to={`/title/${title._id}`}>{title.title}</Link> </p>
-        </div>
+        <Link to={`/title/${title._id}`}>
+            <div className={'h-[225px] flex flex-col justify-end bg-cover bg-no-repeat bg-center'} style={{background: image ? `no-repeat center/cover url(${image})` : 'rgba(7,7,8, 1)'}}>
+                <p className={'text-white mb-2 ml-2 font-semibold text-lg'}>{title.title}</p>
+            </div>
+        </Link>
     );
 };
 

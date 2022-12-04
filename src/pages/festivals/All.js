@@ -82,10 +82,45 @@ const All = ({type}) => {
     // TODO: when user scrolls to bottom, use intersection observer or similar to load the next 50
     // our bottom page anchor is visible in the viewport, load the next 50
 
+    // just taking the first title to make a big hero title with, like netflix has
+    const firstTitle = rows[0][0]
+
+    const HeroTitle = ({title, desc, imdb_id}) => {
+        const [image, setImage] = useState()
+
+        useEffect(() => {
+            // https://logfetch.com/js-image-binary-jfif/
+            axios.get(`https://img.omdbapi.com/?i=${imdb_id}&h=600&apikey=***REMOVED***`, {
+                responseType: "blob"
+            })
+                .then((res) => {
+                    const url = URL.createObjectURL(res.data);
+                    setImage(url)
+
+                }).catch((e) => {
+                setImage(null)
+                console.log('Image fetch error:', e)
+            })
+        }, [])
+
+        return (
+            <div className={'h-[60vh] text-white flex flex-col justify-end overflow-hidden'}>
+                <div className={'brightness-50 h-full filter blur-md'} style={{background: image ? `no-repeat center/cover url(${image})` : 'rgba(7,7,8, 1)'}}/>
+                <div className={'mb-14 ml-5 w-3/4 absolute'}>
+                    <h1 className={'text-7xl'}>{title}</h1>
+                    <h4>{desc}</h4>
+                    <button className={'bg-white font-semibold rounded text-black px-5 py-2 mt-4'}>View</button>
+                </div>
+            </div>
+        )
+    }
+
     console.log(rows)
     return (
-        <>
-            <h2>{type?.toUpperCase() ?? 'ALL LISTINGS'}</h2>
+        <div className={'bg-grey-2 overflow-hidden'}>
+
+            {/*<h2>{type?.toUpperCase() ?? 'ALL LISTINGS'}</h2>*/}
+            <HeroTitle title={firstTitle.title} desc={firstTitle.description} imdb_id={firstTitle.imdb_id}/>
 
             {
                 // Iterate over our 5 rows of 10
@@ -106,7 +141,7 @@ const All = ({type}) => {
 
             {/* Keep me at the bottom of the viewport. When a user reaches the bottom of the page, increase the pagination to load the next 50 titles.*/}
             <InView onChange={() => setPage(page+1)}/>
-        </>
+        </div>
     );
 };
 

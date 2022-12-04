@@ -104,7 +104,7 @@ const All = ({type}) => {
         }, [])
 
         return (
-            <div className={'h-[60vh] text-white flex flex-col justify-end overflow-hidden'}>
+            <div className={'h-[60vh] text-white flex flex-col justify-end overflow-hidden'} >
                 <div className={'brightness-50 h-full filter blur-md'} style={{background: image ? `no-repeat center/cover url(${image})` : 'rgba(7,7,8, 1)'}}/>
                 <div className={'mb-14 ml-5 w-3/4 absolute'}>
                     <h1 className={'text-7xl'}>{title}</h1>
@@ -122,6 +122,8 @@ const All = ({type}) => {
             {/*<h2>{type?.toUpperCase() ?? 'ALL LISTINGS'}</h2>*/}
             <HeroTitle title={firstTitle.title} desc={firstTitle.description} imdb_id={firstTitle.imdb_id}/>
 
+
+            <div>
             {
                 // Iterate over our 5 rows of 10
                 rows.map((row) => {
@@ -138,6 +140,7 @@ const All = ({type}) => {
                     </div>
                 })
             }
+            </div>
 
             {/* Keep me at the bottom of the viewport. When a user reaches the bottom of the page, increase the pagination to load the next 50 titles.*/}
             <InView onChange={() => setPage(page+1)}/>

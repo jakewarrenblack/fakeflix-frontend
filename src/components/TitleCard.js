@@ -1,10 +1,11 @@
-import { Link } from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import clsx from "clsx";
 import axios from 'axios'
 import {useEffect, useState} from "react";
 
 const TitleCard = ({title, url}) => {
     const [image, setImage] = useState(null)
+    const navigate = useNavigate()
 
     useEffect(  () => {
 
@@ -26,12 +27,15 @@ const TitleCard = ({title, url}) => {
 
     }, [title])
 
+    // Link around entire element causing issues for react-slick
     return (
-        <Link to={`/title/${title._id}`}>
-            <div className={'h-[225px] flex flex-col justify-end bg-cover bg-no-repeat bg-center'} style={{background: image ? `no-repeat center/cover url(${image})` : 'rgba(7,7,8, 1)'}}>
-                <p className={'text-white mb-2 ml-2 font-semibold text-lg'}>{title.title}</p>
-            </div>
-        </Link>
+
+
+
+                <div className={'h-[225px] hover:cursor-pointer flex flex-col justify-end bg-cover bg-no-repeat bg-center'} style={{background: image ? `no-repeat center/cover url(${image})` : 'rgba(7,7,8, 1)'}}>
+                    <Link to={`/title/${title._id}`}><p className={'text-white mb-2 ml-2 font-semibold text-lg'}>{title.title}</p></Link>
+                </div>
+            // </Link>
     );
 };
 

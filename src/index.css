@@ -10,4 +10,13 @@
 
 .slick-slide > div { padding: 0 10px; }
 
+.slick-prev, .slick-next {
+    color: white;
+    z-index:99;
+}
+
+.slick-slide:not(.slick-active) {
+    pointer-events: none;
+}
+
 @tailwind utilities;

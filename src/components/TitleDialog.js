@@ -1,6 +1,7 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import {useEffect, useState} from "react";
 import axios from "axios";
+import clsx from "clsx";
 
 // Maybe I could have used ModalDialog.js for both avatars and titles, but felt they'd be too different to bother
 const AvatarCard = ({img, name, setSelection, _id}) => {
@@ -72,7 +73,7 @@ const calcRunTime = (runTime) => {
 
 
 // TODO: In the case of a show, use the ?moreDetail query param to get extra info for the modal
-const TitleDialog = ({title, image, genres, description, age_certification, seasons, runtime, imdb_score, tmdb_score, release_year}) => {
+const TitleDialog = ({title, image, genres, description, age_certification, seasons, runtime, imdb_score, tmdb_score, release_year, imdb_id}) => {
     let score = imdb_score ?? tmdb_score
 
     let stars = getStars(score).map((img) => {
@@ -84,7 +85,7 @@ const TitleDialog = ({title, image, genres, description, age_certification, seas
     return (
         <Dialog.Root>
             <Dialog.Trigger asChild>
-                <button className="text-white bg-red p-2 rounded font-semibold mb-2">
+                <button className="text-black bg-white px-2 py-1 rounded font-semibold">
                     View
                 </button>
             </Dialog.Trigger>
@@ -96,11 +97,11 @@ const TitleDialog = ({title, image, genres, description, age_certification, seas
                                         <div className={' bg-blend-color brightness-50 rounded-lg  h-full'} style={{background: image ? `no-repeat center/cover url(${image})` : 'rgba(7,7,8, 1)'}}></div>
 
                                         {/* Has to be same height as bg image */}
-                                        <div className={'left-0 space-y-4 top-0 h-full absolute flex flex-col justify-end align-start pb-10 w-full p-5'} style={{background: '-webkit-linear-gradient(90deg,#181818,transparent 50%)'}}>
+                                        <div className={'left-0 disabled:opacity-50 space-y-4 top-0 h-full absolute flex flex-col justify-end align-start pb-10 w-full p-5'} style={{background: '-webkit-linear-gradient(90deg,#181818,transparent 50%)'}}>
                                             <Dialog.Title className="text-6xl mb-10">{title}</Dialog.Title>
                                             <main className={'space-y-4'}>
                                                 <div className={'flex space-x-10'}>
-                                                    <button className={'bg-white text-black rounded min-h-[42px] px-4 font-semibold text-2xl'}>
+                                                    <button onClick={() => window.open(`https://www.imdb.com/title/${imdb_id}/`, '_blank')}  disabled={!imdb_id || !imdb_id.length} className={'bg-white disabled:opacity-50 text-black rounded min-h-[42px] px-4 font-semibold text-2xl'}>
                                                         ▶
                                                         View on IMDB
                                                     </button>

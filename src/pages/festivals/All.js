@@ -149,6 +149,7 @@ const All = ({type}) => {
                 rows.map((row) => {
                     // Each row has a containing div, within which is a carousel
                     return <div className={'relative w-100 overflow-hidden'}>
+                        {/* TODO: Reset scroll positions on type change */}
                         <Carousel>
                         {
                             // Each carousel contains 10 cards

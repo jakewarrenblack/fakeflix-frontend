@@ -168,7 +168,9 @@ const All = ({type}) => {
             </div>
 
             {/* Keep me at the bottom of the viewport. When a user reaches the bottom of the page, increase the pagination to load the next 50 titles.*/}
-            <InView onChange={() => setPage(page+1)}/>
+            <div className={'relative w-1 h-1 bottom-1'}>
+                <InView onChange={() => setPage(page+1)}/>
+            </div>
         </div>
     );
 };

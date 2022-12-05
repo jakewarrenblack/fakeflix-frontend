@@ -2,6 +2,9 @@ import * as Dialog from '@radix-ui/react-dialog';
 import {useEffect, useState} from "react";
 import axios from "axios";
 import clsx from "clsx";
+import {useContext} from "react";
+import {AuthContext} from "../utils/AuthContext";
+
 
 // Maybe I could have used ModalDialog.js for both avatars and titles, but felt they'd be too different to bother
 const AvatarCard = ({img, name, setSelection, _id}) => {
@@ -71,21 +74,42 @@ const calcRunTime = (runTime) => {
     }
 }
 
+const getRelated = (genres, age_certification, _id, token) => {
+    axios.post(`http://localhost:3000/api/titles/getRelated`, {
+        genres,
+        _id,
+        age_certification
+    },
+        {
+            headers: {
+                Authorization : `Bearer ${token}`
+            }
+        }
+
+        ).then((res) => {
+        console.log('RESPONSE FROM GET RELATED', res)
+    }).catch((e) => console.log('ERROR FROM GET RELATED', e))
+}
+
+
 
 // TODO: In the case of a show, use the ?moreDetail query param to get extra info for the modal
-const TitleDialog = ({title, image, genres, description, age_certification, seasons, runtime, imdb_score, tmdb_score, release_year, imdb_id}) => {
+const TitleDialog = ({_id, title, image, genres, description, age_certification, seasons, runtime, imdb_score, tmdb_score, release_year, imdb_id}) => {
     let score = imdb_score ?? tmdb_score
 
     let stars = getStars(score).map((img) => {
-
         return <img className={'filter invert'} src={img} width={'25px'}/>
     })
+
+    const {token} = useContext(AuthContext)
+
+
 
 
     return (
         <Dialog.Root>
             <Dialog.Trigger asChild>
-                <button className="text-black bg-white px-2 py-1 rounded font-semibold">
+                <button onClick={() => getRelated(genres, age_certification, _id, token)} className="text-black bg-white px-2 py-1 rounded font-semibold">
                     View
                 </button>
             </Dialog.Trigger>
@@ -120,6 +144,7 @@ const TitleDialog = ({title, image, genres, description, age_certification, seas
                                         </div>
                                     </div>
 
+                                {/* TODO: Add 'more like this' section, searching by category same as current */}
                                 {/* Main content, plan to have recommended titles here */ }
                                 <main className={'p-5 mt-14'}>
                                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>

@@ -26,6 +26,7 @@ const Navbar = () => {
             name: 'Shows'
         },
         {
+            // TODO: Make this work. May not be too hard.
             href: '/my_list',
             name: 'My List'
         },

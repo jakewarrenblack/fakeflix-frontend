@@ -90,7 +90,7 @@ const TitleDialog = ({title, image, genres, description, age_certification, seas
                 </button>
             </Dialog.Trigger>
             <Dialog.Portal>
-                    <Dialog.Overlay className="w-screen h-screen fixed bg-black/70 top-0 left-0 overflow-y-scroll grid place-items-center">
+                    <Dialog.Overlay className="z-50 w-screen h-screen fixed bg-black/70 top-0 left-0 overflow-y-scroll grid place-items-center">
                         <Dialog.Content asChild className="rounded-lg text-white relative opacity-100 bg-grey-8 w-1/2 flex flex-col">
                             <div>
                                     <div id={'container'} className={'h-[500px] relative'}>

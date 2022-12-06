@@ -21,6 +21,7 @@ module.exports = {
           8: '#181818',
         },
         red: '#CC0000',
+        'cardBg': '#2f2f2f',
         'navBlack': '#141414',
         teal: '#54B9C5'
       }

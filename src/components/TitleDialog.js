@@ -4,23 +4,9 @@ import axios from "axios";
 import clsx from "clsx";
 import {useContext} from "react";
 import {AuthContext} from "../utils/AuthContext";
-
+const perRow = 3
 
 // Maybe I could have used ModalDialog.js for both avatars and titles, but felt they'd be too different to bother
-const AvatarCard = ({img, name, setSelection, _id}) => {
-    return (
-        <div onClick={() => setSelection({img, _id})} className={{display: 'flex', marginTop: 25, justifyContent: 'flex-end'}}>
-            <Dialog.Close asChild>
-                <div className={'flex hover:cursor-pointer hover:brightness-100 brightness-75 justify-center flex-col items-center m-2]'}>
-                    <img src={img} width={'90%'}/>
-                    <h3 className={'font-semibold mt-2'}>{name?.toUpperCase()}</h3>
-                </div>
-            </Dialog.Close>
-        </div>
-
-
-    )
-}
 
 const getStars = (number) => {
     const halfStar = 'https://img.icons8.com/ios-filled/100/star-half-empty.png'
@@ -29,7 +15,7 @@ const getStars = (number) => {
     let base, fraction;
     let stars = []
 
-    // taking IMDB's 10 star system and representing it in terms of 5 stars
+    // taking IMDB's 10-star system and representing it in terms of 5 stars
     number = number / 2
 
     if(number % 1 !== 0){ // it's a float, fix it
@@ -75,7 +61,7 @@ const calcRunTime = (runTime) => {
 }
 
 const getRelated = (genres, age_certification, _id, token) => {
-    axios.post(`http://localhost:3000/api/titles/getRelated`, {
+    return axios.post(`${process.env.REACT_APP_URL}/titles/getRelated`, {
         genres,
         _id,
         age_certification
@@ -88,7 +74,78 @@ const getRelated = (genres, age_certification, _id, token) => {
 
         ).then((res) => {
         console.log('RESPONSE FROM GET RELATED', res)
-    }).catch((e) => console.log('ERROR FROM GET RELATED', e))
+
+        return res.data
+    }).catch((e) => {
+        console.log('ERROR FROM GET RELATED', e)
+
+    })
+}
+
+const RelatedItem = ({imdb_id, title, release_year, runtime, description, imdb_score, tmdb_score, age_certification}) => {
+    const [stars, setStars] = useState(null)
+    const [image, setImage] = useState(null)
+
+    useEffect(() => {
+        // get star rating and an image for every title
+        let score = imdb_score ?? tmdb_score
+
+        score && setStars(getStars(score).map((img) => {
+            return <img className={'filter invert'} src={img} width={'25px'}/>
+        }))
+
+
+        axios.get(`https://img.omdbapi.com/?i=${imdb_id}&h=600&apikey=***REMOVED***`, {
+            responseType: "blob"
+        })
+            .then((res) => {
+                const url = URL.createObjectURL(res.data);
+                setImage(url)
+
+            }).catch((e) => {
+            setImage(null)
+            console.log('Image fetch error:', e)
+        })
+
+    },[])
+
+    return (
+        <div className="rounded mb-2 min-h-[22em] text-white relative opacity-100 bg-cardBg flex flex-col overflow-y-hidden">
+            <div>
+                <div id={'container'} className={'h-[500px] relative'}>
+                    <div className={'h-1/2'}>
+                        <div className={' bg-blend-color brightness-50 rounded rounded-b-none  h-full'} style={{background: image ? `no-repeat center/cover url(${image})` : 'rgba(7,7,8, 1)'}}></div>
+                        {/* Position title above background image */}
+                        <Dialog.Title className="text-3xl w-full px-5 relative bottom-1/3">{title}</Dialog.Title>
+                    </div>
+                    {/* Has to be same height as bg image */}
+
+
+                        <main className={'space-y-3 h-1/2 p-5 flex flex-col'}>
+                            <div className={'flex space-x-5'}>
+                                <button onClick={() => window.open(`https://www.imdb.com/title/${imdb_id}/`, '_blank')}  disabled={!imdb_id || !imdb_id.length} className={'bg-white disabled:opacity-50 text-black rounded min-h-[42px] px-4 font-semibold text-lg'}>
+                                    ▶
+                                    View on IMDB
+                                </button>
+                                <button className={'bg-grey-2 rounded-full h-[30px] w-[30px] border-grey-1 border-2 text-center flex justify-center items-center'}>➕</button>
+                            </div>
+
+                            <div className={'flex space-x-5 font-semibold'}>
+                                <span className={'text-green-500 flex'}>{stars ?? 'No rating.'}</span>
+                                <span className={'px-1 border border-grey-1'}>{age_certification.length ? age_certification : '?'}</span>
+                                <span>{release_year}</span>
+                                <span>{runtime && calcRunTime(runtime)}</span>
+                            </div>
+
+                            <div className={'overflow-hidden text-clip'}>
+                                <p>{description}</p>
+                            </div>
+                        </main>
+
+                </div>
+            </div>
+        </div>
+    )
 }
 
 
@@ -102,14 +159,21 @@ const TitleDialog = ({_id, title, image, genres, description, age_certification,
     })
 
     const {token} = useContext(AuthContext)
-
+    const [related, setRelated] = useState([])
 
 
 
     return (
         <Dialog.Root>
             <Dialog.Trigger asChild>
-                <button onClick={() => getRelated(genres, age_certification, _id, token)} className="text-black bg-white px-2 py-1 rounded font-semibold">
+                <button
+                    onClick={() => getRelated(genres, age_certification, _id, token).then((res => {
+                        setRelated(res.result)
+                        console.log('SETTING RES STATE', res.result)
+                    })).catch((e) => {
+                        setRelated([])
+                    })
+                } className="text-black bg-white px-2 py-1 rounded font-semibold">
                     View
                 </button>
             </Dialog.Trigger>
@@ -147,7 +211,20 @@ const TitleDialog = ({_id, title, image, genres, description, age_certification,
                                 {/* TODO: Add 'more like this' section, searching by category same as current */}
                                 {/* Main content, plan to have recommended titles here */ }
                                 <main className={'p-5 mt-14'}>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                                    {
+                                        related.length && (
+                                            <>
+                                                <h3 className={'text-4xl text-center font-semibold my-4 mb-6'}>You may also like</h3>
+                                                <div className={'grid grid-cols-3 gap-2'}>
+                                                    {
+                                                        related.map((relatedTitle) => {
+                                                            return <RelatedItem {...relatedTitle}/>
+                                                        })
+                                                    }
+                                                </div>
+                                            </>
+                                        )
+                                    }
                                 </main>
                             </div>
                         </Dialog.Content>

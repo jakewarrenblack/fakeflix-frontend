@@ -19,8 +19,10 @@ function ProtectedRoute () {
         />
     }
 
-    /// if we're going to the /movies path, and the user is not subscribed to either 'movies' or 'movies & shows'
-    if((location.pathname == '/movies' || location.pathname == '/shows') && !user?.subscription?.toLowerCase().includes(location.pathname)){
+    console.log(user.subscription)
+
+    // if we're going to the /movies path, and the user is not subscribed to either 'movies' or 'movies & shows'
+    if((location.pathname == '/movies' || location.pathname == '/shows') && !user?.subscription?.toLowerCase().includes(location.pathname.replace('/', ''))){
         return <Navigate
             to={'/'}
             state={{msg: `Sorry, ${location.pathname.replace('/', '')} are not included in your plan.`}}

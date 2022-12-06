@@ -8,20 +8,30 @@ export const UserProvider = ({ token, children }) => {
     console.log('auth token', token)
 
     useEffect(() => {
-        // just gets whatever user is logged in now
-         axios.get(`${process.env.REACT_APP_URL}/users/profile`, {
 
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
+        if(token && localStorage.getItem('user')){
+            setUser(JSON.parse(localStorage.getItem('user')))
+        }
+        else {
 
-        }).then((res) => {
-            console.log(res)
-            setUser(res.data)
-        }).catch((e) => {
-            console.log(e)
-            setUser(null)
-        })
+
+            // just gets whatever user is logged in now
+            axios.get(`${process.env.REACT_APP_URL}/users/profile`, {
+
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+
+            }).then((res) => {
+                console.log(res)
+                setUser(res.data)
+                localStorage.setItem('user', JSON.stringify(res.data));
+            }).catch((e) => {
+                console.log(e)
+                //setUser(null)
+                localStorage.removeItem('user')
+            })
+        }
     }, [token])
 
     return (

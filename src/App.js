@@ -13,6 +13,7 @@ import {useState} from "react";
 import ProtectedRoute from "./components/ProtectedRoute";
 import {NotFound} from "./pages/NotFound";
 import WhosWatching from "./pages/WhosWatching";
+import {UserProvider} from "./utils/UserContext";
 
 const App = () => {
     const [token, setToken] = useState(null)
@@ -23,27 +24,29 @@ const App = () => {
             token,
             setToken,
         }}>
-        <Router>
-            <Navbar/>
-            <Routes>
-                <Route path='*' element={<NotFound />} />
-                <Route path="/" element={<Home />} />
-                <Route path="/" element={<ProtectedRoute />}>
-                    <Route path='movies' element={<All type={'movies'} />} />
-                    <Route path='title/:id' element={<Single />} />
+        <UserProvider token={token}>
+            <Router>
+                <Navbar/>
+                <Routes>
+                    <Route path='*' element={<NotFound />} />
+                    <Route path="/" element={<Home />} />
+                    <Route path="/" element={<ProtectedRoute />}>
+                        <Route path='movies' element={<All type={'movies'} />} />
+                        <Route path='title/:id' element={<Single />} />
 
-                    <Route path='shows' element={<All type={'shows'} />} />
-                    <Route path='title/:id' element={<Single />} />
+                        <Route path='shows' element={<All type={'shows'} />} />
+                        <Route path='title/:id' element={<Single />} />
 
-                    <Route path='all' element={<All />} />
-                    <Route path='title/:id' element={<Single />} />
+                        <Route path='all' element={<All />} />
+                        <Route path='title/:id' element={<Single />} />
 
-                    {/* Pass admin ID to fetch the admin and all their sub-users, to select an account from */}
-                    {/* Like on netflix, multiple profiles but one admin */}
-                    <Route path='selectProfile' element={<WhosWatching />} />
-                </Route>
-            </Routes>
-        </Router>
+                        {/* Pass admin ID to fetch the admin and all their sub-users, to select an account from */}
+                        {/* Like on netflix, multiple profiles but one admin */}
+                        <Route path='selectProfile' element={<WhosWatching />} />
+                    </Route>
+                </Routes>
+            </Router>
+        </UserProvider>
         </AuthContext.Provider>
         </div>
     );

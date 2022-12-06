@@ -26,8 +26,10 @@ const App = () => {
         <AuthContext.Provider value={{
             token,
             setToken,
+            user,
+            setUser,
         }}>
-        <UserProvider>
+
             <Router>
                 <Navbar/>
                 <Routes>
@@ -49,7 +51,6 @@ const App = () => {
                     </Route>
                 </Routes>
             </Router>
-        </UserProvider>
         </AuthContext.Provider>
         </div>
     );

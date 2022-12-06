@@ -5,34 +5,22 @@ export const UserContext = React.createContext()
 
 export const UserProvider = ({ children }) => {
     const [user, setUser] = React.useState(null)
-    // const {token} = useContext(AuthContext)
-    const token = localStorage.getItem('token')
-
-    console.log('auth token', token)
+    const {token} = useContext(AuthContext)
 
     useEffect(() => {
-
-        if(token && localStorage.getItem('user')){
-            setUser(JSON.parse(localStorage.getItem('user')))
-        }
-        else {
-
-
-            // just gets whatever user is logged in now
+        // just gets whatever user is logged in now
+        if(token) {
             axios.get(`${process.env.REACT_APP_URL}/users/profile`, {
-
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
-
             }).then((res) => {
                 console.log(res)
                 setUser(res.data)
                 localStorage.setItem('user', JSON.stringify(res.data));
             }).catch((e) => {
                 console.log(e)
-                //setUser(null)
-                localStorage.removeItem('user')
+                setUser(null)
             })
         }
     }, [token])

@@ -2,66 +2,54 @@ import {useEffect} from 'react';
 import useToken from './useToken';
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
+import { isExpired, decodeToken } from "react-jwt";
 
 export const useAuth = () => {
-    const { token, setToken, removeToken } = useToken();
+    const { setToken, removeToken, setUser, removeUser } = useToken();
     const navigate = useNavigate()
 
     // On render, check if we're already logged in
     useEffect(() => {
         const token = localStorage.getItem('token')
+        const user = localStorage.getItem('user')
+
         if (token) {
             setToken(token)
+            const decodedToken = decodeToken(token)
+            setUser(decodedToken)
         }
     }, []);
 
     // Also need separate manual login/logout methods
     const login = async ({email, password}) => {
-        // if we were directed to login after registering, and a sub-user just registered,
-        // we will have an admin id
-        // otherwise, either an admin just registered, or somebody is logging in (we don't know what their account type is yet)
+        axios.post(`${process.env.REACT_APP_URL}/users/login`,
+            {
+                email,
+                password,
+            })
+            .then((response) => {
+                setToken(response.data.token)
 
-        let adminID
-        // don't need to pass params here, it will search by the currently logged in user
-        await axios.post(`${process.env.REACT_APP_URL}/users/getProfileByEmail/`, {
-            email
-        }).then((res) => {
-            if(res.data.type === 'admin'){
-                // if user logging in turns out to be an admin, use their main ID
-                adminID = res.data._id
-            }
-            // otherwise, a sub-user is logging in, use their admin ID
-            // (this way, we'll return profiles where '_id' matches, and where 'admin' matches
-            // so we get the entire 'family' of users
-            else{
-                adminID = res.data.admin
-            }
+                const decodedToken = decodeToken(response.data.token)
 
-            axios.post(`${process.env.REACT_APP_URL}/users/login`,
-                {
-                    email,
-                    password,
-                })
-                .then((response) => {
-                    setToken(response.data.token)
-                    // If login is successful, allow the user to choose who's viewing
-                    // Remember, we're dealing with 'families' of users, one admin and many sub-users/child accounts
-                    navigate(`/selectProfile`, {
-                        state: {
-                            adminID
-                        }
-                    })
-                })
-                .catch((err) => {
-                    console.error('ERROR!!:', err);
-                    setToken(null)
-                    removeToken()
-                });
-        }).catch((e) => console.log(e))
+                console.log('decoded token', decodedToken)
+
+                setUser(decodedToken)
+
+                // If login is successful, allow the user to choose who's viewing
+                // Remember, we're dealing with 'families' of users, one admin and many sub-users/child accounts
+                navigate(`/selectProfile`)
+            })
+            .catch((err) => {
+                console.error('ERROR!!:', err);
+                removeToken()
+                removeUser()
+            });
     };
 
     const logout = () => {
         removeToken()
+        localStorage.removeItem('user')
         navigate('/')
     };
 
@@ -79,5 +67,5 @@ export const useAuth = () => {
             });
     };
 
-    return { token, login, logout, register };
+    return { login, logout, register };
 };

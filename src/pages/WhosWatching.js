@@ -8,9 +8,18 @@ import {useImage} from 'react-image'
 const WhosWatching = () => {
     const location = useLocation()
     const [users, setUsers] = useState()
-    const {token} = useContext(AuthContext)
+    const {token, user} = useContext(AuthContext)
     const navigate = useNavigate()
-    let adminID = location.state.adminID
+    let adminID;
+
+    if(user) {
+        if (user.type === 'admin') {
+            adminID = user._id
+        } else {
+            adminID = user.admin
+        }
+    }
+
 
     // Get admins where _id = x and users where admin_id = x,
     // they're part of the same group

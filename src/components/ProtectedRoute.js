@@ -4,11 +4,10 @@ import {AuthContext} from "../utils/AuthContext";
 import {UserContext, useUser} from "../utils/UserContext";
 
 function ProtectedRoute () {
-    const {token} = useContext(AuthContext)
+    const {token, user} = useContext(AuthContext)
     const location = useLocation()
 
 
-    const {user} = useContext(UserContext)
     // user will have one of the following subscription types: 'Movies', 'Shows', 'Movies & Shows'
     console.log('user from context', user)
 

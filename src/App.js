@@ -9,7 +9,7 @@ import './index.css'
 
 //import components
 import Navbar from './components/Navbar';
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import ProtectedRoute from "./components/ProtectedRoute";
 import {NotFound} from "./pages/NotFound";
 import WhosWatching from "./pages/WhosWatching";

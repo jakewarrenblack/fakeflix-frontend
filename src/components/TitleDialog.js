@@ -1,12 +1,8 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import {useEffect, useState} from "react";
 import axios from "axios";
-import clsx from "clsx";
 import {useContext} from "react";
 import {AuthContext} from "../utils/AuthContext";
-const perRow = 3
-
-// Maybe I could have used ModalDialog.js for both avatars and titles, but felt they'd be too different to bother
 
 const getStars = (number) => {
     const halfStar = 'https://img.icons8.com/ios-filled/100/star-half-empty.png'
@@ -118,30 +114,26 @@ const RelatedItem = ({imdb_id, title, release_year, runtime, description, imdb_s
                         {/* Position title above background image */}
                         <Dialog.Title className="text-3xl w-full px-5 relative bottom-1/3">{title}</Dialog.Title>
                     </div>
-                    {/* Has to be same height as bg image */}
+                    <main className={'space-y-3 h-1/2 p-5 flex flex-col'}>
+                        <div className={'flex space-x-5'}>
+                            <button onClick={() => window.open(`https://www.imdb.com/title/${imdb_id}/`, '_blank')}  disabled={!imdb_id || !imdb_id.length} className={'bg-white disabled:opacity-50 text-black rounded min-h-[42px] px-4 font-semibold text-lg'}>
+                                ▶
+                                View on IMDB
+                            </button>
+                            <button className={'bg-grey-2 rounded-full h-[30px] w-[30px] border-grey-1 border-2 text-center flex justify-center items-center'}>➕</button>
+                        </div>
 
+                        <div className={'flex space-x-5 font-semibold'}>
+                            <span className={'text-green-500 flex'}>{stars ?? 'No rating.'}</span>
+                            <span className={'px-1 border border-grey-1'}>{age_certification.length ? age_certification : '?'}</span>
+                            <span>{release_year}</span>
+                            <span>{runtime && calcRunTime(runtime)}</span>
+                        </div>
 
-                        <main className={'space-y-3 h-1/2 p-5 flex flex-col'}>
-                            <div className={'flex space-x-5'}>
-                                <button onClick={() => window.open(`https://www.imdb.com/title/${imdb_id}/`, '_blank')}  disabled={!imdb_id || !imdb_id.length} className={'bg-white disabled:opacity-50 text-black rounded min-h-[42px] px-4 font-semibold text-lg'}>
-                                    ▶
-                                    View on IMDB
-                                </button>
-                                <button className={'bg-grey-2 rounded-full h-[30px] w-[30px] border-grey-1 border-2 text-center flex justify-center items-center'}>➕</button>
-                            </div>
-
-                            <div className={'flex space-x-5 font-semibold'}>
-                                <span className={'text-green-500 flex'}>{stars ?? 'No rating.'}</span>
-                                <span className={'px-1 border border-grey-1'}>{age_certification.length ? age_certification : '?'}</span>
-                                <span>{release_year}</span>
-                                <span>{runtime && calcRunTime(runtime)}</span>
-                            </div>
-
-                            <div className={'overflow-hidden text-clip'}>
-                                <p>{description}</p>
-                            </div>
-                        </main>
-
+                        <div className={'overflow-hidden text-clip'}>
+                            <p>{description}</p>
+                        </div>
+                    </main>
                 </div>
             </div>
         </div>
@@ -161,8 +153,6 @@ const TitleDialog = ({_id, title, image, genres, description, age_certification,
     const {token} = useContext(AuthContext)
     const [related, setRelated] = useState([])
 
-
-
     return (
         <Dialog.Root>
             <Dialog.Trigger asChild>
@@ -178,57 +168,54 @@ const TitleDialog = ({_id, title, image, genres, description, age_certification,
                 </button>
             </Dialog.Trigger>
             <Dialog.Portal>
-                    <Dialog.Overlay className="z-50 w-screen h-screen fixed bg-black/70 top-0 left-0 overflow-y-scroll grid place-items-center">
-                        <Dialog.Content asChild className="rounded-lg text-white relative opacity-100 bg-grey-8 w-1/2 flex flex-col">
-                            <div>
-                                    <div id={'container'} className={'h-[500px] relative'}>
-                                        <div className={' bg-blend-color brightness-50 rounded-lg  h-full'} style={{background: image ? `no-repeat center/cover url(${image})` : 'rgba(7,7,8, 1)'}}></div>
-
-                                        {/* Has to be same height as bg image */}
-                                        <div className={'left-0 disabled:opacity-50 space-y-4 top-0 h-full absolute flex flex-col justify-end align-start pb-10 w-full p-5'} style={{background: '-webkit-linear-gradient(90deg,#181818,transparent 50%)'}}>
-                                            <Dialog.Title className="text-6xl mb-10">{title}</Dialog.Title>
-                                            <main className={'space-y-4'}>
-                                                <div className={'flex space-x-10'}>
-                                                    <button onClick={() => window.open(`https://www.imdb.com/title/${imdb_id}/`, '_blank')}  disabled={!imdb_id || !imdb_id.length} className={'bg-white disabled:opacity-50 text-black rounded min-h-[42px] px-4 font-semibold text-2xl'}>
-                                                        ▶
-                                                        View on IMDB
-                                                    </button>
-                                                    <button className={'bg-grey-2 rounded-full h-[50px] w-[50px] border-grey-1 border-2'}>➕</button>
-                                                </div>
-
-                                                <div className={'flex space-x-10 font-semibold'}>
-                                                    <span className={'text-green-500 flex'}>{stars}</span>
-                                                    <span className={'px-1 border border-grey-1'}>{age_certification}</span>
-                                                    <span>{release_year}</span>
-                                                    <span>{runtime && calcRunTime(runtime)}</span>
-                                                </div>
-
-                                                <p className={'relative top-[10%]'}>{description}</p>
-                                            </main>
+                <Dialog.Overlay className="z-50 w-screen h-screen fixed bg-black/70 top-0 left-0 overflow-y-scroll grid place-items-center">
+                    <Dialog.Content asChild className="rounded-lg text-white relative opacity-100 bg-grey-8 w-1/2 flex flex-col">
+                        <div>
+                            <div id={'container'} className={'h-[500px] relative'}>
+                                <div className={' bg-blend-color brightness-50 rounded-lg  h-full'} style={{background: image ? `no-repeat center/cover url(${image})` : 'rgba(7,7,8, 1)'}}></div>
+                                {/* Has to be same height as bg image */}
+                                <div className={'left-0 disabled:opacity-50 space-y-4 top-0 h-full absolute flex flex-col justify-end align-start pb-10 w-full p-5'} style={{background: '-webkit-linear-gradient(90deg,#181818,transparent 50%)'}}>
+                                    <Dialog.Title className="text-6xl mb-10">{title}</Dialog.Title>
+                                    <main className={'space-y-4'}>
+                                        <div className={'flex space-x-10'}>
+                                            <button onClick={() => window.open(`https://www.imdb.com/title/${imdb_id}/`, '_blank')}  disabled={!imdb_id || !imdb_id.length} className={'bg-white disabled:opacity-50 text-black rounded min-h-[42px] px-4 font-semibold text-2xl'}>
+                                                ▶
+                                                View on IMDB
+                                            </button>
+                                            <button className={'bg-grey-2 rounded-full h-[50px] w-[50px] border-grey-1 border-2'}>➕</button>
                                         </div>
-                                    </div>
 
-                                {/* TODO: Add 'more like this' section, searching by category same as current */}
-                                {/* Main content, plan to have recommended titles here */ }
-                                <main className={'p-5 mt-14'}>
-                                    {
-                                        related.length && (
-                                            <>
-                                                <h3 className={'text-4xl text-center font-semibold my-4 mb-6'}>You may also like</h3>
-                                                <div className={'grid grid-cols-3 gap-2'}>
-                                                    {
-                                                        related.map((relatedTitle) => {
-                                                            return <RelatedItem {...relatedTitle}/>
-                                                        })
-                                                    }
-                                                </div>
-                                            </>
-                                        )
-                                    }
-                                </main>
+                                        <div className={'flex space-x-10 font-semibold'}>
+                                            <span className={'text-green-500 flex'}>{stars}</span>
+                                            <span className={'px-1 border border-grey-1'}>{age_certification}</span>
+                                            <span>{release_year}</span>
+                                            <span>{runtime && calcRunTime(runtime)}</span>
+                                        </div>
+
+                                        <p className={'relative top-[10%]'}>{description}</p>
+                                    </main>
+                                </div>
                             </div>
-                        </Dialog.Content>
-                    </Dialog.Overlay>
+                            <main className={'p-5 mt-14'}>
+                                {/* TODO: Add loader for recommended */ }
+                                {
+                                    related.length && (
+                                        <>
+                                            <h3 className={'text-4xl text-center font-semibold my-4 mb-6'}>You may also like</h3>
+                                            <div className={'grid grid-cols-3 gap-2'}>
+                                                {
+                                                    related.map((relatedTitle) => {
+                                                        return <RelatedItem {...relatedTitle}/>
+                                                    })
+                                                }
+                                            </div>
+                                        </>
+                                    )
+                                }
+                            </main>
+                        </div>
+                    </Dialog.Content>
+                </Dialog.Overlay>
             </Dialog.Portal>
         </Dialog.Root>
     )

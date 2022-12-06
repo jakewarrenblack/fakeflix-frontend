@@ -51,7 +51,6 @@ const Navbar = () => {
             <div className={'w-1/5 flex justify-end'}>
                 {token && <button onClick={logout}>Logout</button>}
             </div>
-
         </nav>
     );
 };

@@ -29,18 +29,18 @@ const StripeForm = (userData) => {
                 ...userData,
                 body
             })
-
             .then(response => {
                 console.log(response);
                 alert("Payment Success");
-
                 login({email: userData.email, password: userData.password, adminID: userData?.admin})
             })
             .catch(error => {
                 console.log("Payment Error: ", error);
                 alert("Payment Error");
             });
-    };  return (
+    };
+
+    return (
         <StripeCheckout
             email={userData?.email}
             componentClass={'button'}

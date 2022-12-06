@@ -1,29 +1,22 @@
-import {Link, useNavigate} from 'react-router-dom';
-import clsx from "clsx";
+import {Link} from 'react-router-dom';
 import axios from 'axios'
 import {useEffect, useState} from "react";
 import TitleDialog from "./TitleDialog";
 
 const TitleCard = ({title}) => {
     const [image, setImage] = useState(null)
-    const navigate = useNavigate()
 
-    useEffect(  () => {
-
-                // Image is returned in JFIF format
-                // https://logfetch.com/js-image-binary-jfif/
-               axios.get(`https://img.omdbapi.com/?i=${title.imdb_id}&h=600&apikey=***REMOVED***`, {
-                   responseType: "blob"
-               })
-                .then((res) => {
-                    const url = URL.createObjectURL(res.data);
-                    setImage(url)
-
+    useEffect(() => {
+        // Image is returned in JFIF format. https://logfetch.com/js-image-binary-jfif/
+       axios.get(`https://img.omdbapi.com/?i=${title.imdb_id}&h=600&apikey=***REMOVED***`, {
+           responseType: "blob"
+       }).then((res) => {
+            const url = URL.createObjectURL(res.data);
+            setImage(url)
         }).catch((e) => {
             setImage(null)
-            //console.log(e)
+            console.log(e)
         })
-
     }, [title])
 
     const passTitle = {
@@ -37,7 +30,6 @@ const TitleCard = ({title}) => {
             <div className={'z-10 absolute group-hover:opacity-0 transition-opacity w-full h-full'} style={{background: '-webkit-linear-gradient(90deg, rgb(24, 24, 24), transparent 50%)'}}></div>
             <div className={'flex relative z-20 space-x-4 items-center mb-4'}>
                 <Link to={`/title/${title._id}`}><p className={'text-white ml-2 font-semibold text-lg'}>{title.title} ({title.type})</p></Link>
-
                <TitleDialog {...passTitle}/>
            </div>
         </div>

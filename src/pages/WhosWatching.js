@@ -2,19 +2,15 @@ import {useEffect, useState, Suspense} from "react";
 import axios from "axios";
 import {useContext} from "react";
 import {AuthContext} from "../utils/AuthContext";
-import {useLocation, useNavigate, useParams} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {useImage} from 'react-image'
 
 const WhosWatching = () => {
     const location = useLocation()
-
     const [users, setUsers] = useState()
     const {token} = useContext(AuthContext)
     const navigate = useNavigate()
-
     let adminID = location.state.adminID
-
-    console.log(adminID)
 
     // Get admins where _id = x and users where admin_id = x,
     // they're part of the same group
@@ -22,15 +18,12 @@ const WhosWatching = () => {
         // find users where _id = x or admin_id = x
         // must also populate avatars
         axios.get(`${process.env.REACT_APP_URL}/users/manageProfiles/${adminID}?populate=avatar`,
-
             {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             }
             ).then((res) => {
-            console.log(res.data)
-
             setUsers(res.data)
         }).catch((e) => {
             console.log(e)
@@ -38,16 +31,11 @@ const WhosWatching = () => {
     }, [])
 
     const UserCard = ({_id, avatar, username , type}) => {
-        // All users beneath an admin will share the same subscription type
-        // TODO: Unsure of specifics, I will need to do a few things from here,
-        // now that we've selected a specific user from the family group
-
         const AvatarImage = () => {
             // TODO: Give me some loader component
             const {src} = useImage({
                 srcList: avatar.img
             })
-
             return <img src={src} width={'90%'}/>
         }
 

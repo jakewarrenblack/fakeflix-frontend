@@ -1,9 +1,7 @@
 import {useEffect, useRef, useState} from 'react';
-import {useAuth} from "../utils/useAuth";
 import Input from "./Input";
 import Select from "./Select";
 import StripeForm from "./StripeForm";
-import StripeCheckout from "react-stripe-checkout";
 import ModalDialog from "./ModalDialog";
 import axios from "axios";
 import clsx from "clsx";
@@ -38,6 +36,7 @@ const RegisterForm = ({switchForms}) => {
         "admin": null,
         "pin": null
     });
+
     const [errorMessage, setErrorMessage] = useState("");
 
     // Controlled by the avatars modal
@@ -82,16 +81,12 @@ const RegisterForm = ({switchForms}) => {
         axios.post(`${process.env.REACT_APP_URL}/users/verifyAdmin`, {
             email
         }).then((res) => {
-            console.log(res.data)
             setAdminId(res.data.id)
             setAdminMessage(res.data.msg)
         }).catch((e) => {
             console.log(e)
             setAdminMessage(e.response.data.msg)
-
         })
-
-
     }
 
     return (
@@ -130,20 +125,15 @@ const RegisterForm = ({switchForms}) => {
                 {value: 'child', name: 'Child'}
             ]}/>
 
-            {/* Allow user to provide an email instead of an admin ID, more user-friendly */}
-            {/* TODO: Nested form here, allow entering email, press submit when finished and verify that this admin email is valid */}
             {adminFieldVisible &&
-
-            <>
-
+                <>
                     <span className={'text-white'}>Enter your admin's email address:</span>
                     <div className={'bg-grey-3 h-11 rounded w-full'}>
                         <input ref={adminInput} required className={'h-full  bg-transparent font-semibold placeholder:text-grey-1 text-white w-3/4 border-r-red border-r-2 border-b-0 border-t-0 border-l-0'} type={'email'} name={'admin_email'} placeholder={'admin@example.com'}/>
                         <button onClick={() => verifyAdminEmail(adminInput.current)} className={'w-1/4 font-semibold text-white'}>Confirm</button>
                     </div>
                     <span className={clsx(adminMessage && adminMessage.includes('Error') ? 'text-red' : 'text-green-700')}>{adminMessage}</span>
-
-            </>
+                </>
             }
 
             <Select value={form.language} name={'language'} displayName={'Language'} handleForm={handleForm} values={[
@@ -176,16 +166,11 @@ const RegisterForm = ({switchForms}) => {
                 </div>
             </div>
 
-            {/*<button className={'flex justify-center items-center bg-red h-11 rounded mb-10 p-6 font-semibold text-white'} onClick={submitForm}>Sign Up</button>*/}
-            {/*<button className={'flex justify-center items-center bg-red h-11 rounded mb-10 p-6 font-semibold text-white'} onClick={() => setFormIndex(formIndex+1)}>Continue to Payment</button>*/}
-
             {/* Register and payment are now the same in the backend, pass user data to stripe form */}
             <StripeForm {...form} />
             <p style={styles}>{errorMessage}</p>
-
             <p className={'text-grey-1'}>Existing user? <b onClick={switchForms} className={'text-white hover:cursor-pointer'}>Sign in.</b></p>
         </div>
-
     );
 };
 

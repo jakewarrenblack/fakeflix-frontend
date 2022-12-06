@@ -1,12 +1,9 @@
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-
-import React, {Component, useState} from "react";
+import React from "react";
 import Slider from "react-slick";
 
 const Carousel = ({children}) => {
-
-
     const settings = {
         autoplay:false,
         arrows: true,
@@ -20,9 +17,7 @@ const Carousel = ({children}) => {
     return(
         <div>
             <Slider {...settings}>
-                {
-                    children
-                }
+                {children}
             </Slider>
         </div>
     )

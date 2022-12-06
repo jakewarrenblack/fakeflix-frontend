@@ -26,14 +26,10 @@ const All = ({type}) => {
 
     const prevType = usePrevious(type)
 
-    // TODO: don't include the movies from previous request when switching to movies
-    // TOOD: Also, dont automatically direct to movies, at some point I should determine the user's subscription type, and direct accordingly
+
+    // TODO: Also, dont automatically direct to movies, at some point I should determine the user's subscription type, and direct accordingly
     useEffect(() => {
-
-        console.log('PREVIOUS TYPE WAS:', prevType)
-
         const typesChanged = prevType !== undefined && type !== prevType
-
 
         // default limit is 30
         axios.get(type ? `${process.env.REACT_APP_URL}/titles/type/${type}?page=${page}` : `${process.env.REACT_APP_URL}/titles/all?limit=500`,
@@ -58,10 +54,6 @@ const All = ({type}) => {
                     return tenPerRow
                  }, [])
 
-                 // divide 50 titles into 5 rows of 10
-                 // TODO: I need to only combine old and new values when dividedRows has CHANGED
-                 // otherwise, we end up with 2 of the same row
-
                  // if previously set rows and our recently fetched rows are the same, just set the recent ones
                  // (user just visited this page)
                  // if types changed, we also just reset. e.g. if we swapped from movies to shows, discard the existing movies and reload all from scratch.
@@ -78,15 +70,10 @@ const All = ({type}) => {
                          ...dividedRows
                      ])
                  }
-
-
-
-
                  console.log('TITLES', rows)
              })
              .catch((err) => {
                  console.error(err);
-
                  // unauthorised
                  if(err.response.status === 401) logout()
              });
@@ -99,9 +86,8 @@ const All = ({type}) => {
     if(rows.length === 0) return 'Loading...';
 
     // TODO: eventually these should also be divided by category? and have e.g. all comedies in one row
-    // TODO: when user scrolls to bottom, use intersection observer or similar to load the next 50
-    // our bottom page anchor is visible in the viewport, load the next 50
 
+    // our bottom page anchor is visible in the viewport, load the next 50
     // just taking the first title to make a big hero title with, like netflix has
     const firstTitle = rows[0][0]
 
@@ -124,7 +110,6 @@ const All = ({type}) => {
         }, [])
 
         return (
-            <>
             <div className={'h-[70vh] pl-5 relative text-white flex flex-col justify-end overflow-hidden'} >
                 <div className={'brightness-50 h-full filter blur-md min-h-[90%]'} style={{background: image ? `no-repeat center/cover url(${image})` : 'rgba(7,7,8, 1)'}}/>
                 <div className={'mb-14 ml-5 w-3/4 absolute bottom-[20%]'}>
@@ -134,26 +119,18 @@ const All = ({type}) => {
                 </div>
                 <div className={'z-10 relative w-full h-full'} style={{background: '-webkit-linear-gradient(90deg, #141414, transparent 50%)'}}></div>
             </div>
-
-            </>
         )
     }
 
-    console.log(rows)
     return (
         <div className={'bg-grey-2 overflow-hidden'}>
-
-            {/*<h2>{type?.toUpperCase() ?? 'ALL LISTINGS'}</h2>*/}
             <HeroTitle title={firstTitle.title} desc={firstTitle.description} imdb_id={firstTitle.imdb_id}/>
-
-
             <div className={'-mt-24 relative z-20'}>
             {
                 // Iterate over our 5 rows of 10
                 rows.map((row) => {
                     // Each row has a containing div, within which is a carousel
                     return <div className={'relative w-100 overflow-hidden'}>
-                        {/* TODO: Reset scroll positions on type change */}
                         <Carousel>
                         {
                             // Each carousel contains 10 cards

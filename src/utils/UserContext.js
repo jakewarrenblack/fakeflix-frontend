@@ -1,9 +1,12 @@
-import React, {useEffect} from "react"
+import React, {useContext, useEffect} from "react"
 import axios from "axios";
+import {AuthContext} from "./AuthContext";
 export const UserContext = React.createContext()
 
-export const UserProvider = ({ token, children }) => {
+export const UserProvider = ({ children }) => {
     const [user, setUser] = React.useState(null)
+    // const {token} = useContext(AuthContext)
+    const token = localStorage.getItem('token')
 
     console.log('auth token', token)
 

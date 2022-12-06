@@ -27,10 +27,7 @@ const App = () => {
             token,
             setToken,
         }}>
-        <UserProvider token={token} value={{
-            user,
-            setUser
-        }}>
+        <UserProvider>
             <Router>
                 <Navbar/>
                 <Routes>

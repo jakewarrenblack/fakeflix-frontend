@@ -7,9 +7,14 @@ function ProtectedRoute () {
     const {token} = useContext(AuthContext)
     const location = useLocation()
 
+
     const {user} = useContext(UserContext)
     // user will have one of the following subscription types: 'Movies', 'Shows', 'Movies & Shows'
     console.log('user from context', user)
+
+
+    console.log('token from protected route', token)
+
 
     // User isn't even logged in, go back to the home page
     if(!token){

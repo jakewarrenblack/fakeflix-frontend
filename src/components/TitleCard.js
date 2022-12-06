@@ -15,7 +15,8 @@ const TitleCard = ({title}) => {
             setImage(url)
         }).catch((e) => {
             setImage(null)
-            console.log(e)
+           // not bothering to log, there will be a lot of errors as not all IMDB_IDs will have images.
+           //console.log(e)
         })
     }, [title])
 

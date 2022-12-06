@@ -15,8 +15,11 @@ import {NotFound} from "./pages/NotFound";
 import WhosWatching from "./pages/WhosWatching";
 import {UserProvider} from "./utils/UserContext";
 
+
+
 const App = () => {
     const [token, setToken] = useState(null)
+    const [user, setUser] = useState(null)
 
     return (
         <div>
@@ -24,7 +27,10 @@ const App = () => {
             token,
             setToken,
         }}>
-        <UserProvider token={token}>
+        <UserProvider token={token} value={{
+            user,
+            setUser
+        }}>
             <Router>
                 <Navbar/>
                 <Routes>

@@ -2,15 +2,21 @@ import LoginForm from "../components/LoginForm";
 import {useContext, useState} from "react";
 import {AuthContext} from "../utils/AuthContext";
 import RegisterForm from "../components/RegisterForm";
+import {useLocation} from "react-router-dom";
+import FlashMessage from "../components/FlashMessage";
 
 
 const Home = () => {
     const [form, switchForms] = useState('login')
 
     const {token} = useContext(AuthContext)
+    const {state} = useLocation()
+
+
 
     return (
         <>
+            {state?.msg && <FlashMessage msg={state.msg}/>}
             <div style={{background: 'url(/movies_bg.jpg) center'}}
                  className={'h-full bg-cover fixed -z-0 brightness-50 w-full'}/>
 

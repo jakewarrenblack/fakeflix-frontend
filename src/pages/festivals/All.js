@@ -27,7 +27,6 @@ const All = ({type}) => {
     const prevType = usePrevious(type)
 
 
-    // TODO: Also, dont automatically direct to movies, at some point I should determine the user's subscription type, and direct accordingly
     useEffect(() => {
         const typesChanged = prevType !== undefined && type !== prevType
 

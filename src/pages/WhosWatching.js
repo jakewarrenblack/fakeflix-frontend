@@ -12,12 +12,26 @@ const WhosWatching = () => {
     const navigate = useNavigate()
     let adminID;
 
+    // To decide which route to automatically direct a user to when they log in
+    // So a user subscribed to movies and shows goes to /all
+    // But a user subscribed specifically to movies or shows only goes to that respective route
+    let direct;
+
     if(user) {
         if (user.type === 'admin') {
             adminID = user._id
         } else {
             adminID = user.admin
         }
+
+        if(user.subscription == 'Shows' || user.subscription == 'Movies'){
+            direct = `/${user.subscription.toLowerCase()}`
+        }
+        else{
+            // must be subscribed to both movies and shows
+            direct = '/all'
+        }
+
     }
 
 
@@ -50,7 +64,7 @@ const WhosWatching = () => {
 
 
         return (
-            <div onClick={() => navigate('/movies')} className={{display: 'flex', marginTop: 25, justifyContent: 'flex-end'}}>
+            <div onClick={() => navigate(direct ?? '/')} className={{display: 'flex', marginTop: 25, justifyContent: 'flex-end'}}>
                 <div className={'flex hover:cursor-pointer hover:brightness-100 brightness-75 justify-center flex-col items-center m-2]'}>
                     <Suspense>
                         <AvatarImage/>

@@ -6,15 +6,7 @@ import {UserContext, useUser} from "../utils/UserContext";
 function ProtectedRoute () {
     const {token, user} = useContext(AuthContext)
     const location = useLocation()
-
-
     // user will have one of the following subscription types: 'Movies', 'Shows', 'Movies & Shows'
-    console.log('user from context', user)
-
-
-    console.log('token from protected route', token)
-
-
     // User isn't even logged in, go back to the home page
     if(!token){
         return <Navigate
@@ -23,7 +15,9 @@ function ProtectedRoute () {
         />
     }
 
-    console.log(user.subscription)
+    //console.log(user.subscription)
+
+    console.log(location.pathname)
 
     // if we're going to the /movies path, and the user is not subscribed to either 'movies' or 'movies & shows'
     if((location.pathname == '/movies' || location.pathname == '/shows') && !user?.subscription?.toLowerCase().includes(location.pathname.replace('/', ''))){
@@ -40,8 +34,6 @@ function ProtectedRoute () {
             state={{msg: `Sorry, your plan only includes ${user?.subscription?.toLowerCase()}.`}}
         />
     }
-
-
 
     // If no token received from auth context, redirect to the login page
     // Otherwise, go to the protected route

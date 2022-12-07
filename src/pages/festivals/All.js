@@ -6,6 +6,7 @@ import {useAuth} from "../../utils/useAuth";
 import Carousel from "../../components/Carousel";
 // I don't need the hook, just using this for a plain, single element, which is at the bottom of the viewport
 import { InView } from 'react-intersection-observer';
+import Loading from "../../components/Loading";
 
 const All = ({type}) => {
     const [ rows, setRows ] = useState([]);
@@ -25,13 +26,12 @@ const All = ({type}) => {
     }
 
     const prevType = usePrevious(type)
-
+    const typesChanged = prevType !== undefined && type !== prevType
 
     useEffect(() => {
-        const typesChanged = prevType !== undefined && type !== prevType
 
         // default limit is 30
-        axios.get(type ? `${process.env.REACT_APP_URL}/titles/type/${type}?page=${page}` : `${process.env.REACT_APP_URL}/titles/all?limit=500`,
+        axios.get(type ? `${process.env.REACT_APP_URL}/titles/type/${type}?page=${page}` : `${process.env.REACT_APP_URL}/titles/all?limit=50`,
             {
                     headers: {
                         Authorization : `Bearer ${token}`
@@ -40,7 +40,6 @@ const All = ({type}) => {
             )
              .then((response) => {
                  let tempRows = response.data
-
                  const dividedRows = tempRows.reduce((tenPerRow, title, index) => {
                      const titleIndex = Math.floor(index/perRow)
 
@@ -57,19 +56,19 @@ const All = ({type}) => {
                  // (user just visited this page)
                  // if types changed, we also just reset. e.g. if we swapped from movies to shows, discard the existing movies and reload all from scratch.
                  if(rows?.length && rows === dividedRows || typesChanged){
-                     console.log('prev rows and dividedRows are equal')
+                     //console.log('prev rows and dividedRows are equal')
                      setRows(dividedRows)
                  }
                  // OR, if we have old rows and new rows which are different, keep the old ones and combine them with the new ones
                  // (user scrolling down page)
                  else if(rows?.length && rows !== dividedRows || !rows.length){
-                     console.log('prev rows and dividedRows are NOT equal')
+                     //console.log('prev rows and dividedRows are NOT equal')
                      setRows([
                          ...rows,
                          ...dividedRows
                      ])
                  }
-                 console.log('TITLES', rows)
+                 //console.log('TITLES', rows)
              })
              .catch((err) => {
                  console.error(err);
@@ -82,7 +81,7 @@ const All = ({type}) => {
 
 
 
-    if(rows.length === 0) return 'Loading...';
+    if(rows.length === 0) return <Loading/>;
 
     // TODO: eventually these should also be divided by category? and have e.g. all comedies in one row
 

@@ -1,21 +1,19 @@
 import {BrowserRouter as Router, Routes, Route, Outlet} from 'react-router-dom';
 import {AuthContext} from "./utils/AuthContext";
+import './index.css'
 
 //import pages
 import Home from './pages/Home';
 import All from './pages/festivals/All';
 import Single from './pages/festivals/Single';
-import './index.css'
+import MyList from "./pages/festivals/MyList";
+import {NotFound} from "./pages/NotFound";
+import WhosWatching from "./pages/WhosWatching";
 
 //import components
 import Navbar from './components/Navbar';
 import {useState} from "react";
 import ProtectedRoute from "./components/ProtectedRoute";
-import {NotFound} from "./pages/NotFound";
-import WhosWatching from "./pages/WhosWatching";
-import {UserProvider} from "./utils/UserContext";
-
-
 
 const App = () => {
     const [token, setToken] = useState(null)
@@ -44,6 +42,8 @@ const App = () => {
 
                         <Route path='all' element={<All />} />
                         <Route path='title/:id' element={<Single />} />
+
+                        <Route path='my_list' element={<MyList />} />
 
                         {/* Pass admin ID to fetch the admin and all their sub-users, to select an account from */}
                         {/* Like on netflix, multiple profiles but one admin */}

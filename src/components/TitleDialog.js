@@ -4,12 +4,14 @@ import axios from "axios";
 import {useContext} from "react";
 import {AuthContext} from "../utils/AuthContext";
 
+
 const getStars = (number) => {
     const halfStar = 'https://img.icons8.com/ios-filled/100/star-half-empty.png'
     const star = 'https://img.icons8.com/ios-filled/100/star--v1.png'
     const emptyStar = 'https://img.icons8.com/ios/100/star--v1.png'
     let base, fraction;
     let stars = []
+
 
     // taking IMDB's 10-star system and representing it in terms of 5 stars
     number = number / 2
@@ -78,7 +80,29 @@ const getRelated = (genres, age_certification, _id, token) => {
     })
 }
 
-const RelatedItem = ({imdb_id, title, release_year, runtime, description, imdb_score, tmdb_score, age_certification}) => {
+const addToMyList = (_id, token) => {
+    console.log('ID used by addToMyList', _id)
+    return axios.post(`${process.env.REACT_APP_URL}/api/users/addToMyList`, {
+            _id
+        },
+        {
+            headers: {
+                Authorization : `Bearer ${token}`
+            }
+        }
+
+    ).then((res) => {
+        console.log('Response from add to my list:', res)
+
+        return res.data
+    }).catch((e) => {
+        console.log('Error from add to my list:', e)
+
+    })
+}
+
+const RelatedItem = ({token, relatedTitle}) => {
+    const {imdb_id, title, release_year, runtime, description, imdb_score, tmdb_score, age_certification, _id} = relatedTitle;
     const [stars, setStars] = useState(null)
     const [image, setImage] = useState(null)
 
@@ -100,7 +124,8 @@ const RelatedItem = ({imdb_id, title, release_year, runtime, description, imdb_s
 
             }).catch((e) => {
             setImage(null)
-            console.log('Image fetch error:', e)
+            // Not bothering to log this error, as so many titles won't have images. Not much I can do about this.
+            //console.log('Image fetch error:', e)
         })
 
     },[])
@@ -120,7 +145,11 @@ const RelatedItem = ({imdb_id, title, release_year, runtime, description, imdb_s
                                 ▶
                                 View on IMDB
                             </button>
-                            <button className={'bg-grey-2 rounded-full h-[30px] w-[30px] border-grey-1 border-2 text-center flex justify-center items-center'}>➕</button>
+                            <button
+                                onClick={() => addToMyList(_id, token)}
+                                className={'bg-grey-2 rounded-full h-[30px] w-[30px] border-grey-1 border-2 text-center flex justify-center items-center'}>
+                                ➕
+                            </button>
                         </div>
 
                         <div className={'flex space-x-5 font-semibold'}>
@@ -182,7 +211,7 @@ const TitleDialog = ({_id, title, image, genres, description, age_certification,
                                                 ▶
                                                 View on IMDB
                                             </button>
-                                            <button className={'bg-grey-2 rounded-full h-[50px] w-[50px] border-grey-1 border-2'}>➕</button>
+                                            <button onClick={() => addToMyList(_id, token)} className={'bg-grey-2 rounded-full h-[50px] w-[50px] border-grey-1 border-2'}>➕</button>
                                         </div>
 
                                         <div className={'flex space-x-10 font-semibold'}>
@@ -205,7 +234,7 @@ const TitleDialog = ({_id, title, image, genres, description, age_certification,
                                             <div className={'grid grid-cols-3 gap-2'}>
                                                 {
                                                     related.map((relatedTitle) => {
-                                                        return <RelatedItem {...relatedTitle}/>
+                                                        return <RelatedItem token={token} relatedTitle={relatedTitle}/>
                                                     })
                                                 }
                                             </div>

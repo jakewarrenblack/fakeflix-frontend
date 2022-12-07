@@ -3,6 +3,8 @@ import {useEffect, useState} from "react";
 import axios from "axios";
 import {useContext} from "react";
 import {AuthContext} from "../utils/AuthContext";
+import Toast from "./Toast";
+import Portal from "./Portal";
 
 
 const getStars = (number) => {
@@ -82,7 +84,7 @@ const getRelated = (genres, age_certification, _id, token) => {
 
 const addToMyList = (_id, token) => {
     console.log('ID used by addToMyList', _id)
-    return axios.post(`${process.env.REACT_APP_URL}/api/users/addToMyList`, {
+    return axios.post(`${process.env.REACT_APP_URL}/users/addToMyList`, {
             _id
         },
         {
@@ -93,6 +95,8 @@ const addToMyList = (_id, token) => {
 
     ).then((res) => {
         console.log('Response from add to my list:', res)
+
+
 
         return res.data
     }).catch((e) => {
@@ -105,6 +109,7 @@ const RelatedItem = ({token, relatedTitle}) => {
     const {imdb_id, title, release_year, runtime, description, imdb_score, tmdb_score, age_certification, _id} = relatedTitle;
     const [stars, setStars] = useState(null)
     const [image, setImage] = useState(null)
+    const [toast, setToast] = useState(null)
 
     useEffect(() => {
         // get star rating and an image for every title
@@ -131,6 +136,7 @@ const RelatedItem = ({token, relatedTitle}) => {
     },[])
 
     return (
+        <>
         <div className="rounded mb-2 min-h-[22em] text-white relative opacity-100 bg-cardBg flex flex-col overflow-y-hidden">
             <div>
                 <div id={'container'} className={'h-[500px] relative'}>
@@ -146,7 +152,15 @@ const RelatedItem = ({token, relatedTitle}) => {
                                 View on IMDB
                             </button>
                             <button
-                                onClick={() => addToMyList(_id, token)}
+                                onClick={() => addToMyList(_id, token).then((res) => {
+                                    if(res){
+                                        console.log('got response from add to my list')
+                                        setToast({
+                                            title: 'Added to favourites!',
+                                            description: "Visit 'my list' to view your favourites."
+                                        })
+                                    }
+                                })}
                                 className={'bg-grey-2 rounded-full h-[30px] w-[30px] border-grey-1 border-2 text-center flex justify-center items-center'}>
                                 ➕
                             </button>
@@ -166,6 +180,15 @@ const RelatedItem = ({token, relatedTitle}) => {
                 </div>
             </div>
         </div>
+        {toast && (
+                <Portal>
+                    {/* z-index 50 to make sure our toast is above the modal background overlay */}
+                    <div className={'fixed right-5 bottom-5 z-50'}>
+                        <Toast setParentState={setToast} title={`'${title}' added to favourites!`} description={toast.description}/>
+                    </div>
+                </Portal>
+            )}
+        </>
     )
 }
 
@@ -183,6 +206,7 @@ const TitleDialog = ({_id, title, image, genres, description, age_certification,
     const [related, setRelated] = useState([])
 
     return (
+        <>
         <Dialog.Root>
             <Dialog.Trigger asChild>
                 <button
@@ -247,6 +271,7 @@ const TitleDialog = ({_id, title, image, genres, description, age_certification,
                 </Dialog.Overlay>
             </Dialog.Portal>
         </Dialog.Root>
+        </>
     )
 }
 

@@ -5,6 +5,7 @@ import {useContext} from "react";
 import {AuthContext} from "../utils/AuthContext";
 import Toast from "./Toast";
 import Portal from "./Portal";
+import clsx from "clsx";
 
 
 const getStars = (number) => {
@@ -60,7 +61,7 @@ const calcRunTime = (runTime) => {
     }
 }
 
-export const getRelated = (genres, age_certification, _id, token) => {
+const getRelated = (genres, age_certification, _id, token) => {
     return axios.post(`${process.env.REACT_APP_URL}/titles/getRelated`, {
         genres,
         _id,
@@ -195,8 +196,9 @@ const RelatedItem = ({token, relatedTitle}) => {
 
 
 // TODO: In the case of a show, use the ?moreDetail query param to get extra info for the modal
-const TitleDialog = ({_id, title, image, genres, description, age_certification, seasons, runtime, imdb_score, tmdb_score, release_year, imdb_id}) => {
+const TitleDialog = ({_id, title, image, genres, description, age_certification, seasons, runtime, imdb_score, tmdb_score, release_year, imdb_id, variant}) => {
     let score = imdb_score ?? tmdb_score
+
 
     let stars = getStars(score).map((img) => {
         return <img className={'filter invert'} src={img} width={'25px'}/>
@@ -216,7 +218,7 @@ const TitleDialog = ({_id, title, image, genres, description, age_certification,
                     })).catch((e) => {
                         setRelated([])
                     })
-                } className="text-black bg-white px-2 py-1 rounded font-semibold">
+                } className={clsx("text-black bg-white px-2 py-1 rounded font-semibold", variant == 'lg' && 'text-3xl px-5 py-2')}>
                     View
                 </button>
             </Dialog.Trigger>

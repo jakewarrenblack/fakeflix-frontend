@@ -89,7 +89,7 @@ const All = ({type}) => {
 
     return (
         <div className={'bg-grey-2 overflow-hidden'}>
-            <HeroTitle {...firstTitle}/>
+            <HeroTitle {...firstTitle} />
             <div className={'-mt-24 relative z-20'}>
             {
                 // Iterate over our 5 rows of 10

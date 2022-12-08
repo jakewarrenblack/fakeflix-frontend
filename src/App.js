@@ -14,6 +14,7 @@ import WhosWatching from "./pages/WhosWatching";
 import Navbar from './components/Navbar';
 import {useState} from "react";
 import ProtectedRoute from "./components/ProtectedRoute";
+import UpdateTitle from "./pages/festivals/UpdateTitle";
 
 const App = () => {
     const [token, setToken] = useState(null)
@@ -49,6 +50,8 @@ const App = () => {
                         <Route path='title/:id' element={<Single />} />
 
                         <Route path='my_list' element={<MyList />} />
+
+                        <Route path='updateTitle/:id' element={<UpdateTitle />} />
 
                         {/* Pass admin ID to fetch the admin and all their sub-users, to select an account from */}
                         {/* Like on netflix, multiple profiles but one admin */}

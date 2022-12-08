@@ -1,10 +1,15 @@
-import {Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import axios from 'axios'
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import TitleDialog from "./TitleDialog";
+import {AuthContext} from "../utils/AuthContext";
+import clsx from "clsx";
 
 const TitleCard = ({title}) => {
     const [image, setImage] = useState(null)
+    const {user} = useContext(AuthContext)
+
+    const navigate = useNavigate()
 
     useEffect(() => {
         // Image is returned in JFIF format. https://logfetch.com/js-image-binary-jfif/
@@ -32,6 +37,17 @@ const TitleCard = ({title}) => {
             <div className={'flex relative z-20 space-x-4 items-center mb-4'}>
                 <Link to={`/title/${title._id}`}><p className={'text-white ml-2 font-semibold text-lg'}>{title.title} ({title.type})</p></Link>
                <TitleDialog {...passTitle}/>
+                {
+                    user?.database_admin && (
+                        <div>
+                            <button
+                                onClick={() => navigate(`/updateTitle/${title._id}`)}
+                                className={clsx("text-white bg-blue-700 px-2 py-1 rounded font-semibold")}>
+                                Update
+                            </button>
+                        </div>
+                    )
+                }
            </div>
         </div>
     );

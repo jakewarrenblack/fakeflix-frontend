@@ -5,7 +5,7 @@ import {useAuth} from "../utils/useAuth";
 import clsx from "clsx";
 
 const Navbar = () => {
-    const {token, user} = useContext(AuthContext)
+    const {token, user, loading} = useContext(AuthContext)
     const {logout} = useAuth()
     const {pathname} = useLocation()
 
@@ -42,7 +42,8 @@ const Navbar = () => {
         }
     ]
 
-    if(!user.database_admin){
+
+    if(!user?.database_admin){
         links = links.filter((link) => !link.admin)
     }
 

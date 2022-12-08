@@ -11,7 +11,8 @@ import HeroTitle from "../../components/HeroTitle";
 
 const All = ({type}) => {
     const [ rows, setRows ] = useState([]);
-    const {token} = useContext(AuthContext)
+    // const {token} = useContext(AuthContext)
+    const token = localStorage.getItem('token')
     const {logout} = useAuth()
 
     const [page, setPage] = useState(1)
@@ -27,7 +28,7 @@ const All = ({type}) => {
     }
 
     const prevType = usePrevious(type)
-    const typesChanged = prevType !== undefined && type !== prevType
+    const typesChanged = type !== prevType
 
     useEffect(() => {
 
@@ -80,8 +81,6 @@ const All = ({type}) => {
     }, [type, page]);
 
     if(rows.length === 0) return <Loading/>;
-
-    // TODO: eventually these should also be divided by category? and have e.g. all comedies in one row
 
     // our bottom page anchor is visible in the viewport, load the next 50
     // just taking the first title to make a big hero title with, like netflix has

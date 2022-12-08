@@ -18,12 +18,17 @@ import ProtectedRoute from "./components/ProtectedRoute";
 const App = () => {
     const [token, setToken] = useState(null)
     const [user, setUser] = useState(null)
+    const [loading, setLoading] = useState(true)
 
     return (
         <div>
         <AuthContext.Provider value={{
+            loading,
+            setLoading,
+
             token,
             setToken,
+
             user,
             setUser,
         }}>

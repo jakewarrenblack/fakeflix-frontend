@@ -12,11 +12,9 @@ const Home = () => {
     const {token} = useContext(AuthContext)
     const {state} = useLocation()
 
-
-
     return (
         <>
-            {state?.msg && <FlashMessage msg={state.msg}/>}
+            {state?.msg && <FlashMessage msg={state?.msg}/>}
             <div style={{background: 'url(/movies_bg.jpg) center'}}
                  className={'h-full bg-cover fixed -z-0 brightness-50 w-full'}/>
 

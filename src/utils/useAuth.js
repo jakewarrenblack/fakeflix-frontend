@@ -1,10 +1,12 @@
-import {useEffect} from 'react';
+import {useContext, useEffect} from 'react';
 import useToken from './useToken';
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import { isExpired, decodeToken } from "react-jwt";
+import {AuthContext} from "./AuthContext";
 
 export const useAuth = () => {
+    const {loading, setLoading} = useContext(AuthContext)
     const { setToken, removeToken, setUser, removeUser } = useToken();
     const navigate = useNavigate()
 
@@ -22,7 +24,7 @@ export const useAuth = () => {
 
     // Also need separate manual login/logout methods
     const login = async ({email, password}) => {
-        axios.post(`${process.env.REACT_APP_URL}/users/login`,
+        await axios.post(`${process.env.REACT_APP_URL}/users/login`,
             {
                 email,
                 password,
@@ -44,7 +46,9 @@ export const useAuth = () => {
                 console.error('ERROR!!:', err);
                 removeToken()
                 removeUser()
-            });
+            }).finally(() => {
+                setLoading(false)
+            })
     };
 
     const logout = () => {

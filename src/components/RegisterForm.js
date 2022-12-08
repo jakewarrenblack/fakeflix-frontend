@@ -11,6 +11,7 @@ const RegisterForm = ({switchForms}) => {
     const [adminFieldVisible, setAdminFieldVisible] = useState(false)
     const [adminId, setAdminId] = useState()
     const [adminMessage, setAdminMessage] = useState('')
+    const [isDbAdmin, setIsDbAdmin] = useState(false)
 
     const adminInput = useRef()
 
@@ -22,16 +23,14 @@ const RegisterForm = ({switchForms}) => {
         "password": '',
         "type": "admin",
         "database_admin": false,
-        // Hardcode for now, I'll have to pull these in to select one on registration
+        // Just providing a default avatar.
         "avatar": 'd3c74ece8c741e0b2bfbbabe',
         "language": "EN",
         "maturity_setting": 'unrestricted',
         "autoplay_enabled": true,
         "subscription": 'Movies & Shows',
         // Empty list allowed, doesn't make sense to have values yet.
-        "my_list": [
-
-        ],
+        "my_list": [],
         // Only sub-users and child accounts need an admin ID, admins don't need to provide an admin ID
         "admin": null,
         "pin": null
@@ -46,6 +45,14 @@ const RegisterForm = ({switchForms}) => {
             avatar: selectedAvatar._id
         }))
     }, [selectedAvatar])
+
+    useEffect(() => {
+        setForm(form => ({
+            ...form,
+            database_admin: isDbAdmin
+        }))
+    }, [isDbAdmin])
+
 
     // Controlled by the 'verify admin' input field, which appears when 'type' is not 'admin'
     useEffect(() => {
@@ -157,12 +164,13 @@ const RegisterForm = ({switchForms}) => {
             <div className={'flex justify-between w-3/4 mb-4'}>
                 <div className={'mb-4'}>
                     <label className={'text-white'} htmlFor="autoplay_enabled">Autoplay Enabled </label>
-                    <input type="checkbox" name="autoplay_enabled" onChange={handleForm} value="false"/>
+                    {/* For now, this serves no purpose. Disabling. */}
+                    <input disabled type="checkbox" name="autoplay_enabled" onChange={handleForm} value="false"/>
                 </div>
 
                 <div className={'mb-4'}>
                     <label className={'text-white'} htmlFor="database_admin">Database admin </label>
-                    <input disabled type="checkbox" onChange={handleForm} name="database_admin" value="false"/>
+                    <input type="checkbox" onChange={() => setIsDbAdmin(!isDbAdmin)} name="database_admin" />
                 </div>
             </div>
 

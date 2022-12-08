@@ -1,8 +1,6 @@
 import * as React from 'react';
 import * as ToastPrimitive from '@radix-ui/react-toast';
 import {useEffect, useRef, useState} from "react";
-import useTimeout from "../utils/useTimeout";
-
 const Toast = ({setParentState, title, description}) => {
     const [duration, setDuration] = useState(0)
 

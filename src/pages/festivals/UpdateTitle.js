@@ -1,16 +1,18 @@
 import Input from "../../components/Input";
 import {useContext, useEffect, useState} from "react";
 import axios from "axios";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import Loading from "../../components/Loading";
 import clsx from "clsx";
 import Select from "../../components/Select";
 import {AuthContext} from "../../utils/AuthContext";
+import handleForm from "../../utils/handleForm";
 
 const UpdateTitle = () => {
     const { id } = useParams();
     const [title, setTitle] = useState(null)
     const token = localStorage.getItem('token')
+    const navigate = useNavigate()
 
     // First we populate the form fields with the existing title data
     useEffect(() => {
@@ -28,25 +30,12 @@ const UpdateTitle = () => {
             });
     }, [])
 
-    const handleForm = (e) => {
-        let name = e.target.name;
-        let value = e.target.value;
 
-        console.log('value', value)
-        console.log('name', name)
-
-        setTitle(title => ({
-            ...title,
-            [name]: value
-        }));
-
-        console.log(title[name])
-    };
 
     const submitForm = () => {
 
         axios
-            .put(`http://localhost:3000/api/titles/update/${id}`, {
+            .put(`${process.env.REACT_APP_URL}/titles/update/${id}`, {
                 // Combine the user data with the stripe token, which is needed for checkout
                 ...title,
             }, {
@@ -78,15 +67,15 @@ const UpdateTitle = () => {
                 Object.keys(title)
                 .map((key) => {
                     if(key == 'type'){
-                        return <Select defaultValue={title[key]} name={key} displayName={key.toUpperCase()} handleForm={handleForm} values={[
+                        return <Select defaultValue={title[key]} name={key} displayName={key.toUpperCase()} handleForm={(e) => handleForm(e, setTitle, title)} values={[
                             {value: 'MOVIE', name: 'MOVIE'},
                             {value: 'SHOW', name: 'SHOW'},
                         ]}/>
                     }
 
                   return (
-                      <div className={clsx(key == '_id' && '')}>
-                        <Input defaultValue={title[key]} type={typeof(title[key])} name={key} id={key} handleForm={handleForm} labelValue={key.toUpperCase()}/>
+                      <div className={clsx((key == '_id' || key == 'updatedAt')  && 'hidden')}>
+                        <Input defaultValue={title[key]} type={typeof(title[key])} name={key} id={key} handleForm={(e) => handleForm(e, setTitle, title)} labelValue={key.replaceAll('_', ' ').toUpperCase()}/>
                     </div>
                   )
                 })
@@ -94,9 +83,10 @@ const UpdateTitle = () => {
         </div>
         <div className={'w-1/3 m-auto flex my-2 space-x-4'}>
             <button onClick={() => submitForm()} className={'px-8 hover:bg-white hover:text-black transition-all py-5 border border-grey-1 bg-grey-2 text-grey-1 text-2xl'}>Save</button>
-            <button className={'px-8 py-5 border border-grey-1 bg-grey-2 text-grey-1 text-2xl'}>Cancel</button>
-            <button className={'px-8 py-5 border border-grey-1 bg-grey-2 text-grey-1 text-2xl'}>Delete</button>
+            <button onClick={() => navigate(-1)} className={'px-8 hover:bg-white hover:text-black transition-all py-5 border border-grey-1 bg-grey-2 text-grey-1 text-2xl'}>Cancel</button>
+            <button className={'px-8 hover:bg-red hover:text-white transition-all py-5 border border-grey-1 bg-grey-2 text-grey-1 text-2xl'}>Delete</button>
         </div>
+
     </div>
 }
 

@@ -1,4 +1,4 @@
-const Select = ({name, displayName, values, handleForm, value}) => {
+const Select = ({name, displayName, values, handleForm, value, defaultValue}) => {
     return (
         <div className={'mb-4 flex flex-col'}>
             <label className={'text-white'} htmlFor={name}>{displayName}</label>
@@ -6,6 +6,7 @@ const Select = ({name, displayName, values, handleForm, value}) => {
                 className={'disabled:opacity-75 bg-grey-3 rounded p-6 font-semibold text-white'}
                 onChange={handleForm}
                 value={value}
+                defaultValue={defaultValue}
                 name={name}>
                 {
                     values.map(({value, name}) => (

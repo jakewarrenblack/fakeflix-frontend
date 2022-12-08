@@ -60,7 +60,7 @@ const calcRunTime = (runTime) => {
     }
 }
 
-const getRelated = (genres, age_certification, _id, token) => {
+export const getRelated = (genres, age_certification, _id, token) => {
     return axios.post(`${process.env.REACT_APP_URL}/titles/getRelated`, {
         genres,
         _id,

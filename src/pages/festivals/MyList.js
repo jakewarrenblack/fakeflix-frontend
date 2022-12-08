@@ -11,7 +11,6 @@ const MyList = () => {
     console.log('my list component reached')
     const [ rows, setRows ] = useState([]);
     const {token, user} = useContext(AuthContext)
-    const {logout} = useAuth()
     const perRow = 6
     const [loading, setLoading] = useState(true)
 
@@ -54,8 +53,6 @@ const MyList = () => {
 
     // TODO:: Style me
     if(!loading && !rows.length) return 'No favourites saved yet'
-
-
 
     return (
         <div className={'bg-grey-2 overflow-hidden h-screen pt-48'}>

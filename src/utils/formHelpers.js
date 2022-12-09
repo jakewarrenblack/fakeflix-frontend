@@ -15,6 +15,20 @@ export const age_certification_values = [
     {value: "NC-17", name: "NC-17"}
 ]
 
+export const age_cert_arr = [
+    "TV-MA",
+    "R",
+    "PG",
+    "TV-14",
+    "PG-13",
+    "TV-PG",
+    "TV-Y",
+    "TV-G",
+    "TV-Y7",
+    "G",
+    "NC-17"
+]
+
 export const getErrorMsg = (key, errors) => {
     const idx = errors.findIndex((err) => err[key])
     if(idx !== -1){
@@ -28,6 +42,9 @@ export const getErrorMsg = (key, errors) => {
 // Arrays poorly formatted in the DB. They aren't real arrays, but strings in this format:
 // "['item1', 'item2']"
 export const arrayFromString = (str) => str.split(',').map((item) => item.replace(/[\W_]+/g," ").trim())
+
+// On the backend, I'm searching through genres in their original format to recommend titles, so before updating or adding new genres, I'm converting them back to their original (weird) format.`
+const arrayToDbFormat = (arr) => `[${arr.map((item) => `'${item}'`).toString().replaceAll('"', "'").replaceAll(",'", ", '")}]`
 
 export const genres = [
     'western', 'family', 'crime', 'reality', 'horror', 'action', 'thriller', 'scifi', 'animation', 'documentation', 'drama', 'war', 'history', 'comedy', 'romance', 'fantasy', 'european', 'sport', 'music'

@@ -7,8 +7,9 @@ import clsx from "clsx";
 import Select from "../../components/Select";
 import {AuthContext} from "../../utils/AuthContext";
 import handleForm from "../../utils/handleForm";
-import {age_certification_values, getErrorMsg, arrayFromString} from "../../utils/formHelpers";
+import {age_certification_values, getErrorMsg, arrayFromString, age_cert_arr} from "../../utils/formHelpers";
 import TextArea from "../../components/TextArea";
+import MultiSelect from "../../components/MultiSelect";
 
 const UpdateTitle = () => {
     const { id } = useParams();
@@ -77,9 +78,11 @@ const UpdateTitle = () => {
                     }
 
                     if(key == 'age_certification'){
-                        return <Select handleForm={(e) => handleForm(e, setTitle, title)} getErrorMsg={getErrorMsg} errors={errors} defaultValue={title[key]} name={key} displayName={key.toUpperCase()} values={
-                            age_certification_values
-                        }/>
+                        // return <Select handleForm={(e) => handleForm(e, setTitle, title)} getErrorMsg={getErrorMsg} errors={errors} defaultValue={title[key]} name={key} displayName={key.toUpperCase()} values={
+                        //     age_certification_values
+                        // }/>
+
+                        return <MultiSelect name={key} getErrorMsg={getErrorMsg} errors={errors} selectedValues={arrayFromString(title[key])} options={age_cert_arr}/>
                     }
 
 

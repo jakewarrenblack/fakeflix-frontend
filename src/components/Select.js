@@ -1,4 +1,4 @@
-const Select = ({name, displayName, values, handleForm, value, defaultValue, getErrorMsg}) => {
+const Select = ({name, displayName, values, handleForm, value, defaultValue, getErrorMsg, errors}) => {
     return (
         <div className={'mb-4 flex flex-col'}>
             <label className={'text-white'} htmlFor={name}>{displayName}</label>
@@ -14,7 +14,7 @@ const Select = ({name, displayName, values, handleForm, value, defaultValue, get
                     ))
                 }
             </select>
-            {getErrorMsg && <span className={'text-red underline text-lg'}>{getErrorMsg(name)}</span>}
+            {getErrorMsg && <span className={'text-red underline text-lg'}>{getErrorMsg(name, errors)}</span>}
         </div>
     )
 }

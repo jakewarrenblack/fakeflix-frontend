@@ -5,7 +5,7 @@ import {useNavigate, useParams} from "react-router-dom";
 import clsx from "clsx";
 import Select from "../../components/Select";
 import handleForm from "../../utils/handleForm";
-import {formatErrors, age_certification_values} from "../../utils/formHelpers";
+import {formatErrors, age_certification_values, getErrorMsg} from "../../utils/formHelpers";
 import TextArea from "../../components/TextArea";
 
 const AddTitle = () => {
@@ -31,10 +31,6 @@ const AddTitle = () => {
         "tmdb_score": null
     })
 
-    const titleFieldMappings = {
-        'release_year': Number,
-    }
-
     const [errors, setErrors] = useState([])
 
     const submitForm = () => {
@@ -59,16 +55,6 @@ const AddTitle = () => {
             });
     };
 
-    const getErrorMsg = (key) => {
-        const idx = errors.findIndex((err) => err[key])
-        if(idx !== -1){
-            let msg = Object.values(errors[idx])[0]
-            if(msg){
-                return msg
-            }
-        }
-    };
-
 
     // All other types are enum or strings, just doing this so I can give a specific input type
     const formNumberTypes = [
@@ -90,25 +76,25 @@ const AddTitle = () => {
                 Object.keys(title)
                     .map((key) => {
                         if(key == 'type'){
-                            return <Select handleForm={(e) => handleForm(e, setTitle, title)} getErrorMsg={getErrorMsg} defaultValue={title[key]} name={key} displayName={key.toUpperCase()} values={[
+                            return <Select handleForm={(e) => handleForm(e, setTitle, title)} getErrorMsg={getErrorMsg} errors={errors} defaultValue={title[key]} name={key} displayName={key.toUpperCase()} values={[
                                 {value: 'MOVIE', name: 'MOVIE'},
                                 {value: 'SHOW', name: 'SHOW'},
                             ]}/>
                         }
 
                         if(key == 'age_certification'){
-                            return <Select handleForm={(e) => handleForm(e, setTitle, title)} getErrorMsg={getErrorMsg} defaultValue={title[key]} name={key} displayName={key.toUpperCase()} values={
+                            return <Select handleForm={(e) => handleForm(e, setTitle, title)} getErrorMsg={getErrorMsg} errors={errors} defaultValue={title[key]} name={key} displayName={key.toUpperCase()} values={
                                 age_certification_values
                             }/>
                         }
 
                         if(key == 'description'){
-                            return <div><TextArea handleForm={(e) => handleForm(e, setTitle, title)} defaultValue={title[key]} type={formNumberTypes.includes(key) ? 'number' : typeof(title[key])} name={key} id={key} getErrorMsg={getErrorMsg} labelValue={key.replaceAll('_', ' ').toUpperCase()}/></div>
+                            return <div><TextArea handleForm={(e) => handleForm(e, setTitle, title)} defaultValue={title[key]} type={typeof(title[key])} name={key} id={key} getErrorMsg={getErrorMsg} errors={errors} labelValue={key.replaceAll('_', ' ').toUpperCase()}/></div>
                         }
 
                         return (
                             <div className={clsx((key == '_id' || key == 'updatedAt')  && 'hidden')}>
-                                <Input handleForm={(e) => handleForm(e, setTitle, title)} defaultValue={title[key]} type={formNumberTypes.includes(key) ? 'number' : typeof(title[key])} name={key} id={key} getErrorMsg={getErrorMsg} labelValue={key.replaceAll('_', ' ').toUpperCase()}/>
+                                <Input handleForm={(e) => handleForm(e, setTitle, title)} defaultValue={title[key]} type={formNumberTypes.includes(key) ? 'number' : typeof(title[key])} name={key} id={key} getErrorMsg={getErrorMsg} errors={errors} labelValue={key.replaceAll('_', ' ').toUpperCase()}/>
                             </div>
                         )
                     })
@@ -118,7 +104,6 @@ const AddTitle = () => {
         <div className={'w-1/3 m-auto flex my-2 space-x-4'}>
             <button onClick={() => submitForm()} className={'px-8 hover:bg-white hover:text-black transition-all py-5 border border-grey-1 bg-grey-2 text-grey-1 text-2xl'}>Save</button>
             <button onClick={() => navigate(-1)} className={'px-8 hover:bg-white hover:text-black transition-all py-5 border border-grey-1 bg-grey-2 text-grey-1 text-2xl'}>Cancel</button>
-            <button className={'px-8 hover:bg-red hover:text-white transition-all py-5 border border-grey-1 bg-grey-2 text-grey-1 text-2xl'}>Delete</button>
         </div>
 
     </div>

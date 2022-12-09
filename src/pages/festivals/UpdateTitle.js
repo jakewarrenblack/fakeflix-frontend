@@ -7,12 +7,15 @@ import clsx from "clsx";
 import Select from "../../components/Select";
 import {AuthContext} from "../../utils/AuthContext";
 import handleForm from "../../utils/handleForm";
+import {age_certification_values, getErrorMsg, arrayFromString} from "../../utils/formHelpers";
+import TextArea from "../../components/TextArea";
 
 const UpdateTitle = () => {
     const { id } = useParams();
     const [title, setTitle] = useState(null)
     const token = localStorage.getItem('token')
     const navigate = useNavigate()
+    const [errors, setErrors] = useState([])
 
     // First we populate the form fields with the existing title data
     useEffect(() => {
@@ -67,15 +70,26 @@ const UpdateTitle = () => {
                 Object.keys(title)
                 .map((key) => {
                     if(key == 'type'){
-                        return <Select defaultValue={title[key]} name={key} displayName={key.toUpperCase()} handleForm={(e) => handleForm(e, setTitle, title)} values={[
+                        return <Select getErrorMsg={getErrorMsg} errors={errors} defaultValue={title[key]} name={key} displayName={key.toUpperCase()} handleForm={(e) => handleForm(e, setTitle, title)} values={[
                             {value: 'MOVIE', name: 'MOVIE'},
                             {value: 'SHOW', name: 'SHOW'},
                         ]}/>
                     }
 
+                    if(key == 'age_certification'){
+                        return <Select handleForm={(e) => handleForm(e, setTitle, title)} getErrorMsg={getErrorMsg} errors={errors} defaultValue={title[key]} name={key} displayName={key.toUpperCase()} values={
+                            age_certification_values
+                        }/>
+                    }
+
+
+                    if(key == 'description'){
+                        return <div><TextArea handleForm={(e) => handleForm(e, setTitle, title)} defaultValue={title[key]} type={typeof(title[key])} name={key} id={key} getErrorMsg={getErrorMsg} errors={errors} labelValue={key.replaceAll('_', ' ').toUpperCase()}/></div>
+                    }
+
                   return (
                       <div className={clsx((key == '_id' || key == 'updatedAt')  && 'hidden')}>
-                        <Input defaultValue={title[key]} type={typeof(title[key])} name={key} id={key} handleForm={(e) => handleForm(e, setTitle, title)} labelValue={key.replaceAll('_', ' ').toUpperCase()}/>
+                        <Input getErrorMsg={getErrorMsg} errors={errors} defaultValue={title[key]} type={typeof(title[key])} name={key} id={key} handleForm={(e) => handleForm(e, setTitle, title)} labelValue={key.replaceAll('_', ' ').toUpperCase()}/>
                     </div>
                   )
                 })

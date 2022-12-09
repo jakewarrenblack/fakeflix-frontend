@@ -9,6 +9,7 @@ const Input = ({handleForm, type, value, defaultValue, placeholder, name, disabl
         {labelValue && id && <label className={'text-grey-5 text-2xl'} htmlFor={id}>{labelValue}</label>}
         <input
             id={id}
+            placeholder={placeholder}
             disabled={disabled}
             className={variants[variant]}
             type={type}

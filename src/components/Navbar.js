@@ -50,7 +50,7 @@ const Navbar = () => {
     // Navbar position should be relative on all pages except for home (to allow scrolling for register), where it should be fixed
     return (
         <nav className={clsx("flex flex-row bg-navBlack justify-between items-center text-grey-6 py-6 px-14 font-semibold w-full z-10", pathname === '/' ? 'fixed' : 'relative')}>
-            <div className={'w-1/4 flex justify-between items-center group'}>
+            <div className={'w-1/3 flex justify-between items-center group'}>
                 <Link to='/'><img className={'w-24'} src="/fakeflix.png"/></Link>
                 {
                     links.map(({href, name, admin}) => (

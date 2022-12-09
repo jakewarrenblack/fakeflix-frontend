@@ -7,7 +7,7 @@ import clsx from "clsx";
 import Select from "../../components/Select";
 import {AuthContext} from "../../utils/AuthContext";
 import handleForm from "../../utils/handleForm";
-import {age_certification_values, getErrorMsg, arrayFromString, age_cert_arr} from "../../utils/formHelpers";
+import {age_certification_values, getErrorMsg, arrayFromString,arrayToDbFormat, age_cert_arr, genreOptions, productionCountryOptions} from "../../utils/formHelpers";
 import TextArea from "../../components/TextArea";
 import MultiSelect from "../../components/MultiSelect";
 
@@ -19,6 +19,8 @@ const UpdateTitle = () => {
     const [errors, setErrors] = useState([])
 
     const [ageSelections, setAgeSelections] = useState([])
+    const [productionCountries, setProductionCountries] = useState([])
+    const [genres, setGenres] = useState([])
 
     // First we populate the form fields with the existing title data
     useEffect(() => {
@@ -32,6 +34,8 @@ const UpdateTitle = () => {
                 setTitle(response.data)
 
                 setAgeSelections(arrayFromString(response.data.age_certification))
+                setGenres(arrayFromString(response.data.genres))
+                setProductionCountries(arrayFromString(response.data.production_countries))
             })
             .catch((err) => {
                 console.error(err);
@@ -61,6 +65,16 @@ const UpdateTitle = () => {
             });
     };
 
+    // multiselect values are held in their own state, sync state with title object
+    useEffect(() => {
+        setTitle(title => ({
+            ...title,
+            production_countries: arrayToDbFormat(productionCountries),
+            genres: arrayToDbFormat(genres),
+            age_certification: arrayToDbFormat(ageSelections)
+        }))
+    }, [genres, productionCountries, ageSelections])
+
     if(!title) return <Loading/>
 
     // specific values need Select components
@@ -71,6 +85,7 @@ const UpdateTitle = () => {
         <div className={'w-1/3 m-auto'}>
             <h1 className={'text-8xl text-white my-5'}>Edit Title</h1>
             <hr className={'mb-5'}/>
+            <div className={'space-y-8'}>
             {
                 Object.keys(title)
                 .map((key) => {
@@ -82,16 +97,15 @@ const UpdateTitle = () => {
                     }
 
                     if(key == 'age_certification'){
-                        // return <Select handleForm={(e) => handleForm(e, setTitle, title)} getErrorMsg={getErrorMsg} errors={errors} defaultValue={title[key]} name={key} displayName={key.toUpperCase()} values={
-                        //     age_certification_values
-                        // }/>
-
                         return <MultiSelect selections={ageSelections} setSelections={setAgeSelections} name={key} getErrorMsg={getErrorMsg} errors={errors} selectedValues={ageSelections} options={age_cert_arr}/>
                     }
 
+                    if(key == 'genres'){
+                        return <MultiSelect selections={genres} setSelections={setGenres} name={key} getErrorMsg={getErrorMsg} errors={errors} selectedValues={genres} options={genreOptions}/>
+                    }
 
-                    if(key == 'description'){
-                        return <div><TextArea handleForm={(e) => handleForm(e, setTitle, title)} defaultValue={title[key]} type={typeof(title[key])} name={key} id={key} getErrorMsg={getErrorMsg} errors={errors} labelValue={key.replaceAll('_', ' ').toUpperCase()}/></div>
+                    if(key == 'production_countries'){
+                        return <MultiSelect selections={productionCountries} setSelections={setProductionCountries} name={key} getErrorMsg={getErrorMsg} errors={errors} selectedValues={productionCountries} options={productionCountryOptions}/>
                     }
 
                   return (
@@ -101,6 +115,7 @@ const UpdateTitle = () => {
                   )
                 })
             }
+            </div>
         </div>
         <div className={'w-1/3 m-auto flex my-2 space-x-4'}>
             <button onClick={() => submitForm()} className={'px-8 hover:bg-white hover:text-black transition-all py-5 border border-grey-1 bg-grey-2 text-grey-1 text-2xl'}>Save</button>

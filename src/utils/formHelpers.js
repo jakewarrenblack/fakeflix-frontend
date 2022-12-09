@@ -44,12 +44,16 @@ export const getErrorMsg = (key, errors) => {
 export const arrayFromString = (str) => str.split(',').map((item) => item.replace(/[\W_]+/g," ").trim())
 
 // On the backend, I'm searching through genres in their original format to recommend titles, so before updating or adding new genres, I'm converting them back to their original (weird) format.`
-const arrayToDbFormat = (arr) => `[${arr.map((item) => `'${item}'`).toString().replaceAll('"', "'").replaceAll(",'", ", '")}]`
+// remember to replace spaces with hyphens, for e.g, PG-13 in age certification
+export const arrayToDbFormat = (arr) => {
+    console.log('array', arr)
+    return `[${Object.values(arr).map((item) => `'${item}'`).toString().replaceAll('"', "'").replaceAll(",'", ", '").replace(/([a-zA-Z0-9])\s([a-zA-Z0-9])/g, '$1-$2')}]`
+}
 
-export const genres = [
+export const genreOptions = [
     'western', 'family', 'crime', 'reality', 'horror', 'action', 'thriller', 'scifi', 'animation', 'documentation', 'drama', 'war', 'history', 'comedy', 'romance', 'fantasy', 'european', 'sport', 'music'
 ]
 
-export const production_countries = [
+export const productionCountryOptions = [
     'GH', 'RS', 'CL', 'VA', 'RU', 'RO', 'PY', 'TZ', 'FO', 'HR', 'IR', 'IS', 'TW', 'BF', 'CM', 'PK', 'CZ', 'IL', 'FI', 'BE', 'SA', 'Lebanon', 'MY', 'CU', 'AL', 'HU', 'TH', 'CD', 'DK', 'BY', 'UA', 'LB', 'GE', 'KG', 'GB', 'PR', 'SE', 'MT', 'GT', 'LT', 'US', 'KN', 'BS', 'JO', 'GL', 'AF', 'SN', 'CY', 'NP', 'PT', 'KW', 'LK', 'IN', 'VN', 'MC', 'BG', 'DZ', 'UY', 'NO', 'BD', 'EG', 'CO', 'PS', 'MU', 'NA', 'PE', 'AE', 'CH', 'XX', 'KH', 'MA', 'IE', 'AT', 'IO', 'TN', 'VE', 'LU', 'NG', 'NZ', 'AO', 'KR', 'PL', 'BR', 'DE', 'SU', 'ES', 'BT', 'SY', 'QA', 'CA', 'PH', 'MX', 'JP', 'FR', 'AR', 'IT', 'ZW', 'KE', 'ZA', 'GR', 'SG', 'ID', 'TR', 'IQ', 'AU', 'MW', 'HK', 'NL', 'CN'
 ]

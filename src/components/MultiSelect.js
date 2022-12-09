@@ -18,12 +18,11 @@ const MultiSelect = ({name, options, selectedValues, getErrorMsg, errors, select
     }
 
     return (
-        <>
+        <div>
             {name && <label className={'text-grey-5 text-2xl'} htmlFor={name}>{name.replace('_',' ').toUpperCase()}</label>}
             <Multiselect
                 id={name}
                 isObject={false}
-                onKeyPressFn={function noRefCheck(){}}
                 onRemove={onRemove}
                 onSelect={onSelect}
                 placeholder={'Select values'}
@@ -31,7 +30,7 @@ const MultiSelect = ({name, options, selectedValues, getErrorMsg, errors, select
                 selectedValues={selectedValues}
             />
             {getErrorMsg && <span className={'text-red underline text-lg'}>{getErrorMsg(name, errors)}</span>}
-        </>
+        </div>
     )
 }
 

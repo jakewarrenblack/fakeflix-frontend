@@ -106,7 +106,7 @@ const UpdateTitle = () => {
 
                   return (
                       <div className={clsx((key == '_id' || key == 'updatedAt')  && 'hidden')}>
-                        <Input getErrorMsg={getErrorMsg} errors={errors} defaultValue={title[key]} type={typeof(title[key])} name={key} id={key} handleForm={(e) => handleForm(e, setTitle, title)} labelValue={key.replaceAll('_', ' ').toUpperCase()}/>
+                        <Input disabled={title.type === 'MOVIE' && key === 'seasons'} getErrorMsg={getErrorMsg} errors={errors} defaultValue={title[key]} type={typeof(title[key])} name={key} id={key} handleForm={(e) => handleForm(e, setTitle, title)} labelValue={key.replaceAll('_', ' ').toUpperCase()}/>
                     </div>
                   )
                 })

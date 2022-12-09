@@ -5,8 +5,15 @@ import {useNavigate, useParams} from "react-router-dom";
 import clsx from "clsx";
 import Select from "../../components/Select";
 import handleForm from "../../utils/handleForm";
-import {formatErrors, age_certification_values, getErrorMsg} from "../../utils/formHelpers";
+import {
+    formatErrors,
+    age_certification_values,
+    getErrorMsg,
+    arrayToDbFormat,
+    age_cert_arr, genreOptions, productionCountryOptions
+} from "../../utils/formHelpers";
 import TextArea from "../../components/TextArea";
+import MultiSelect from "../../components/MultiSelect";
 
 const AddTitle = () => {
     const token = localStorage.getItem('token')
@@ -32,6 +39,9 @@ const AddTitle = () => {
     })
 
     const [errors, setErrors] = useState([])
+    const [ageSelections, setAgeSelections] = useState([])
+    const [productionCountries, setProductionCountries] = useState([])
+    const [genres, setGenres] = useState([])
 
     const submitForm = () => {
         setErrors([])
@@ -57,6 +67,7 @@ const AddTitle = () => {
 
 
     // All other types are enum or strings, just doing this so I can give a specific input type
+    // note this isn't needed in the update title form, because we can infer the types from the existing data
     const formNumberTypes = [
         'release_year',
         'runtime',
@@ -66,6 +77,15 @@ const AddTitle = () => {
         'tmdb_popularity',
         'tmdb_score'
     ]
+
+    useEffect(() => {
+        setTitle(title => ({
+            ...title,
+            production_countries: arrayToDbFormat(productionCountries),
+            genres: arrayToDbFormat(genres),
+            age_certification: arrayToDbFormat(ageSelections)
+        }))
+    }, [genres, productionCountries, ageSelections])
 
     return <div className={'bg-grey-2 absolute w-full h-max min-h-full'}>
         <div className={'w-1/3 m-auto'}>
@@ -83,9 +103,15 @@ const AddTitle = () => {
                         }
 
                         if(key == 'age_certification'){
-                            return <Select handleForm={(e) => handleForm(e, setTitle, title)} getErrorMsg={getErrorMsg} errors={errors} defaultValue={title[key]} name={key} displayName={key.toUpperCase()} values={
-                                age_certification_values
-                            }/>
+                            return <MultiSelect selections={ageSelections} setSelections={setAgeSelections} name={key} getErrorMsg={getErrorMsg} errors={errors} selectedValues={ageSelections} options={age_cert_arr}/>
+                        }
+
+                        if(key == 'genres'){
+                            return <MultiSelect selections={genres} setSelections={setGenres} name={key} getErrorMsg={getErrorMsg} errors={errors} selectedValues={genres} options={genreOptions}/>
+                        }
+
+                        if(key == 'production_countries'){
+                            return <MultiSelect selections={productionCountries} setSelections={setProductionCountries} name={key} getErrorMsg={getErrorMsg} errors={errors} selectedValues={productionCountries} options={productionCountryOptions}/>
                         }
 
                         if(key == 'description'){
@@ -94,7 +120,7 @@ const AddTitle = () => {
 
                         return (
                             <div className={clsx((key == '_id' || key == 'updatedAt')  && 'hidden')}>
-                                <Input handleForm={(e) => handleForm(e, setTitle, title)} defaultValue={title[key]} type={formNumberTypes.includes(key) ? 'number' : typeof(title[key])} name={key} id={key} getErrorMsg={getErrorMsg} errors={errors} labelValue={key.replaceAll('_', ' ').toUpperCase()}/>
+                                <Input disabled={title.type === 'MOVIE' && key === 'seasons'} handleForm={(e) => handleForm(e, setTitle, title)} defaultValue={title[key]} type={formNumberTypes.includes(key) ? 'number' : typeof(title[key])} name={key} id={key} getErrorMsg={getErrorMsg} errors={errors} labelValue={key.replaceAll('_', ' ').toUpperCase()}/>
                             </div>
                         )
                     })

@@ -1,8 +1,7 @@
 import Multiselect from 'multiselect-react-dropdown';
-import {useState} from "react";
 
-const MultiSelect = ({name, options, selectedValues, getErrorMsg, errors}) => {
-    const [selections, setSelections] = useState(selectedValues ?? [])
+const MultiSelect = ({name, options, selectedValues, getErrorMsg, errors, selections, setSelections}) => {
+
 
     const onSelect = (selectedList, selectedItem) => {
         console.log('adding to selections', selectedItem)
@@ -27,6 +26,7 @@ const MultiSelect = ({name, options, selectedValues, getErrorMsg, errors}) => {
                 onKeyPressFn={function noRefCheck(){}}
                 onRemove={onRemove}
                 onSelect={onSelect}
+                placeholder={'Select values'}
                 options={options}
                 selectedValues={selectedValues}
             />

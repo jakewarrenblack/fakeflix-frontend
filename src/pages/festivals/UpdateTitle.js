@@ -18,6 +18,8 @@ const UpdateTitle = () => {
     const navigate = useNavigate()
     const [errors, setErrors] = useState([])
 
+    const [ageSelections, setAgeSelections] = useState([])
+
     // First we populate the form fields with the existing title data
     useEffect(() => {
         axios.get(`${process.env.REACT_APP_URL}/titles/id/${id}`, {
@@ -28,6 +30,8 @@ const UpdateTitle = () => {
             .then((response) => {
                 console.log(response.data);
                 setTitle(response.data)
+
+                setAgeSelections(arrayFromString(response.data.age_certification))
             })
             .catch((err) => {
                 console.error(err);
@@ -82,7 +86,7 @@ const UpdateTitle = () => {
                         //     age_certification_values
                         // }/>
 
-                        return <MultiSelect name={key} getErrorMsg={getErrorMsg} errors={errors} selectedValues={arrayFromString(title[key])} options={age_cert_arr}/>
+                        return <MultiSelect selections={ageSelections} setSelections={setAgeSelections} name={key} getErrorMsg={getErrorMsg} errors={errors} selectedValues={ageSelections} options={age_cert_arr}/>
                     }
 
 

@@ -117,7 +117,7 @@ const RelatedItem = ({token, relatedTitle}) => {
         let score = imdb_score ?? tmdb_score
 
         score && setStars(getStars(score).map((img) => {
-            return <img className={'filter invert'} src={img} width={'25px'}/>
+            return <img className={'filter invert max-w-[25px] max-h-[25px]'} src={img}/>
         }))
 
 
@@ -147,7 +147,7 @@ const RelatedItem = ({token, relatedTitle}) => {
                         <Dialog.Title className="text-3xl w-full px-5 relative bottom-1/3">{title}</Dialog.Title>
                     </div>
                     <main className={'space-y-3 h-1/2 p-5 flex flex-col'}>
-                        <div className={'flex space-x-5'}>
+                        <div className={'flex space-x-5 items-center'}>
                             <button onClick={() => window.open(`https://www.imdb.com/title/${imdb_id}/`, '_blank')}  disabled={!imdb_id || !imdb_id.length} className={'bg-white disabled:opacity-50 text-black rounded min-h-[42px] px-4 font-semibold text-lg'}>
                                 ▶
                                 View on IMDB
@@ -169,7 +169,7 @@ const RelatedItem = ({token, relatedTitle}) => {
 
                         <div className={'flex space-x-5 font-semibold'}>
                             <span className={'text-green-500 flex'}>{stars ?? 'No rating.'}</span>
-                            <span className={'px-1 border border-grey-1'}>{age_certification.length ? age_certification : '?'}</span>
+                            <span className={'px-1 border border-grey-1 h-min'}>{age_certification.length ? age_certification : '?'}</span>
                             <span>{release_year}</span>
                             <span>{runtime && calcRunTime(runtime)}</span>
                         </div>
@@ -224,7 +224,7 @@ const TitleDialog = ({_id, title, image, genres, description, age_certification,
             </Dialog.Trigger>
             <Dialog.Portal>
                 <Dialog.Overlay className="z-50 w-screen h-screen fixed bg-black/70 top-0 left-0 overflow-y-scroll grid place-items-center">
-                    <Dialog.Content asChild className="rounded-lg text-white relative opacity-100 bg-grey-8 w-1/2 flex flex-col">
+                    <Dialog.Content asChild className="rounded-lg text-white relative opacity-100 bg-grey-8 w-3/4 flex flex-col">
                         <div>
                             <div id={'container'} className={'h-[500px] relative'}>
                                 <div className={' bg-blend-color brightness-50 rounded-lg  h-full'} style={{background: image ? `no-repeat center/cover url(${image})` : 'rgba(7,7,8, 1)'}}></div>

@@ -1,14 +1,12 @@
 import Input from "../../components/Input";
-import {useContext, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import axios from "axios";
 import {useNavigate, useParams} from "react-router-dom";
 import Loading from "../../components/Loading";
 import clsx from "clsx";
 import Select from "../../components/Select";
-import {AuthContext} from "../../utils/AuthContext";
 import handleForm from "../../utils/handleForm";
-import {age_certification_values, getErrorMsg, arrayFromString,arrayToDbFormat, age_cert_arr, genreOptions, productionCountryOptions} from "../../utils/formHelpers";
-import TextArea from "../../components/TextArea";
+import {getErrorMsg, arrayFromString,arrayToDbFormat, age_cert_arr, genreOptions, productionCountryOptions} from "../../utils/formHelpers";
 import MultiSelect from "../../components/MultiSelect";
 
 const UpdateTitle = () => {
@@ -43,9 +41,7 @@ const UpdateTitle = () => {
     }, [])
 
 
-
     const submitForm = () => {
-
         axios
             .put(`${process.env.REACT_APP_URL}/titles/update/${id}`, {
                 // Combine the user data with the stripe token, which is needed for checkout

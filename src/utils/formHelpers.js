@@ -43,6 +43,7 @@ export const getErrorMsg = (key, errors) => {
 // "['item1', 'item2']"
 export const arrayFromString = (str) => str.split(',').map((item) => item.replace(/[\W_]+/g," ").trim())
 
+
 // On the backend, I'm searching through genres in their original format to recommend titles, so before updating or adding new genres, I'm converting them back to their original (weird) format.`
 // remember to replace spaces with hyphens, for e.g, PG-13 in age certification
 export const arrayToDbFormat = (arr) => {
@@ -57,3 +58,4 @@ export const genreOptions = [
 export const productionCountryOptions = [
     'GH', 'RS', 'CL', 'VA', 'RU', 'RO', 'PY', 'TZ', 'FO', 'HR', 'IR', 'IS', 'TW', 'BF', 'CM', 'PK', 'CZ', 'IL', 'FI', 'BE', 'SA', 'Lebanon', 'MY', 'CU', 'AL', 'HU', 'TH', 'CD', 'DK', 'BY', 'UA', 'LB', 'GE', 'KG', 'GB', 'PR', 'SE', 'MT', 'GT', 'LT', 'US', 'KN', 'BS', 'JO', 'GL', 'AF', 'SN', 'CY', 'NP', 'PT', 'KW', 'LK', 'IN', 'VN', 'MC', 'BG', 'DZ', 'UY', 'NO', 'BD', 'EG', 'CO', 'PS', 'MU', 'NA', 'PE', 'AE', 'CH', 'XX', 'KH', 'MA', 'IE', 'AT', 'IO', 'TN', 'VE', 'LU', 'NG', 'NZ', 'AO', 'KR', 'PL', 'BR', 'DE', 'SU', 'ES', 'BT', 'SY', 'QA', 'CA', 'PH', 'MX', 'JP', 'FR', 'AR', 'IT', 'ZW', 'KE', 'ZA', 'GR', 'SG', 'ID', 'TR', 'IQ', 'AU', 'MW', 'HK', 'NL', 'CN'
 ]
+

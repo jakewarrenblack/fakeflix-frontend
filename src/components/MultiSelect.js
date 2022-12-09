@@ -7,7 +7,7 @@ const MultiSelect = ({name, options, selectedValues, getErrorMsg, errors, select
         console.log('adding to selections', selectedItem)
         setSelections({
             ...selectedList,
-            selectedItem
+
         })
     }
 

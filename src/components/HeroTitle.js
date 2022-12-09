@@ -3,7 +3,8 @@ import axios from "axios";
 import TitleDialog from "./TitleDialog";
 
 const HeroTitle = (heroTitle) => {
-    const [image, setImage] = useState()
+    console.log('hero title', heroTitle)
+    const [image, setImage] = useState(null)
     const {imdb_id, title, description} = heroTitle
 
     useEffect(() => {
@@ -19,7 +20,7 @@ const HeroTitle = (heroTitle) => {
             setImage(null)
             console.log('Image fetch error:', e)
         })
-    }, [])
+    }, [title])
 
     const passTitle = {
         ...heroTitle,

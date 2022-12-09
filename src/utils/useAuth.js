@@ -60,7 +60,6 @@ export const useAuth = () => {
     const register = (form) => {
         axios.post(`${process.env.REACT_APP_URL}/users/register`, form)
             .then((response) => {
-                // TODO: log user in automatically after registration
                 //login({email: response.data.email, password: response.data.password})
                 console.log(response.data);
             })

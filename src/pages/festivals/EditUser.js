@@ -7,7 +7,15 @@ import Loading from "../../components/Loading";
 import clsx from "clsx";
 import Select from "../../components/Select";
 import handleForm from "../../utils/handleForm";
-import {getErrorMsg, arrayFromString,arrayToDbFormat, age_cert_arr, genreOptions, productionCountryOptions} from "../../utils/formHelpers";
+import {
+    getErrorMsg,
+    arrayFromString,
+    arrayToDbFormat,
+    age_cert_arr,
+    genreOptions,
+    productionCountryOptions,
+    formatErrors
+} from "../../utils/formHelpers";
 import MultiSelect from "../../components/MultiSelect";
 import {AuthContext} from "../../utils/AuthContext";
 import ModalDialog from "../../components/ModalDialog";
@@ -17,13 +25,16 @@ const EditUser = () => {
     const token = localStorage.getItem('token')
     const navigate = useNavigate()
     const [errors, setErrors] = useState([])
-    const [userState, setUserState] = useState([])
+    const [userState, setUserState] = useState()
     const [selectedAvatar, setSelectedAvatar] = useState({})
     const [url, setUrl] = useState()
+
+    const [loading, setLoading] = useState(true)
 
     // get the currently logged in user
     const {user} = useContext(AuthContext)
 
+    console.log('user', user)
     // means user is editing themselves, that's fine, don't pass the id to the url
 
 
@@ -37,21 +48,23 @@ const EditUser = () => {
 
     // first need to get users info
     useEffect(() => {
-        if(id && user._id === id){
+        if(user._id === id){
             setUrl(`${process.env.REACT_APP_URL}/users/edit`)
         }
+        else {
 
-        // user is trying to edit somebody else. they need to be an admin, make sure they are one
-        if(id && user._id !== id){
-            if(user.type !== 'admin'){
-                //TODO: Replace this with useNavigate, like I've used in login error
-                return <Navigate
-                    to={'/'}
-                    state={{msg: `Only admins may edit other users!.`}}
-                />
-            }
-            else{
-                setUrl(`${process.env.REACT_APP_URL}/users/edit/${id}`)
+            // user is trying to edit somebody else. they need to be an admin, make sure they are one
+            if (id && user._id !== id) {
+                console.log('user', user)
+                if (user.type !== 'admin') {
+                    //TODO: Replace this with useNavigate, like I've used in login error
+                    return navigate('/', {state: {msg: `Only admins may edit other users. You are logged in with account type: ${user.type}`}})
+
+                } else {
+                    setUrl(`${process.env.REACT_APP_URL}/users/edit/${id}`)
+                }
+            } else {
+                return navigate('/', {state: {msg: 'Something went wrong.'}})
             }
         }
 
@@ -64,24 +77,54 @@ const EditUser = () => {
                 }
             }
         ).then((res) => {
-            console.log(res.data)
-            setUserState(res.data)
+            // scenario 1:
+            // admin is logged in, they're requesting their own account (user._id === id)
+            // dont make any changes to the res.data
+            if(user.type === 'admin' && id === user._id){
+                setUserState(res.data)
+            }
+            else if(user.type !== 'admin'){
+                // scenario 2:
+                // a non-admin is logged in
+                // remove the admin and type fields from the object
+                setUserState({
+                    ...res.data,
+                    admin: null,
+                    type: null
+                });
+            }
+            else if(user.type === 'admin' && id !== user._id){
+                // scenario 3:
+                // an admin is logged in, they are requesting an account other than their own
+                // remove the admin, password, email fields from the object
+                setUserState({
+                    ...res.data,
+                    admin: null,
+                    email: null,
+                    password: null
+                });
+            }
+            else{
+                return navigate('/', {state: {msg: 'Something went wrong.'}})
+            }
+
             setSelectedAvatar(res.data.avatar)
+            setLoading(!loading)
         }).catch((e) => {
             console.log(e)
         })
-    }, [])
+    }, [id])
 
     useEffect(() => {
         setUserState(userState => ({
             ...userState,
-            avatar: selectedAvatar
+            avatar: selectedAvatar._id
         }))
     }, [selectedAvatar])
 
 
     const submitForm = () => {
-        console.log('submitting the following body', userState)
+
         axios
             .put(url, {
                 // Combine the user data with the stripe token, which is needed for checkout
@@ -97,11 +140,18 @@ const EditUser = () => {
             })
             .catch(error => {
                 console.log("Edit error: ", error);
-                alert("Edit failed");
+
+                if(error.response.data.errors) {
+                    alert("Edit failed");
+                    setErrors(formatErrors(error.response.data.errors))
+                }
+                else if(error.response.data.message){
+                    alert(error.response.data.message)
+                }
             });
     };
 
-    if(!userState) return <Loading/>
+    if(loading) return <Loading loadingMsg={'Loading user details'}/>
 
     const hiddenFields = [
      '_id' ,
@@ -112,7 +162,8 @@ const EditUser = () => {
      'password',
      'database_admin',
       'my_list',
-        'autoplay_enabled'
+        'autoplay_enabled',
+        'admin'
     ]
 
     return <div className={'bg-grey-2 absolute w-full h-max min-h-full'}>

@@ -85,27 +85,27 @@ const UpdateTitle = () => {
             {
                 Object.keys(title)
                 .map((key) => {
-                    if(key == 'type'){
+                    if(key === 'type'){
                         return <Select getErrorMsg={getErrorMsg} errors={errors} defaultValue={title[key]} name={key} displayName={key.toUpperCase()} handleForm={(e) => handleForm(e, setTitle, title)} values={[
                             {value: 'MOVIE', name: 'MOVIE'},
                             {value: 'SHOW', name: 'SHOW'},
                         ]}/>
                     }
 
-                    if(key == 'age_certification'){
+                    if(key === 'age_certification'){
                         return <MultiSelect selections={ageSelections} setSelections={setAgeSelections} name={key} getErrorMsg={getErrorMsg} errors={errors} selectedValues={ageSelections} options={age_cert_arr}/>
                     }
 
-                    if(key == 'genres'){
+                    if(key === 'genres'){
                         return <MultiSelect selections={genres} setSelections={setGenres} name={key} getErrorMsg={getErrorMsg} errors={errors} selectedValues={genres} options={genreOptions}/>
                     }
 
-                    if(key == 'production_countries'){
+                    if(key === 'production_countries'){
                         return <MultiSelect selections={productionCountries} setSelections={setProductionCountries} name={key} getErrorMsg={getErrorMsg} errors={errors} selectedValues={productionCountries} options={productionCountryOptions}/>
                     }
 
                   return (
-                      <div className={clsx((key == '_id' || key == 'updatedAt')  && 'hidden')}>
+                      <div className={clsx((key === '_id' || key === 'updatedAt')  && 'hidden')}>
                         <Input disabled={title.type === 'MOVIE' && key === 'seasons'} getErrorMsg={getErrorMsg} errors={errors} defaultValue={title[key]} type={typeof(title[key])} name={key} id={key} handleForm={(e) => handleForm(e, setTitle, title)} labelValue={key.replaceAll('_', ' ').toUpperCase()}/>
                     </div>
                   )

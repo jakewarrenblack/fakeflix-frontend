@@ -53,7 +53,10 @@ const Dropdown = ({logout}) => {
                         users?.map((user) => {
                             return (
                                 <DropdownMenu.Item onClick={() => navigate(`/editUser/${user._id}`)} className="flex">
-                                    <div className="mr-2 group hover:cursor-pointer transition-all p-1 rounded hover:bg-navBlack/50 flex"><img width={'25px'} src={user.avatar.img}/> {user.username} <i className={'rotate-45 invisible group-hover:visible'}>✏</i></div>
+                                    <div className="mr-2 group hover:cursor-pointer transition-all p-1 rounded hover:bg-navBlack/50 flex">
+                                        {user.type === 'admin' && '👑'}
+                                        <img width={'25px'} src={user.avatar.img}/> {user.username} <i className={'rotate-45 invisible group-hover:visible'}>✏</i>
+                                    </div>
                                 </DropdownMenu.Item>
                             )
                         })

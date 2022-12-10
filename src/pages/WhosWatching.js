@@ -64,7 +64,7 @@ const WhosWatching = () => {
 
 
         return (
-            <div onClick={() => navigate(direct ?? '/')} className={{display: 'flex', marginTop: 25, justifyContent: 'flex-end'}}>
+            <div className={'flex flex-end mt-12'} onClick={() => navigate(direct ?? '/')}>
                 <div className={'flex hover:cursor-pointer hover:brightness-100 brightness-75 justify-center flex-col items-center m-2]'}>
                     <Suspense>
                         <AvatarImage/>
@@ -81,7 +81,7 @@ const WhosWatching = () => {
     return (
         <div className={'bg-grey-2 w-screen h-screen flex flex-col justify-center'}>
             <h2 className={'text-white text-center'}>Who's Watching?</h2>
-            <div className={'flex items-center'}>
+            <div className={'flex justify-center items-center'}>
             {
                 users?.map((user) => (
                     <UserCard {...user}/>

@@ -6,7 +6,6 @@ import { isExpired, decodeToken } from "react-jwt";
 import {AuthContext} from "./AuthContext";
 
 export const useAuth = () => {
-    const {loading, setLoading} = useContext(AuthContext)
     const { setToken, removeToken, setUser, removeUser } = useToken();
     const navigate = useNavigate()
 
@@ -23,7 +22,7 @@ export const useAuth = () => {
     }, []);
 
     // Also need separate manual login/logout methods
-    const login = async ({email, password}) => {
+    const login = async ( {email, password}) => {
         await axios.post(`${process.env.REACT_APP_URL}/users/login`,
             {
                 email,
@@ -31,11 +30,8 @@ export const useAuth = () => {
             })
             .then((response) => {
                 setToken(response.data.token)
-
                 const decodedToken = decodeToken(response.data.token)
-
                 console.log('decoded token', decodedToken)
-
                 setUser(decodedToken)
 
                 // If login is successful, allow the user to choose who's viewing
@@ -47,11 +43,12 @@ export const useAuth = () => {
                 removeToken()
                 removeUser()
             }).finally(() => {
-                setLoading(false)
+                // setLoading(false)
             })
     };
 
     const logout = () => {
+        console.log('logging out!!')
         removeToken()
         localStorage.removeItem('user')
         navigate('/')

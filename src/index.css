@@ -6,6 +6,11 @@
     src: local('Montserrat'), url('./Font/Montserrat.ttf') format('ttf');
 }
 
+body{
+    overflow-x:hidden;
+}
+
+
 .slick-list { margin: 0 -7px; width: 100% }
 
 .slick-slide > div { padding: 0 10px; }

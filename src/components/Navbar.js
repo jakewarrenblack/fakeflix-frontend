@@ -3,6 +3,7 @@ import {useContext} from "react";
 import {AuthContext} from "../utils/AuthContext";
 import {useAuth} from "../utils/useAuth";
 import clsx from "clsx";
+import Dropdown from "./Dropdown";
 
 const Navbar = () => {
     const {token, user, loading} = useContext(AuthContext)
@@ -58,9 +59,8 @@ const Navbar = () => {
                     ))
                 }
             </div>
-            <div className={'w-1/5 flex justify-end'}>
-                {token && <button onClick={logout}>Logout</button>}
-            </div>
+
+            {token && <Dropdown logout={logout}/>}
         </nav>
     );
 };

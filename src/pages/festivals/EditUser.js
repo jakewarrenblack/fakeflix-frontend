@@ -10,18 +10,19 @@ import handleForm from "../../utils/handleForm";
 import {getErrorMsg, arrayFromString,arrayToDbFormat, age_cert_arr, genreOptions, productionCountryOptions} from "../../utils/formHelpers";
 import MultiSelect from "../../components/MultiSelect";
 import {AuthContext} from "../../utils/AuthContext";
+import ModalDialog from "../../components/ModalDialog";
 
 const EditUser = () => {
     const { id } = useParams();
-    const [title, setTitle] = useState(null)
     const token = localStorage.getItem('token')
     const navigate = useNavigate()
     const [errors, setErrors] = useState([])
     const [userState, setUserState] = useState([])
+    const [selectedAvatar, setSelectedAvatar] = useState({})
+    const [url, setUrl] = useState()
 
     // get the currently logged in user
     const {user} = useContext(AuthContext)
-    let url;
 
     // means user is editing themselves, that's fine, don't pass the id to the url
 
@@ -37,19 +38,20 @@ const EditUser = () => {
     // first need to get users info
     useEffect(() => {
         if(id && user._id === id){
-            url = `${process.env.REACT_APP_URL}/users/edit`
+            setUrl(`${process.env.REACT_APP_URL}/users/edit`)
         }
 
         // user is trying to edit somebody else. they need to be an admin, make sure they are one
         if(id && user._id !== id){
             if(user.type !== 'admin'){
+                //TODO: Replace this with useNavigate, like I've used in login error
                 return <Navigate
                     to={'/'}
                     state={{msg: `Only admins may edit other users!.`}}
                 />
             }
             else{
-                url = `${process.env.REACT_APP_URL}/users/edit/${id}`
+                setUrl(`${process.env.REACT_APP_URL}/users/edit/${id}`)
             }
         }
 
@@ -64,17 +66,26 @@ const EditUser = () => {
         ).then((res) => {
             console.log(res.data)
             setUserState(res.data)
+            setSelectedAvatar(res.data.avatar)
         }).catch((e) => {
             console.log(e)
         })
     }, [])
 
+    useEffect(() => {
+        setUserState(userState => ({
+            ...userState,
+            avatar: selectedAvatar
+        }))
+    }, [selectedAvatar])
+
 
     const submitForm = () => {
+        console.log('submitting the following body', userState)
         axios
             .put(url, {
                 // Combine the user data with the stripe token, which is needed for checkout
-                ...user,
+                ...userState,
             }, {
                 headers: {
                     Authorization : `Bearer ${token}`
@@ -98,7 +109,10 @@ const EditUser = () => {
      '__v',
      'createdAt',
      'stripe_details',
-     'password'
+     'password',
+     'database_admin',
+      'my_list',
+        'autoplay_enabled'
     ]
 
     return <div className={'bg-grey-2 absolute w-full h-max min-h-full'}>
@@ -109,6 +123,52 @@ const EditUser = () => {
                 {
                     Object.keys(userState)
                         .map((key) => {
+                            if(key === 'type') {
+                                return <Select getErrorMsg={getErrorMsg} errors={errors} defaultValue={userState[key]} name={key} displayName={key.toUpperCase()} handleForm={(e) => handleForm(e, setUserState, userState)} values={[
+                                    {value: 'admin', name: 'Admin'},
+                                    {value: 'user', name: 'Sub User'},
+                                    {value: 'child', name: 'Child'}
+                                ]}/>
+                            }
+
+                            if(key === 'language') {
+                                return <Select getErrorMsg={getErrorMsg} errors={errors} defaultValue={userState[key]} name={key} displayName={key.toUpperCase()} handleForm={(e) => handleForm(e, setUserState, userState)} values={[
+                                    {value: 'EN', name: 'EN'},
+                                    {value: 'DE', name: 'DE'},
+                                    {value: 'FR', name: 'FR'}
+                                ]}/>
+                            }
+
+                            if(key === 'maturity_setting') {
+                                return <Select getErrorMsg={getErrorMsg} errors={errors} defaultValue={userState[key]}
+                                               name={key} displayName={key.toUpperCase()}
+                                               handleForm={(e) => handleForm(e, setUserState, userState)} values={[
+                                    {value: 'unrestricted', name: 'Unrestricted (18+)'},
+                                    {value: 'semi-restricted', name: 'Semi-Restricted'},
+                                    {value: 'restricted', name: 'Restricted (Default if child)'}
+                                ]}/>
+                            }
+
+                            if(key === 'subscription') {
+
+                                return <Select getErrorMsg={getErrorMsg} errors={errors} defaultValue={userState[key]}
+                                               name={key} displayName={key.toUpperCase()}
+                                               handleForm={(e) => handleForm(e, setUserState, userState)} values={[
+                                    {value: 'Movies & Shows', name: 'Movies & Shows'},
+                                    {value: 'Shows', name: 'Shows'},
+                                    {value: 'Movies', name: 'Movies'}
+                                ]}/>
+                            }
+
+                            if(key === 'avatar') {
+                             return  (
+                                 <div className={'flex flex-col items-center'}>
+                                    <ModalDialog setSelection={setSelectedAvatar}/>
+                                    {selectedAvatar?.img && <img className={'m-auto my-5'} src={selectedAvatar.img} width={'25%'} />}
+                                 </div>
+                             )
+                            }
+
                             return (
                                 <div className={clsx(hiddenFields.includes(key)  && 'hidden')}>
                                     <Input getErrorMsg={getErrorMsg} errors={errors} defaultValue={userState[key]} type={typeof(userState[key])} name={key} id={key} handleForm={(e) => handleForm(e, setUserState, userState)} labelValue={key.replaceAll('_', ' ').toUpperCase()}/>

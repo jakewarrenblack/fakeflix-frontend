@@ -2,7 +2,7 @@
     let name = e.target.name;
     let value = e.target.value;
 
-    setState(prev => ({
+    setState(previous => ({
         ...prev,
         [name]: value
     }));

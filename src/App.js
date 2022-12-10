@@ -16,6 +16,7 @@ import {useState} from "react";
 import ProtectedRoute from "./components/ProtectedRoute";
 import UpdateTitle from "./pages/festivals/UpdateTitle";
 import AddTitle from "./pages/festivals/AddTitle";
+import EditUser from "./pages/festivals/EditUser";
 
 const App = () => {
     const [token, setToken] = useState(null)
@@ -54,6 +55,10 @@ const App = () => {
 
                         <Route path='updateTitle/:id' element={<UpdateTitle />} />
                         <Route path='addTitle' element={<AddTitle />} />
+
+                        {/*TODO: Verify that only an admin can edit users other than themselves, provided the user's adminID matches the admin's _id */}
+                        {/* Any user may edit themselves */}
+                        <Route path='editUser/:id' element={<EditUser />} />
 
                         {/* Pass admin ID to fetch the admin and all their sub-users, to select an account from */}
                         {/* Like on netflix, multiple profiles but one admin */}

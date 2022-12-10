@@ -1,7 +1,7 @@
 import {useContext, useEffect} from 'react';
 import useToken from './useToken';
 import axios from "axios";
-import {useNavigate} from "react-router-dom";
+import {Navigate, useNavigate} from "react-router-dom";
 import { isExpired, decodeToken } from "react-jwt";
 import {AuthContext} from "./AuthContext";
 
@@ -42,6 +42,9 @@ export const useAuth = () => {
                 console.error('ERROR!!:', err);
                 removeToken()
                 removeUser()
+
+                navigate('/', { state: {msg: 'A problem occurred while logging in.' } })
+
             }).finally(() => {
                 // setLoading(false)
             })

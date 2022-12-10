@@ -3,6 +3,7 @@ import {useContext, useEffect, useState} from "react";
 import {AuthContext} from "../utils/AuthContext";
 import axios from "axios";
 import {useAuth} from "../utils/useAuth";
+import {useNavigate} from "react-router-dom";
 
 const Dropdown = ({logout}) => {
     const [users, setUsers] = useState()
@@ -18,6 +19,8 @@ const Dropdown = ({logout}) => {
     }
 
     const [selectedUser, setSelectedUser] = useState()
+
+    const navigate = useNavigate()
 
     // must get all users first, display entire 'family' of users in dropdown along with their profile images
     useEffect(() => {
@@ -46,13 +49,15 @@ const Dropdown = ({logout}) => {
                 <DropdownMenu.Content className="z-[100] bg-white px-5 py-2 rounded" sideOffset={5}>
                     <DropdownMenu.Label className="DropdownMenuLabel">Users</DropdownMenu.Label>
 
-                    <DropdownMenu.Item className="flex">
-                        <div className="mr-2">•</div> Username
-                    </DropdownMenu.Item>
-
-                    <DropdownMenu.Item className="flex">
-                        <div className="mr-2">•</div> Username
-                    </DropdownMenu.Item>
+                    {
+                        users?.map((user) => {
+                            return (
+                                <DropdownMenu.Item onClick={() => navigate(`/editUser/${user._id}`)} className="flex">
+                                    <div className="mr-2 group hover:cursor-pointer transition-all p-1 rounded hover:bg-navBlack/50 flex"><img width={'25px'} src={user.avatar.img}/> {user.username} <i className={'rotate-45 invisible group-hover:visible'}>✏</i></div>
+                                </DropdownMenu.Item>
+                            )
+                        })
+                    }
 
                     <DropdownMenu.Separator className="border pt-2 mb-2 border-b-black" />
 

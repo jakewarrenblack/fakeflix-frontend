@@ -4,11 +4,14 @@ import {AuthContext} from "../utils/AuthContext";
 import axios from "axios";
 import {useAuth} from "../utils/useAuth";
 import {useNavigate} from "react-router-dom";
+import {Oval} from "react-loader-spinner";
 
 const Dropdown = ({logout}) => {
     const [users, setUsers] = useState()
     const {token, user} = useContext(AuthContext)
     let adminID;
+
+    const [loading, setLoading] = useState(true)
 
     if (user) {
         if (user.type === 'admin') {
@@ -32,10 +35,28 @@ const Dropdown = ({logout}) => {
             }
         ).then((res) => {
             setUsers(res.data)
+            setLoading(!loading)
         }).catch((e) => {
             console.log(e)
         })
     }, [])
+
+    let loadingUsers
+
+    if(loading){
+        loadingUsers = <Oval
+            height={10}
+            width={10}
+            color="#CC0000"
+            secondaryColor={'#CC0000'}
+            wrapperStyle={{}}
+            wrapperClass=""
+            visible={true}
+            ariaLabel='oval-loading'
+            strokeWidth={2}
+            strokeWidthSecondary={2}
+            />
+    }
 
     return (
         <DropdownMenu.Root>
@@ -46,11 +67,11 @@ const Dropdown = ({logout}) => {
             </DropdownMenu.Trigger>
 
             <DropdownMenu.Portal className={''}>
-                <DropdownMenu.Content className="z-[100] bg-white px-5 py-2 rounded" sideOffset={5}>
+                <DropdownMenu.Content className="z-[100] bg-white px-5 py-2 rounded mr-2" sideOffset={5}>
                     <DropdownMenu.Label className="DropdownMenuLabel">Users</DropdownMenu.Label>
 
                     {
-                        users?.map((user) => {
+                        !loading ? users?.map((user) => {
                             return (
                                 <DropdownMenu.Item onClick={() => navigate(`/editUser/${user._id}`)} className="flex">
                                     <div className="mr-2 group hover:cursor-pointer transition-all p-1 rounded hover:bg-navBlack/50 flex">
@@ -59,7 +80,21 @@ const Dropdown = ({logout}) => {
                                     </div>
                                 </DropdownMenu.Item>
                             )
-                        })
+                        }) : <div className={'flex items-center'}>
+                                <Oval
+                                    height={15}
+                                    width={15}
+                                    color="#CC0000"
+                                    secondaryColor={'#CC0000'}
+                                    wrapperStyle={{}}
+                                    wrapperClass=""
+                                    visible={true}
+                                    ariaLabel='oval-loading'
+                                    strokeWidth={2}
+                                    strokeWidthSecondary={2}
+                                />
+                                Loading users...
+                            </div>
                     }
 
                     <DropdownMenu.Separator className="border pt-2 mb-2 border-b-black" />

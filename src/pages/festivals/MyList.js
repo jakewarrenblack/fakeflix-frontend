@@ -49,10 +49,12 @@ const MyList = () => {
     }, []);
 
 
-    if(loading) return <Loading/>
+    if(loading) return <Loading loadingMsg={'Loading your favourites'}/>
 
     // TODO:: Style me
-    if(!loading && !rows.length) return 'No favourites saved yet'
+    if(!loading && !rows.length) return <div className={'w-full h-full fixed bg-grey-2 flex justify-center items-center flex-col'}>
+        'No favourites saved yet'
+    </div>
 
     return (
         <div className={'bg-grey-2 overflow-hidden h-screen pt-48'}>

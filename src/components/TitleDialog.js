@@ -6,6 +6,8 @@ import {AuthContext} from "../utils/AuthContext";
 import Toast from "./Toast";
 import Portal from "./Portal";
 import clsx from "clsx";
+import loading from "./Loading";
+import {Oval} from "react-loader-spinner";
 
 
 const getStars = (number) => {
@@ -106,11 +108,11 @@ const addToMyList = (_id, token) => {
     })
 }
 
-const RelatedItem = ({token, relatedTitle}) => {
+const RelatedItem = ({token, relatedTitle, toast, setToast}) => {
     const {imdb_id, title, release_year, runtime, description, imdb_score, tmdb_score, age_certification, _id} = relatedTitle;
     const [stars, setStars] = useState(null)
     const [image, setImage] = useState(null)
-    const [toast, setToast] = useState(null)
+
 
     useEffect(() => {
         // get star rating and an image for every title
@@ -157,7 +159,7 @@ const RelatedItem = ({token, relatedTitle}) => {
                                     if(res){
                                         console.log('got response from add to my list')
                                         setToast({
-                                            title: 'Added to favourites!',
+                                            title: `${title} added to favourites!`,
                                             description: "Visit 'my list' to view your favourites."
                                         })
                                     }
@@ -181,14 +183,7 @@ const RelatedItem = ({token, relatedTitle}) => {
                 </div>
             </div>
         </div>
-        {toast && (
-                <Portal>
-                    {/* z-index 50 to make sure our toast is above the modal background overlay */}
-                    <div className={'fixed right-5 bottom-5 z-50'}>
-                        <Toast setParentState={setToast} title={`'${title}' added to favourites!`} description={toast.description}/>
-                    </div>
-                </Portal>
-            )}
+
         </>
     )
 }
@@ -206,6 +201,8 @@ const TitleDialog = ({_id, title, image, genres, description, age_certification,
 
     const {token} = useContext(AuthContext)
     const [related, setRelated] = useState([])
+    const [toast, setToast] = useState(null)
+    const [loadingRelated, setLoadingRelated] = useState(true)
 
     return (
         <>
@@ -215,8 +212,10 @@ const TitleDialog = ({_id, title, image, genres, description, age_certification,
                     onClick={() => getRelated(genres, age_certification, _id, token).then((res => {
                         setRelated(res.result)
                         console.log('SETTING RES STATE', res.result)
+                        setLoadingRelated(false)
                     })).catch((e) => {
                         setRelated([])
+                        setLoadingRelated(false)
                     })
                 } className={clsx("text-black bg-white px-2 py-1 rounded font-semibold", variant == 'lg' && 'text-3xl px-5 py-2')}>
                     View
@@ -237,7 +236,15 @@ const TitleDialog = ({_id, title, image, genres, description, age_certification,
                                                 ▶
                                                 View on IMDB
                                             </button>
-                                            <button onClick={() => addToMyList(_id, token)} className={'bg-grey-2 rounded-full h-[50px] w-[50px] border-grey-1 border-2'}>➕</button>
+                                            <button onClick={() => addToMyList(_id, token).then((res) => {
+                                                if(res){
+                                                    console.log('got response from add to my list')
+                                                    setToast({
+                                                        title: `${title} added to favourites!`,
+                                                        description: "Visit 'my list' to view your favourites."
+                                                    })
+                                                }
+                                            })}className={'bg-grey-2 rounded-full h-[50px] w-[50px] border-grey-1 border-2'}>➕</button>
                                         </div>
 
                                         <div className={'flex space-x-10 font-semibold'}>
@@ -254,16 +261,33 @@ const TitleDialog = ({_id, title, image, genres, description, age_certification,
                             <main className={'p-5 mt-14'}>
                                 {/* TODO: Add loader for recommended */ }
                                 {
-                                    related.length && (
+                                    !loadingRelated && related.length > 0 ? (
                                         <>
                                             <h3 className={'text-4xl text-center font-semibold my-4 mb-6'}>You may also like</h3>
                                             <div className={'grid grid-cols-3 gap-2'}>
                                                 {
                                                     related.map((relatedTitle) => {
-                                                        return <RelatedItem token={token} relatedTitle={relatedTitle}/>
+                                                        return <RelatedItem token={token} toast={toast} setToast={setToast} relatedTitle={relatedTitle}/>
                                                     })
                                                 }
                                             </div>
+                                        </>
+                                    ) : loadingRelated ? <Oval
+                                        height={80}
+                                        width={80}
+                                        color="#CC0000"
+                                        secondaryColor={'#CC0000'}
+                                        wrapperStyle={{}}
+                                        wrapperClass="m-auto justify-center"
+                                        visible={true}
+                                        ariaLabel='oval-loading'
+                                        strokeWidth={2}
+                                        strokeWidthSecondary={2}
+
+                                    /> : !loadingRelated && (
+                                        // If no longer loading but there are still no related titles, we just haven't found any for this title.
+                                        <>
+                                            <h3 className={'text-4xl text-center font-semibold my-4 mb-6'}>No related titles found</h3>
                                         </>
                                     )
                                 }
@@ -273,6 +297,14 @@ const TitleDialog = ({_id, title, image, genres, description, age_certification,
                 </Dialog.Overlay>
             </Dialog.Portal>
         </Dialog.Root>
+            {toast && (
+                <Portal>
+                    {/* z-index 50 to make sure our toast is above the modal background overlay */}
+                    <div className={'fixed right-5 bottom-5 z-50'}>
+                        <Toast setParentState={setToast} title={toast.title} description={toast.description}/>
+                    </div>
+                </Portal>
+            )}
         </>
     )
 }

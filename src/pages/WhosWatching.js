@@ -4,6 +4,7 @@ import {useContext} from "react";
 import {AuthContext} from "../utils/AuthContext";
 import {useLocation, useNavigate} from "react-router-dom";
 import {useImage} from 'react-image'
+import Loading from "../components/Loading";
 
 const WhosWatching = () => {
     const location = useLocation()
@@ -11,6 +12,7 @@ const WhosWatching = () => {
     const {token, user} = useContext(AuthContext)
     const navigate = useNavigate()
     let adminID;
+    const [loading, setLoading] = useState(true)
 
     // To decide which route to automatically direct a user to when they log in
     // So a user subscribed to movies and shows goes to /all
@@ -48,8 +50,10 @@ const WhosWatching = () => {
             }
             ).then((res) => {
             setUsers(res.data)
+            setLoading(false)
         }).catch((e) => {
             console.log(e)
+            setLoading(false)
         })
     }, [])
 
@@ -83,9 +87,9 @@ const WhosWatching = () => {
             <h2 className={'text-white text-center'}>Who's Watching?</h2>
             <div className={'flex justify-center items-center'}>
             {
-                users?.map((user) => (
+                !loading ? users?.map((user) => (
                     <UserCard {...user}/>
-                ))
+                )) : <Loading msg={'Loading users'}/>
             }
             </div>
         </div>

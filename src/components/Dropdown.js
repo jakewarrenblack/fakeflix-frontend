@@ -99,7 +99,7 @@ const Dropdown = ({logout}) => {
 
                     <DropdownMenu.Separator className="border pt-2 mb-2 border-b-black" />
 
-                    <DropdownMenu.Item onClick={logout} className="bg-red rounded-sm text-white font-semibold text-center p-1">
+                    <DropdownMenu.Item onClick={logout} className="bg-red hover:cursor-pointer rounded-sm text-white font-semibold text-center p-1">
                         Logout
                     </DropdownMenu.Item>
 

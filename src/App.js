@@ -23,6 +23,8 @@ const App = () => {
     const [user, setUser] = useState(null)
     const [loading, setLoading] = useState(true)
 
+    const [results, setResults] = useState(null)
+
     return (
         <div>
         <AuthContext.Provider value={{
@@ -37,18 +39,18 @@ const App = () => {
         }}>
 
             <Router>
-                <Navbar/>
+                <Navbar setResults={setResults} results={results}/>
                 <Routes>
                     <Route path='*' element={<NotFound />} />
                     <Route path="/" element={<Home />} />
                     <Route path="/" element={<ProtectedRoute />}>
-                        <Route path='movies' element={<All type={'movies'} />} />
+                        <Route  path='movies' element={<All results={results} type={'movies'} />} />
                         <Route path='title/:id' element={<Single />} />
 
-                        <Route path='shows' element={<All type={'shows'} />} />
+                        <Route  path='shows' element={<All results={results} type={'shows'} />} />
                         <Route path='title/:id' element={<Single />} />
 
-                        <Route path='all' element={<All />} />
+                        <Route  path='all' element={<All results={results} />} />
                         <Route path='title/:id' element={<Single />} />
 
                         <Route path='my_list' element={<MyList />} />

@@ -8,13 +8,13 @@ import Carousel from "../../components/Carousel";
 import { InView } from 'react-intersection-observer';
 import Loading from "../../components/Loading";
 import HeroTitle from "../../components/HeroTitle";
+import clsx from "clsx";
 
-const All = ({type}) => {
+const All = ({type, results}) => {
     const [ rows, setRows ] = useState([]);
     // const {token} = useContext(AuthContext)
     const token = localStorage.getItem('token')
     const {logout} = useAuth()
-
     const [page, setPage] = useState(1)
     const perRow = 10 // 10 items per row
 
@@ -26,6 +26,26 @@ const All = ({type}) => {
         }, [prop])
         return prev.current
     }
+
+    useEffect(() => {
+        console.log('results effect', results)
+        if(results){
+            setRows([])
+            const dividedRows = results.reduce((tenPerRow, title, index) => {
+                const titleIndex = Math.floor(index/perRow)
+
+                if(!tenPerRow[titleIndex]) {
+                    tenPerRow[titleIndex] = [] // start a new row from here
+                }
+
+                tenPerRow[titleIndex].push(title)
+
+                return tenPerRow
+            }, [])
+
+            setRows(dividedRows)
+        }
+    }, [results])
 
     const prevType = usePrevious(type)
     const typesChanged = type !== prevType
@@ -70,7 +90,6 @@ const All = ({type}) => {
                          ...dividedRows
                      ])
                  }
-                 //console.log('TITLES', rows)
              })
              .catch((err) => {
                  console.error(err);
@@ -86,8 +105,10 @@ const All = ({type}) => {
     // just taking the first title to make a big hero title with, like netflix has
     const firstTitle = rows[0][0]
 
+    console.log('rows', rows)
+
     return (
-        <div className={'bg-grey-2 overflow-hidden'}>
+        <div className={clsx('bg-grey-2 overflow-hidden', results && 'h-screen')}>
             <HeroTitle {...firstTitle} />
             <div className={'-mt-24 relative z-20'}>
             {
@@ -109,9 +130,9 @@ const All = ({type}) => {
             </div>
 
             {/* Keep me at the bottom of the viewport. When a user reaches the bottom of the page, increase the pagination to load the next 50 titles.*/}
-            <div className={'relative w-1 h-1 bottom-1'}>
+            {!results && <div className={'relative w-1 h-1 bottom-1'}>
                 <InView onChange={() => setPage(page+1)}/>
-            </div>
+            </div>}
         </div>
     );
 };

@@ -1,14 +1,19 @@
 import {NavLink, Link, useLocation} from 'react-router-dom';
-import {useContext} from "react";
+import {useContext, useEffect, useRef, useState} from "react";
 import {AuthContext} from "../utils/AuthContext";
 import {useAuth} from "../utils/useAuth";
 import clsx from "clsx";
 import Dropdown from "./Dropdown";
+import axios from "axios";
 
-const Navbar = () => {
+const Navbar = ({setResults, results}) => {
     const {token, user, loading} = useContext(AuthContext)
     const {logout} = useAuth()
     const {pathname} = useLocation()
+    const [searchTerm, setSearchTerm] = useState(null)
+
+
+    const inputRef = useRef()
 
     let links = [
         {
@@ -43,6 +48,40 @@ const Navbar = () => {
         }
     ]
 
+    // const search = (searchTerm) => {
+    //     axios.get(`${process.env.REACT_APP_URL}/titles/title/${searchTerm}`, {
+    //         headers: {
+    //             Authorization: `Bearer ${token}`
+    //         }
+    //     }).then((res) => {
+    //         console.log(res)
+    //         if(setResults){
+    //             setResults(res.data)
+    //         }
+    //     }).catch((e) => {
+    //         console.log(e)
+    //     })
+    // }
+
+    useEffect(() => {
+        if(searchTerm === null){
+            setResults(null)
+        }
+        else {
+            axios.get(`${process.env.REACT_APP_URL}/titles/title/${searchTerm}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }).then((res) => {
+                console.log(res)
+                if (setResults) {
+                    setResults(res.data)
+                }
+            }).catch((e) => {
+                console.log(e)
+            })
+        }
+    }, [searchTerm])
 
     if(!user?.database_admin){
         links = links.filter((link) => !link.admin)
@@ -62,9 +101,28 @@ const Navbar = () => {
 
             <div className={'w-1/3 flex justify-around items-center'}>
                 <div className={'flex items-center justify-end w-1/2'}>
-                    <input className={'mr-5 p-1 rounded-sm'} type={'text'} name={'search'} placeholder={'Search for a title'}/>
-                    <button className={'hover:cursor-pointer'}>
-                        <img className={'invert'} src={'/search.png'}/>
+                    <div>
+                        <input ref={inputRef} onChange={(e) => setSearchTerm(e.target.value)} className={'mr-5 p-1 rounded-sm'} type={'text'} name={'search'} placeholder={'Search for a title'}></input>
+                    </div>
+                    <button  className={'hover:cursor-pointer'}>
+                        {
+                            !results ?
+                            <img className={'invert'} src={'/search.png'}/>
+                                : (
+                                    <button
+                                        onClick={
+                                        () => {
+                                                inputRef.current.value = null
+                                                setSearchTerm(null)
+                                                setResults(null)
+                                            }
+                                        }
+                                    >
+                                        ✖
+                                    </button>
+                                )
+                        }
+
                     </button>
                 </div>
 

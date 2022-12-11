@@ -24,6 +24,8 @@ const UpdateTitle = () => {
     const [showDialog, setShowDialog] = useState(false)
     const [deleteConfirmed, setDeleteConfirmed] = useState(false)
 
+    const [loading, setLoading] = useState(true)
+
     // First we populate the form fields with the existing title data
     useEffect(() => {
         axios.get(`${process.env.REACT_APP_URL}/titles/id/${id}`, {
@@ -38,9 +40,12 @@ const UpdateTitle = () => {
                 setAgeSelections(arrayFromString(response.data.age_certification))
                 setGenres(arrayFromString(response.data.genres))
                 setProductionCountries(arrayFromString(response.data.production_countries))
+
+                setLoading(false)
             })
             .catch((err) => {
                 console.error(err);
+                setLoading(false)
             });
     }, [])
 
@@ -95,7 +100,7 @@ const UpdateTitle = () => {
 
 
 
-    if(!title) return <Loading/>
+    if(loading) return <Loading loadingMsg={'Loading user details'}/>
 
     // specific values need Select components
     // Particular care will be needed for arrays, which aren't real arrays, but strings formatted as:

@@ -1,8 +1,11 @@
-# Getting Started with Create React App
+<h1>
+Backend:
+</h1>
+<a href="https://github.com/jakewarrenblack/fakeflix"><img src="https://github-link-card.s3.ap-northeast-1.amazonaws.com/jakewarrenblack/fakeflix.png" width="460px"></a>
+<br/>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
+------------
+IADT Creative Computing Year 4 Advanced JavaScript CA2. React frontend for CA1 Node/Express backend.
 
 In the project directory, you can run:
 
@@ -13,58 +16,29 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
 The page will reload when you make changes.\
 You may also see any lint errors in the console.
+------------
 
-### `npm test`
+<h1>Technologies:</h1>
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+ReactJS
 
-### `npm run build`
+Radix UI
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Tailwind CSS
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+<h1>Features:</h1>
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Multi-tiered user system. Users exist as part of 'families', whereby there is a single admin, and many 'user' or 'child' profiles beneath the admin. All users in a family share the same subscription type, ie 'Movies' 'Shows' or 'Movies & Shows', restricting their access to corresponding resources.
 
-### `npm run eject`
+Stripe integration on registration. Users must 'pay' the corresponding fee for their chosen subscription type, e.g. €12 for both movies and shows.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Form validation.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Infinite scroll on shows/movies/all pages.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+User favourites. Add or remove shows from your favourites, view your favourites.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Images fetched for titles where possible from OMDB image API.
 
-## Learn More
+Alerts/Modals displayed for errors or additional information where applicable.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)

@@ -19,6 +19,8 @@ import {
 import MultiSelect from "../../components/MultiSelect";
 import {AuthContext} from "../../utils/AuthContext";
 import ModalDialog from "../../components/ModalDialog";
+import FlashMessage from "../../components/FlashMessage";
+import {useAuth} from "../../utils/useAuth";
 
 const EditUser = () => {
     const { id } = useParams();
@@ -30,9 +32,13 @@ const EditUser = () => {
     const [url, setUrl] = useState()
 
     const [loading, setLoading] = useState(true)
+    const [showDialog, setShowDialog] = useState(false)
+    const [deleteConfirmed, setDeleteConfirmed] = useState(false)
 
     // get the currently logged in user
     const {user} = useContext(AuthContext)
+
+    const {logout} = useAuth()
 
     console.log('user', user)
     // means user is editing themselves, that's fine, don't pass the id to the url
@@ -45,6 +51,27 @@ const EditUser = () => {
     // if they are an admin, pass that ID to the edit function
 
     // the backend will verify if it's okay for this admin to edit the user in question (only allowed if they are THAT user's admin)
+
+
+    useEffect(() => {
+
+        if(deleteConfirmed){
+            // if user ID was passed and is not the same as the current user ID, delete another user. Otherwise, deleting themselves.
+            axios.delete(`${process.env.REACT_APP_URL}${id !== user._id ? `/users/delete/${id}` : '/users/delete'}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }).then((res) => {
+                alert('User deleted')
+                setLoading(false)
+                logout()
+                navigate('/')
+            }).catch((e) => {
+                console.log(e)
+            })
+        }
+    }, [deleteConfirmed])
+
 
     // first need to get users info
     useEffect(() => {
@@ -166,7 +193,9 @@ const EditUser = () => {
         'admin'
     ]
 
-    return <div className={'bg-grey-2 absolute w-full h-max min-h-full'}>
+    return <>
+        {showDialog && <FlashMessage setShowDialog={setShowDialog} translate={true} action={setDeleteConfirmed} msg={`${user.type === 'admin' ? 'Are you sure? As an admin, deleting your own account will also delete any users tied to your account.' : 'Are you sure you want to delete your profile?'}`}/>}
+        <div className={'bg-grey-2 absolute w-full h-max min-h-full'}>
         <div className={'w-1/3 m-auto'}>
             <h1 className={'text-8xl text-white my-5'}>Edit User</h1>
             <hr className={'mb-5'}/>
@@ -232,10 +261,11 @@ const EditUser = () => {
         <div className={'w-1/3 m-auto flex my-2 space-x-4'}>
             <button onClick={() => submitForm()} className={'px-8 hover:bg-white hover:text-black transition-all py-5 border border-grey-1 bg-grey-2 text-grey-1 text-2xl'}>Save</button>
             <button onClick={() => navigate(-1)} className={'px-8 hover:bg-white hover:text-black transition-all py-5 border border-grey-1 bg-grey-2 text-grey-1 text-2xl'}>Cancel</button>
-            <button className={'px-8 hover:bg-red hover:text-white transition-all py-5 border border-grey-1 bg-grey-2 text-grey-1 text-2xl'}>Delete</button>
+            <button onClick={() => setShowDialog(true)} className={'px-8 hover:bg-red hover:text-white transition-all py-5 border border-grey-1 bg-grey-2 text-grey-1 text-2xl'}>Delete</button>
         </div>
 
     </div>
+        </>
 }
 
 export default EditUser

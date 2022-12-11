@@ -3,6 +3,7 @@ import StripeCheckout from "react-stripe-checkout";
 import axios from "axios";
 import {useAuth} from "../utils/useAuth";
 import {formatErrors} from "../utils/formHelpers";
+import {useNavigate} from "react-router-dom";
 
 const StripeForm = ({errors, setErrors, loading, setLoading, userData}) => {
     const publishableKey = "pk_test_51IUfgkLBrNI420two8HTA94zQIVcsx22GAmLMLTfT3wf7N0A1IjFelWkkUwpOiKdpVyckQ5AuLlh0TpeERzXBLI7002HeA9ZcB";
@@ -17,6 +18,8 @@ const StripeForm = ({errors, setErrors, loading, setLoading, userData}) => {
     }
 
     const amount = parseInt(subscriptions[userData.subscription])*100
+
+    const navigate = useNavigate()
 
     const onToken = token => {
         setErrors([])
@@ -40,13 +43,14 @@ const StripeForm = ({errors, setErrors, loading, setLoading, userData}) => {
             })
             .catch(error => {
                 console.log("Payment Error: ", error);
-                if(error.response?.data?.msg?.errors){
+                if(error.response?.data?.msg.errors !== undefined){
                     setErrors(formatErrors(error.response.data.msg.errors))
                 }
                 else{
                     // might just be a single message
-                    setErrors(error.response.data.msg)
+                    //setErrors(error.response.data.msg)
                     alert(`Error: ${error.response?.data?.msg}`);
+                    navigate('/')
                 }
                 setLoading(false)
 

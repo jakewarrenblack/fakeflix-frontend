@@ -105,12 +105,10 @@ const All = ({type, results}) => {
     // just taking the first title to make a big hero title with, like netflix has
     const firstTitle = rows[0][0]
 
-    console.log('rows', rows)
-
     return (
         <div className={clsx('bg-grey-2 overflow-hidden', results && 'h-screen')}>
             <HeroTitle {...firstTitle} />
-            <div className={'-mt-24 relative z-20'}>
+            <div className={'-mt-24 relative z-20 mx-2'}>
             {
                 // Iterate over our 5 rows of 10
                 rows.map((row) => {

@@ -10,6 +10,28 @@ body{
     overflow-x:hidden;
 }
 
+.slick-arrow{
+    position: sticky;
+    color: white;
+    font-size:1rem;
+}
+
+.slick-prev{
+    left:5px!important;
+}
+
+.slick-prev:before, .slick-next:before{
+    font-size:2rem!important;
+}
+
+.slick-prev.slick-disabled::before, .slick-next.slick-disabled::before{
+    opacity: 1!important;
+
+}
+
+.slick-next{
+    right:25px!important
+}
 
 .slick-list { margin: 0 -7px; width: 100% }
 

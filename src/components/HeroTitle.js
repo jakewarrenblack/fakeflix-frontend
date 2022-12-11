@@ -3,7 +3,6 @@ import axios from "axios";
 import TitleDialog from "./TitleDialog";
 
 const HeroTitle = (heroTitle) => {
-    console.log('hero title', heroTitle)
     const [image, setImage] = useState(null)
     const {imdb_id, title, description} = heroTitle
 

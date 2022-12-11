@@ -17,6 +17,8 @@ const All = ({type, results}) => {
     const {logout} = useAuth()
     const [page, setPage] = useState(1)
     const perRow = 10 // 10 items per row
+    const [searchResults, setSearchResults] = useState([])
+
 
     // Keeping a ref for what the last prop type was, I want to know if we were previously on shows, but now we're on movies, or vice-versa
     const usePrevious = (prop) => {
@@ -29,8 +31,9 @@ const All = ({type, results}) => {
 
     useEffect(() => {
         console.log('results effect', results)
+        console.log('rows', rows)
         if(results){
-            setRows([])
+            //setRows([])
             const dividedRows = results.reduce((tenPerRow, title, index) => {
                 const titleIndex = Math.floor(index/perRow)
 
@@ -43,7 +46,11 @@ const All = ({type, results}) => {
                 return tenPerRow
             }, [])
 
-            setRows(dividedRows)
+            // results are definitely set to null when the search term is cleared, but are still included in dividedRows
+            setSearchResults(dividedRows)
+        }
+        else{
+            setSearchResults([])
         }
     }, [results])
 
@@ -51,7 +58,7 @@ const All = ({type, results}) => {
     const typesChanged = type !== prevType
 
     useEffect(() => {
-
+console.log('running the main effect')
         // default limit is 30
         axios.get(type ? `${process.env.REACT_APP_URL}/titles/type/${type}?page=${page}` : `${process.env.REACT_APP_URL}/titles/all?limit=50`,
             {
@@ -103,7 +110,7 @@ const All = ({type, results}) => {
 
     // our bottom page anchor is visible in the viewport, load the next 50
     // just taking the first title to make a big hero title with, like netflix has
-    const firstTitle = rows[0][0]
+    const firstTitle = searchResults.length === 0 ? rows[0][0] : searchResults[0][0]
 
     return (
         <div className={clsx('bg-grey-2 overflow-hidden', results && 'h-screen')}>
@@ -111,7 +118,7 @@ const All = ({type, results}) => {
             <div className={'-mt-24 relative z-20 mx-2'}>
             {
                 // Iterate over our 5 rows of 10
-                rows.map((row) => {
+                searchResults.length === 0 ? rows.map((row) => {
                     // Each row has a containing div, within which is a carousel
                     return <div className={'relative w-100 overflow-hidden'}>
                         <Carousel>
@@ -124,6 +131,19 @@ const All = ({type, results}) => {
                         </Carousel>
                     </div>
                 })
+                : searchResults.map((row) => {
+                        // Each row has a containing div, within which is a carousel
+                        return <div className={'relative w-100 overflow-hidden'}>
+                            <Carousel>
+                                {
+                                    // Each carousel contains 10 cards
+                                    row.map((title) => {
+                                        return <div className={'m-5'}><TitleCard title={title} /></div>
+                                    })
+                                }
+                            </Carousel>
+                        </div>
+                    })
             }
             </div>
 

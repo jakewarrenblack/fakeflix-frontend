@@ -164,7 +164,7 @@ const RelatedItem = ({token, relatedTitle, toast, setToast}) => {
                                         })
                                     }
                                 })}
-                                className={'bg-grey-2 rounded-full h-[30px] w-[30px] border-grey-1 border-2 text-center flex justify-center items-center'}>
+                                className={'bg-grey-2 transition-all rounded-full h-[30px] w-[30px] border-grey-1 border-2 text-center flex justify-center items-center hover:text-green-500 hover:invert hover:bg-[#ff99f9]'}>
                                 ➕
                             </button>
                         </div>
@@ -244,7 +244,7 @@ const TitleDialog = ({_id, title, image, genres, description, age_certification,
                                                         description: "Visit 'my list' to view your favourites."
                                                     })
                                                 }
-                                            })}className={'bg-grey-2 rounded-full h-[50px] w-[50px] border-grey-1 border-2'}>➕</button>
+                                            })}className={'bg-grey-2 rounded-full h-[50px] w-[50px] border-grey-1 border-2 hover:text-green-500 hover:invert hover:bg-[#ff99f9]'}>➕</button>
                                         </div>
 
                                         <div className={'flex space-x-10 font-semibold'}>
@@ -272,19 +272,21 @@ const TitleDialog = ({_id, title, image, genres, description, age_certification,
                                                 }
                                             </div>
                                         </>
-                                    ) : loadingRelated ? <Oval
-                                        height={80}
-                                        width={80}
-                                        color="#CC0000"
-                                        secondaryColor={'#CC0000'}
-                                        wrapperStyle={{}}
-                                        wrapperClass="m-auto justify-center"
-                                        visible={true}
-                                        ariaLabel='oval-loading'
-                                        strokeWidth={2}
-                                        strokeWidthSecondary={2}
-
-                                    /> : !loadingRelated && (
+                                    ) : loadingRelated ?
+                                        <div>
+                                            <h2 className={'text-white text-2xl font-semibold text-center'}>Searching for related titles...</h2>
+                                            <Oval
+                                            height={80}
+                                            width={80}
+                                            color="#CC0000"
+                                            secondaryColor={'#CC0000'}
+                                            wrapperStyle={{}}
+                                            wrapperClass="m-auto justify-center"
+                                            visible={true}
+                                            ariaLabel='oval-loading'
+                                            strokeWidth={2}
+                                            strokeWidthSecondary={2}/>
+                                        </div> : !loadingRelated && (
                                         // If no longer loading but there are still no related titles, we just haven't found any for this title.
                                         <>
                                             <h3 className={'text-4xl text-center font-semibold my-4 mb-6'}>No related titles found</h3>

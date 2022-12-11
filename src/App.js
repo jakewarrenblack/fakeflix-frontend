@@ -17,6 +17,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import UpdateTitle from "./pages/festivals/UpdateTitle";
 import AddTitle from "./pages/festivals/AddTitle";
 import EditUser from "./pages/festivals/EditUser";
+import AddAvatar from "./pages/festivals/AddAvatar";
 
 const App = () => {
     const [token, setToken] = useState(null)
@@ -59,6 +60,8 @@ const App = () => {
                         <Route path='addTitle' element={<AddTitle />} />
 
                         <Route path='editUser/:id' element={<EditUser />} />
+
+                        <Route path='addAvatar' element={<AddAvatar />} />
 
                         {/* Pass admin ID to fetch the admin and all their sub-users, to select an account from */}
                         {/* Like on netflix, multiple profiles but one admin */}

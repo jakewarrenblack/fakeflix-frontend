@@ -9,7 +9,7 @@ const Input = ({handleForm, type, value, defaultValue, placeholder, name, disabl
     const disabledByType = () => {
         // if type is MOVIE, the 'seasons' input will be disabled. Let the user know why this input is disabled.
         // (doesn't make sense for a movie to have seasons, that's only for shows)
-        if(name == 'seasons' && disabled){
+        if(name === 'seasons' && disabled){
             return 'Input disabled. Movies don\'t not have seasons.'
         }
     }

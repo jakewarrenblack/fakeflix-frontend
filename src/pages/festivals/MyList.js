@@ -13,11 +13,12 @@ const MyList = () => {
     const {token, user} = useContext(AuthContext)
     const perRow = 6
     const [loading, setLoading] = useState(true)
+    const [reload, setReload] = useState(false)
 
 
     useEffect(() => {
         console.log('my list use effect running')
-        axios.get(`http://localhost:3000/api/users/viewMyList`,
+        axios.get(`${process.env.REACT_APP_URL}/users/viewMyList`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -26,6 +27,8 @@ const MyList = () => {
         ).then((res) => {
             //setRows(res.data)
             let tempRows = res.data;
+
+            console.log('favourites', res.data)
 
             const dividedRows = tempRows.reduce((sixPerRow, title, index) => {
                 const titleIndex = Math.floor(index/perRow)
@@ -42,11 +45,12 @@ const MyList = () => {
             setRows(dividedRows)
 
             setLoading(false)
+            setReload(false)
         }).catch((e) => {
             console.log(e)
             setLoading(false)
         })
-    }, []);
+    }, [reload]);
 
 
     if(loading) return <Loading loadingMsg={'Loading your favourites'}/>
@@ -68,7 +72,7 @@ const MyList = () => {
                                 {
                                     // Each carousel contains 10 cards
                                     row.map((title) => {
-                                        return <div className={'m-5 min-h-[225px]'}><TitleCard title={title} /></div>
+                                        return <div className={'m-5 min-h-[225px]'}><TitleCard setReload={setReload} showRemover={true} title={title} /></div>
                                     })
                                 }
                             </Carousel>

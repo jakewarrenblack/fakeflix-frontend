@@ -9,7 +9,7 @@ import FlashMessage from "../components/FlashMessage";
 const Home = () => {
     const [form, switchForms] = useState('login')
 
-    const {token} = useContext(AuthContext)
+    const {token, user} = useContext(AuthContext)
     const {state} = useLocation()
 
     return (
@@ -26,7 +26,7 @@ const Home = () => {
                                 {form == 'login' && <LoginForm switchForms={() => switchForms('register')}/>}
                                 {form == 'register' && <RegisterForm switchForms={() => switchForms('login')}/>}
                             </>
-                                : <h1 className={'text-white'}>You are logged in</h1>
+                                : <h1 className={'text-white text-center font-semibold text-2xl'}>Welcome {user?.email}</h1>
                         }
                     </div>
                 </div>

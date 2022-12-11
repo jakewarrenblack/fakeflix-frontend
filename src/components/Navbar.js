@@ -60,8 +60,8 @@ const Navbar = () => {
                 }
             </div>
 
-            <div className={'w-[10%] flex justify-around items-center'}>
-                <div className={'flex items-center w-1/2'}>
+            <div className={'w-1/3 flex justify-around items-center'}>
+                <div className={'flex items-center justify-end w-1/2'}>
                     <input className={'mr-5 p-1 rounded-sm'} type={'text'} name={'search'} placeholder={'Search for a title'}/>
                     <button className={'hover:cursor-pointer'}>
                         <img className={'invert'} src={'/search.png'}/>

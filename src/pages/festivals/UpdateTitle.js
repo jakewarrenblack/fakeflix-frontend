@@ -8,6 +8,7 @@ import Select from "../../components/Select";
 import handleForm from "../../utils/handleForm";
 import {getErrorMsg, arrayFromString,arrayToDbFormat, age_cert_arr, genreOptions, productionCountryOptions} from "../../utils/formHelpers";
 import MultiSelect from "../../components/MultiSelect";
+import FlashMessage from "../../components/FlashMessage";
 
 const UpdateTitle = () => {
     const { id } = useParams();
@@ -19,6 +20,9 @@ const UpdateTitle = () => {
     const [ageSelections, setAgeSelections] = useState([])
     const [productionCountries, setProductionCountries] = useState([])
     const [genres, setGenres] = useState([])
+
+    const [showDialog, setShowDialog] = useState(false)
+    const [deleteConfirmed, setDeleteConfirmed] = useState(false)
 
     // First we populate the form fields with the existing title data
     useEffect(() => {
@@ -61,8 +65,26 @@ const UpdateTitle = () => {
             });
     };
 
+    useEffect(() => {
+        if(deleteConfirmed){
+            axios.delete(`${process.env.REACT_APP_URL}/titles/delete/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }).then((res) => {
+                alert('Title deleted')
+            }).catch((e) => {
+                console.log(e)
+            })
+        }
+    }, [deleteConfirmed])
+
+
+
+
     // multiselect values are held in their own state, sync state with title object
     useEffect(() => {
+
         setTitle(title => ({
             ...title,
             production_countries: arrayToDbFormat(productionCountries),
@@ -71,13 +93,17 @@ const UpdateTitle = () => {
         }))
     }, [genres, productionCountries, ageSelections])
 
+
+
     if(!title) return <Loading/>
 
     // specific values need Select components
     // Particular care will be needed for arrays, which aren't real arrays, but strings formatted as:
     // "['item1', 'item2']"
     // Description should be replaced with a text area
-    return <div className={'bg-grey-2 absolute w-full h-max min-h-full'}>
+    return <>
+        {showDialog && <FlashMessage setShowDialog={setShowDialog} translate={true} action={setDeleteConfirmed} msg={'Are you sure?'}/>}
+        <div className={'bg-grey-2 absolute w-full h-max min-h-full'}>
         <div className={'w-1/3 m-auto'}>
             <h1 className={'text-8xl text-white my-5'}>Edit Title</h1>
             <hr className={'mb-5'}/>
@@ -116,10 +142,11 @@ const UpdateTitle = () => {
         <div className={'w-1/3 m-auto flex my-2 space-x-4'}>
             <button onClick={() => submitForm()} className={'px-8 hover:bg-white hover:text-black transition-all py-5 border border-grey-1 bg-grey-2 text-grey-1 text-2xl'}>Save</button>
             <button onClick={() => navigate(-1)} className={'px-8 hover:bg-white hover:text-black transition-all py-5 border border-grey-1 bg-grey-2 text-grey-1 text-2xl'}>Cancel</button>
-            <button className={'px-8 hover:bg-red hover:text-white transition-all py-5 border border-grey-1 bg-grey-2 text-grey-1 text-2xl'}>Delete</button>
+            <button onClick={() => setShowDialog(true)} className={'px-8 hover:bg-red hover:text-white transition-all py-5 border border-grey-1 bg-grey-2 text-grey-1 text-2xl'}>Delete</button>
         </div>
 
     </div>
+    </>
 }
 
 export default UpdateTitle

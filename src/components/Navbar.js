@@ -77,6 +77,14 @@ const Navbar = ({setResults, results}) => {
         links = links.filter((link) => !link.admin)
     }
 
+    useEffect(() => {
+        if(!searchRoutes.find((route) => route === pathname)){
+            // if user navigates to some other route, clear the search
+            inputRef.current.value = null
+            setSearchTerm(null)
+        }
+    }, [pathname])
+
     // Navbar position should be relative on all pages except for home (to allow scrolling for register), where it should be fixed
     return (
         <nav className={clsx("flex flex-row bg-navBlack justify-between items-center text-grey-6 py-6 px-14 font-semibold w-full z-10", pathname === '/' ? 'fixed' : 'relative')}>

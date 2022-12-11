@@ -5,6 +5,8 @@ import StripeForm from "./StripeForm";
 import ModalDialog from "./ModalDialog";
 import axios from "axios";
 import clsx from "clsx";
+import {Oval} from "react-loader-spinner";
+import {getErrorMsg} from "../utils/formHelpers";
 
 const RegisterForm = ({switchForms}) => {
     const [selectedAvatar, setSelectedAvatar] = useState({})
@@ -12,6 +14,8 @@ const RegisterForm = ({switchForms}) => {
     const [adminId, setAdminId] = useState()
     const [adminMessage, setAdminMessage] = useState('')
     const [isDbAdmin, setIsDbAdmin] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [errors, setErrors] = useState([])
 
     const adminInput = useRef()
 
@@ -97,36 +101,36 @@ const RegisterForm = ({switchForms}) => {
     }
 
     return (
-        <div className={'flex flex-col'}>
+        <div className={'flex flex-col max-w-[450px]'}>
             <h2 className={'text-white text-3xl font-bold mb-8'}>Sign Up</h2>
 
             <div className={'flex space-x-4'}>
                 <div className={'w-1/2'}>
-                    <Input type={'text'} name={'firstName'} value={form.firstName} handleForm={handleForm} placeholder={'First name'}/>
+                    <Input type={'text'} getErrorMsg={getErrorMsg} errors={errors} name={'firstName'} value={form.firstName} handleForm={handleForm} placeholder={'First name'}/>
                 </div>
                 <div className={'w-1/2'}>
-                    <Input type={'text'} name={'lastName'} value={form.lastName} handleForm={handleForm} placeholder={'Last name'}/>
+                    <Input type={'text'} getErrorMsg={getErrorMsg} errors={errors} name={'lastName'} value={form.lastName} handleForm={handleForm} placeholder={'Last name'}/>
                 </div>
             </div>
 
             <div className={'flex space-x-4'}>
                 <div className={' w-1/2'}>
-                    <Input type={'text'} name={'username'} value={form.username} handleForm={handleForm} placeholder={'Username'}/>
+                    <Input type={'text'} getErrorMsg={getErrorMsg} errors={errors} name={'username'} value={form.username} handleForm={handleForm} placeholder={'Username'}/>
                 </div>
                 <div className={'w-1/2'}>
-                    <Input type={'email'} name={'email'} value={form.email} handleForm={handleForm} placeholder={'Email'}/>
+                    <Input type={'email'} getErrorMsg={getErrorMsg} errors={errors} name={'email'} value={form.email} handleForm={handleForm} placeholder={'Email'}/>
                 </div>
             </div>
 
-            <Input type={'password'} name={'password'} value={form.password} handleForm={handleForm} placeholder={'Password'}/>
+            <Input getErrorMsg={getErrorMsg} errors={errors} type={'password'} name={'password'} value={form.password} handleForm={handleForm} placeholder={'Password'}/>
 
-            <Input type={'text'} name={'pin'} value={form.pin} handleForm={handleForm} placeholder={'Pin'}/>
+            <Input getErrorMsg={getErrorMsg} errors={errors} type={'text'} name={'pin'} value={form.pin} handleForm={handleForm} placeholder={'Pin'}/>
 
             <ModalDialog setSelection={setSelectedAvatar}/>
 
             {selectedAvatar?.img && <img className={'m-auto my-5'} src={selectedAvatar.img} width={'25%'} />}
 
-            <Select value={form.type} name={'type'} displayName={'User Type'} handleForm={handleForm} values={[
+            <Select getErrorMsg={getErrorMsg} errors={errors} value={form.type} name={'type'} displayName={'User Type'} handleForm={handleForm} values={[
                 {value: 'admin', name: 'Admin'},
                 {value: 'user', name: 'Sub User'},
                 {value: 'child', name: 'Child'}
@@ -143,19 +147,19 @@ const RegisterForm = ({switchForms}) => {
                 </>
             }
 
-            <Select value={form.language} name={'language'} displayName={'Language'} handleForm={handleForm} values={[
+            <Select getErrorMsg={getErrorMsg} errors={errors} value={form.language} name={'language'} displayName={'Language'} handleForm={handleForm} values={[
                 {value: 'EN', name: 'EN'},
                 {value: 'DE', name: 'DE'},
                 {value: 'FR', name: 'FR'}
             ]}/>
 
-            <Select value={form.maturity_setting} name={'maturity_setting'} displayName={'Maturity Setting'} handleForm={handleForm} values={[
+            <Select getErrorMsg={getErrorMsg} errors={errors} value={form.maturity_setting} name={'maturity_setting'} displayName={'Maturity Setting'} handleForm={handleForm} values={[
                 {value: 'unrestricted', name: 'Unrestricted (18+)'},
                 {value: 'semi-restricted', name: 'Semi-Restricted'},
                 {value: 'restricted', name: 'Restricted (Default if child)'}
             ]}/>
 
-            <Select value={form.subscription} name={'subscription'} displayName={'Subscription'} handleForm={handleForm} values={[
+            <Select getErrorMsg={getErrorMsg} errors={errors} value={form.subscription} name={'subscription'} displayName={'Subscription'} handleForm={handleForm} values={[
                 {value: 'Movies & Shows', name: 'Movies & Shows'},
                 {value: 'Shows', name: 'Shows'},
                 {value: 'Movies', name: 'Movies'}
@@ -175,9 +179,25 @@ const RegisterForm = ({switchForms}) => {
             </div>
 
             {/* Register and payment are now the same in the backend, pass user data to stripe form */}
-            <StripeForm {...form} />
+            <StripeForm errors={errors} setErrors={setErrors} loading={loading} setLoading={setLoading} userData={form} />
             <p style={styles}>{errorMessage}</p>
             <p className={'text-grey-1'}>Existing user? <b onClick={switchForms} className={'text-white hover:cursor-pointer'}>Sign in.</b></p>
+            <div>
+                {loading && <div>
+                    <h2 className={'text-white m-auto text-center'}>Registering...</h2>
+                    <Oval
+                    height={80}
+                    width={80}
+                    color="#CC0000"
+                    secondaryColor={'#CC0000'}
+                    wrapperStyle={{}}
+                    wrapperClass="flex justify-center items-end h-full pt-10 mt-10"
+                    visible={true}
+                    ariaLabel='oval-loading'
+                    strokeWidth={2}
+                    strokeWidthSecondary={2}
+                /></div>}
+            </div>
         </div>
     );
 };

@@ -2,8 +2,9 @@ import React from "react";
 import StripeCheckout from "react-stripe-checkout";
 import axios from "axios";
 import {useAuth} from "../utils/useAuth";
+import {formatErrors} from "../utils/formHelpers";
 
-const StripeForm = (userData) => {
+const StripeForm = ({errors, setErrors, loading, setLoading, userData}) => {
     const publishableKey = "pk_test_51IUfgkLBrNI420two8HTA94zQIVcsx22GAmLMLTfT3wf7N0A1IjFelWkkUwpOiKdpVyckQ5AuLlh0TpeERzXBLI7002HeA9ZcB";
     const subscription = userData.subscription
 
@@ -18,6 +19,8 @@ const StripeForm = (userData) => {
     const amount = parseInt(subscriptions[userData.subscription])*100
 
     const onToken = token => {
+        setErrors([])
+        setLoading(true)
         const body = {
             amount,
             token: token
@@ -32,11 +35,21 @@ const StripeForm = (userData) => {
             .then(response => {
                 console.log(response);
                 alert("Payment Success");
+                setLoading(false)
                 login({email: userData.email, password: userData.password, adminID: userData?.admin})
             })
             .catch(error => {
                 console.log("Payment Error: ", error);
-                alert("Payment Error");
+                if(error.response?.data?.msg?.errors){
+                    setErrors(formatErrors(error.response.data.msg.errors))
+                }
+                else{
+                    // might just be a single message
+                    setErrors(error.response.data.msg)
+                    alert(`Error: ${error.response?.data?.msg}`);
+                }
+                setLoading(false)
+
             });
     };
 

@@ -5,6 +5,7 @@ import {useAuth} from "../utils/useAuth";
 import clsx from "clsx";
 import Dropdown from "./Dropdown";
 import axios from "axios";
+import { useDebouncedEffect } from '@react-hookz/web'
 
 const Navbar = ({setResults, results}) => {
     const {token, user, loading} = useContext(AuthContext)
@@ -48,12 +49,13 @@ const Navbar = ({setResults, results}) => {
         }
     ]
 
-    useEffect(() => {
+    useDebouncedEffect(() => {
         if(searchTerm === null){
             setResults(null)
         }
         else {
-            axios.get(`${process.env.REACT_APP_URL}/titles/title/${searchTerm}`, {
+            // Returns max 5 by default, I find the top 5 are generally the most relevant of the results.
+            axios.get(`${process.env.REACT_APP_URL}/titles/title/${searchTerm}?limit=10`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -66,7 +68,8 @@ const Navbar = ({setResults, results}) => {
                 console.log(e)
             })
         }
-    }, [searchTerm])
+        // Perform the check 200ms after the last change, but at least once every 500ms
+    },[searchTerm], 500);
 
     const searchRoutes = ['/movies', '/shows', '/all']
 

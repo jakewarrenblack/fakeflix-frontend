@@ -58,7 +58,6 @@ const TitleCard = ({title, showRemover=false, setReload}) => {
 
     return (
         <>
-        {/* TODO: use Suspense here to lazy load images*/}
         <div className={'h-[225px] group relative rounded z-0 flex flex-col justify-end bg-cover bg-no-repeat bg-center'} style={{background: image ? `no-repeat center/cover url(${image})` : 'rgba(7,7,8, 1)'}}>
             <div className={'z-10 absolute group-hover:opacity-0 transition-opacity w-full h-full'} style={{background: '-webkit-linear-gradient(90deg, rgb(24, 24, 24), transparent 50%)'}}></div>
             <div className={'flex relative z-20 space-x-4 items-center mb-4'}>

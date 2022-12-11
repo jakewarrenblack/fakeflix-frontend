@@ -18,6 +18,7 @@ const All = ({type, results}) => {
     const [page, setPage] = useState(1)
     const perRow = 10 // 10 items per row
     const [searchResults, setSearchResults] = useState([])
+    const [loading, setLoading] = useState(true)
 
 
     // Keeping a ref for what the last prop type was, I want to know if we were previously on shows, but now we're on movies, or vice-versa
@@ -30,8 +31,6 @@ const All = ({type, results}) => {
     }
 
     useEffect(() => {
-        console.log('results effect', results)
-        console.log('rows', rows)
         if(results){
             //setRows([])
             const dividedRows = results.reduce((tenPerRow, title, index) => {
@@ -48,6 +47,7 @@ const All = ({type, results}) => {
 
             // results are definitely set to null when the search term is cleared, but are still included in dividedRows
             setSearchResults(dividedRows)
+            setLoading(false)
         }
         else{
             setSearchResults([])
@@ -58,7 +58,7 @@ const All = ({type, results}) => {
     const typesChanged = type !== prevType
 
     useEffect(() => {
-console.log('running the main effect')
+        console.log('main effect')
         // default limit is 30
         axios.get(type ? `${process.env.REACT_APP_URL}/titles/type/${type}?page=${page}` : `${process.env.REACT_APP_URL}/titles/all?limit=50`,
             {
@@ -87,6 +87,7 @@ console.log('running the main effect')
                  if(rows?.length && rows === dividedRows || typesChanged){
                      //console.log('prev rows and dividedRows are equal')
                      setRows(dividedRows)
+                     setLoading(false)
                  }
                  // OR, if we have old rows and new rows which are different, keep the old ones and combine them with the new ones
                  // (user scrolling down page)
@@ -96,6 +97,7 @@ console.log('running the main effect')
                          ...rows,
                          ...dividedRows
                      ])
+                     setLoading(false)
                  }
              })
              .catch((err) => {
@@ -111,6 +113,8 @@ console.log('running the main effect')
     // our bottom page anchor is visible in the viewport, load the next 50
     // just taking the first title to make a big hero title with, like netflix has
     const firstTitle = searchResults.length === 0 ? rows[0][0] : searchResults[0][0]
+
+    if(loading) return <Loading loadingMsg='Loading titles'/>
 
     return (
         <div className={clsx('bg-grey-2 overflow-hidden', results && 'h-screen')}>

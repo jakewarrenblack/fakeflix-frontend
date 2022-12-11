@@ -4,6 +4,7 @@ import axios from "axios";
 import Loading from "./Loading";
 import {Oval} from "react-loader-spinner";
 import {useImage} from "react-image";
+import clsx from "clsx";
 
 const AvatarCard = ({img, name, setSelection, _id}) => {
     // Clicking any image will select it, closing the modal and passing the image's ID to the form
@@ -37,23 +38,6 @@ const ModalDialog = ({setSelection}) => {
         })
     },[])
 
-    if(loading) return <div className={'flex justify-center items-center flex-col fixed w-screen h-screen bg-navBlack opacity-90 top-0 left-0'}>
-        <h2 className={'text-white text-2xl mb-2'}>Loading avatars</h2>
-        <Oval
-            height={80}
-            width={80}
-            color="#CC0000"
-            secondaryColor={'#CC0000'}
-            wrapperStyle={{}}
-            wrapperClass=""
-            visible={true}
-            ariaLabel='oval-loading'
-            strokeWidth={2}
-            strokeWidthSecondary={2}
-
-        />
-    </div>
-
     if(avatars) {
         return (
             <Dialog.Root>
@@ -65,14 +49,31 @@ const ModalDialog = ({setSelection}) => {
                 <Dialog.Portal container={document.body}>
                     <Dialog.Overlay className="fixed w-screen h-screen bg-navBlack opacity-90 top-0 left-0"/>
                     <Dialog.Content className="text-white fixed w-screen top-1/3 p-5">
-                        <Dialog.Title className="text-center text-4xl mb-10">Avatars</Dialog.Title>
+                        <Dialog.Title className={clsx("text-center text-4xl mb-10", loading && 'invisible')}>Avatars</Dialog.Title>
                         <div className={'flex flex-row justify-around'}>
                             {
+                                !loading ?
                                 avatars.map((avatar) => (
                                     <Suspense>
                                         <AvatarCard setSelection={setSelection} {...avatar}/>
                                     </Suspense>
-                                ))
+                                )):
+                                    <div className={'flex flex-col justify-center items-center'}>
+                                        <h2 className={'text-white text-2xl mb-2'}>Loading avatars</h2>
+                                        <Oval
+                                            height={80}
+                                            width={80}
+                                            color="#CC0000"
+                                            secondaryColor={'#CC0000'}
+                                            wrapperStyle={{}}
+                                            wrapperClass=""
+                                            visible={true}
+                                            ariaLabel='oval-loading'
+                                            strokeWidth={2}
+                                            strokeWidthSecondary={2}
+
+                                        />
+                                    </div>
                             }
                         </div>
                     </Dialog.Content>

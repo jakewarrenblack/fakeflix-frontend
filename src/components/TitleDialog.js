@@ -1,5 +1,5 @@
 import * as Dialog from '@radix-ui/react-dialog';
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import axios from "axios";
 import {useContext} from "react";
 import {AuthContext} from "../utils/AuthContext";
@@ -8,6 +8,7 @@ import Portal from "./Portal";
 import clsx from "clsx";
 import loading from "./Loading";
 import {Oval} from "react-loader-spinner";
+import YouTube from "react-youtube";
 
 
 const getStars = (number) => {
@@ -203,6 +204,41 @@ const TitleDialog = ({_id, title, image, genres, description, age_certification,
     const [related, setRelated] = useState([])
     const [toast, setToast] = useState(null)
     const [loadingRelated, setLoadingRelated] = useState(true)
+    const [isOpen, setOpen] = useState(false)
+    const [trailer, setTrailer] = useState(null)
+    const playerRef = useRef(null);
+
+    useEffect(() => {
+        axios.get(`***REMOVED***/3/movie/${imdb_id}/videos?api_key=***REMOVED***&external_source=imdb_id`).then((res) => {
+            console.log(res)
+            if(res?.data?.results[0]){
+                setTrailer(res.data.results[0])
+            }
+
+
+        }).catch((e) => {
+            console.log(e)
+            setTrailer(null)
+        })
+    }, [])
+
+    const _onReady = (e) => {
+        // access to player in all event handlers via event.target
+        e.target.pauseVideo();
+    }
+
+    const opts = {
+        fluid: true,
+        controls: false,
+        height: '390',
+        width: '640',
+        playerVars: {
+            // https://developers.google.com/youtube/player_parameters
+            autoplay: 1,
+        },
+    };
+
+
 
     return (
         <>
@@ -226,9 +262,21 @@ const TitleDialog = ({_id, title, image, genres, description, age_certification,
                     <Dialog.Content asChild className="rounded-lg text-white relative opacity-100 bg-grey-8 w-3/4 flex flex-col">
                         <div>
                             <div id={'container'} className={'h-[500px] relative'}>
-                                <div className={' bg-blend-color brightness-50 rounded-lg  h-full'} style={{background: image ? `no-repeat center/cover url(${image})` : 'rgba(7,7,8, 1)'}}></div>
+                                {
+                                    !trailer ?
+                                    <div className={' bg-blend-color brightness-50 rounded-lg z-[99] h-full'} style={{background: image ? `no-repeat center/cover url(${image})` : 'rgba(7,7,8, 1)'}}></div>
+                                    : <div id={'video-container'} className={'bg-blend-color brightness-50 rounded-lg  h-full'}>
+                                            <YouTube
+                                                videoId={`${trailer.key}`}
+                                                opts={opts}
+                                                onReady={_onReady}
+                                                data-setup='{ "techOrder": ["youtube"], "sources": [{ "type": "video/youtube", "src", "youtube": { "ytControls": 2 } }'
+                                            />
+                                        </div>
+                                }
+
                                 {/* Has to be same height as bg image */}
-                                <div className={'left-0 disabled:opacity-50 space-y-4 top-0 h-full absolute flex flex-col justify-end align-start pb-10 w-full p-5'} style={{background: '-webkit-linear-gradient(90deg,#181818,transparent 50%)'}}>
+                                <div className={'left-0 disabled:opacity-50 space-y-4 top-0 h-full z-[10000] absolute flex flex-col justify-end align-start pb-10 w-full p-5'} style={{background: '-webkit-linear-gradient(90deg,#181818,transparent 50%)'}}>
                                     <Dialog.Title className="text-6xl mb-10">{title}</Dialog.Title>
                                     <main className={'space-y-4'}>
                                         <div className={'flex space-x-10'}>
@@ -236,6 +284,13 @@ const TitleDialog = ({_id, title, image, genres, description, age_certification,
                                                 ▶
                                                 View on IMDB
                                             </button>
+                                            <button onClick={() => {
+                                                console.log('watch trailer click')
+                                                if(imdb_id){
+                                                    trailer(imdb_id)
+                                                }
+
+                                            }}>Watch Trailer</button>
                                             <button onClick={() => addToMyList(_id, token).then((res) => {
                                                 if(res){
                                                     console.log('got response from add to my list')

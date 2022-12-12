@@ -6,9 +6,25 @@
     src: local('Montserrat'), url('./Font/Montserrat.ttf') format('ttf');
 }
 
+
 body{
     overflow-x:hidden;
     background-color: #141414;
+}
+
+#widget4{
+    width:100%;
+    height:100%;
+}
+
+#video-container div{
+    width: 100%;
+    height: 100%;
+}
+
+#video-container{
+    position: relative;
+    z-index: 9999;
 }
 
 .slick-arrow{
@@ -23,6 +39,22 @@ body{
 
 .slick-prev:before, .slick-next:before{
     font-size:2rem!important;
+}
+
+/* Defaults to some calculated padding, which I don't want */
+.video-react-controls-enabled.video-react-paused.video-react-fluid.video-react-user-inactive.video-react-workinghover.video-react{
+    padding-top: 0!important
+}
+
+.video-react-poster{
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    position: absolute;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
 }
 
 .slick-prev.slick-disabled::before, .slick-next.slick-disabled::before{

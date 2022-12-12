@@ -196,8 +196,8 @@ const EditUser = () => {
     return <>
         {showDialog && <FlashMessage setShowDialog={setShowDialog} translate={true} action={setDeleteConfirmed} msg={`${user.type === 'admin' ? 'Are you sure? As an admin, deleting your own account will also delete any users tied to your account.' : 'Are you sure you want to delete your profile?'}`}/>}
         <div className={'bg-grey-2 absolute w-full h-max min-h-full'}>
-        <div className={'w-1/3 m-auto'}>
-            <h1 className={'text-8xl text-white my-5'}>Edit User</h1>
+        <div className={'w-3/4 sm:w-1/3 m-auto'}>
+            <h1 className={'text-2xl sm:text-8xl text-white my-5'}>Edit User</h1>
             <hr className={'mb-5'}/>
             <div className={'space-y-8'}>
                 {
@@ -258,10 +258,10 @@ const EditUser = () => {
                 }
             </div>
         </div>
-        <div className={'w-1/3 m-auto flex my-2 space-x-4'}>
-            <button onClick={() => submitForm()} className={'px-8 hover:bg-white hover:text-black transition-all py-5 border border-grey-1 bg-grey-2 text-grey-1 text-2xl'}>Save</button>
-            <button onClick={() => navigate(-1)} className={'px-8 hover:bg-white hover:text-black transition-all py-5 border border-grey-1 bg-grey-2 text-grey-1 text-2xl'}>Cancel</button>
-            <button onClick={() => setShowDialog(true)} className={'px-8 hover:bg-red hover:text-white transition-all py-5 border border-grey-1 bg-grey-2 text-grey-1 text-2xl'}>Delete</button>
+        <div className={'w-3/4 sm:w-1/3 m-auto flex my-2 space-x-4'}>
+            <button onClick={() => submitForm()} className={'sm:px-8 sm:py-5 hover:bg-white hover:text-black transition-all border border-grey-1 bg-grey-2 text-grey-1 text-2xl'}>Save</button>
+            <button onClick={() => navigate(-1)} className={'sm:px-8 sm:py-5 hover:bg-white hover:text-black transition-all border border-grey-1 bg-grey-2 text-grey-1 text-2xl'}>Cancel</button>
+            <button onClick={() => setShowDialog(true)} className={'sm:px-8 sm:py-5 hover:bg-red hover:text-white transition-all border border-grey-1 bg-grey-2 text-grey-1 text-2xl'}>Delete</button>
         </div>
 
     </div>

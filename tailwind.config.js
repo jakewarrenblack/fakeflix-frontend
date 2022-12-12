@@ -5,6 +5,21 @@ module.exports = {
     "./src/pages/festivals/*.{js,jsx,ts,tsx}",
   ],
   theme: {
+    theme: {
+      screens: {
+        'sm': {'max': '640px'},
+        // => @media (max-width: 640px) { ... }
+
+        'md': {'max': '768px'},
+        // => @media (max-width: 768px) { ... }
+
+        'lg': {'max': '1024px'},
+        // => @media (max-width: 1024px) { ... }
+
+        'xl': {'max': '1280px'},
+        // => @media (max-width: 1280px) { ... }
+      }
+    },
     extend: {
       fontFamily: {
         'sans': ['Montserrat', 'Helvetica', 'Arial', 'sans-serif']

@@ -277,7 +277,7 @@ const TitleDialog = ({_id, title, image, genres, description, age_certification,
             </Dialog.Trigger>
             <Dialog.Portal>
                 <Dialog.Overlay className="z-50 w-screen h-screen fixed bg-black/70 top-0 left-0 overflow-y-scroll grid place-items-center">
-                    <Dialog.Content asChild className="rounded-lg text-white relative opacity-100 bg-grey-8 w-3/4 flex flex-col">
+                    <Dialog.Content asChild className="rounded-lg text-white relative opacity-100 bg-grey-8 flex flex-col w-[95vw] m-auto sm:m-0 sm:w-3/4">
                         <div>
                             <div id={'container'} className={clsx('h-[500px] relative', trailer?.key && 'flex justify-center items-center')}>
                                 {
@@ -285,7 +285,7 @@ const TitleDialog = ({_id, title, image, genres, description, age_certification,
                                     <div className={'bg-blend-color brightness-50 rounded-lg z-[99] h-full'} style={{background: image ? `no-repeat center/cover url(${image})` : 'rgba(7,7,8, 1)'}}></div>
                                     :
                                         <>
-                                            <button className={clsx("hover:cursor-pointer text-white text-8xl z-[100000] transition-all", isOpen && 'opacity-0')} onClick={()=> setOpen(true)}>▶</button>
+                                            <button className={clsx("hover:cursor-pointer text-white sm:text-8xl z-[100000] transition-all", isOpen && 'opacity-0')} onClick={()=> setOpen(true)}>▶</button>
 
                                         <div id={'video-container'} className={'bg-blend-color brightness-[25%] rounded-lg h-full absolute w-full'} style={{background: image ? `no-repeat center/cover url(${image})` : 'rgba(7,7,8, 1)'}}>
 
@@ -297,11 +297,11 @@ const TitleDialog = ({_id, title, image, genres, description, age_certification,
                                 }
 
                                 {/* Has to be same height as bg image */}
-                                <div className={'left-0 disabled:opacity-50 space-y-4 top-0 h-full z-[10000] absolute flex flex-col justify-end align-start pb-10 w-full p-5'} style={{background: '-webkit-linear-gradient(90deg,#181818,transparent 50%)'}}>
+                                <div className={'left-0 disabled:opacity-50 space-y-4 top-0 h-full z-[10000] absolute flex flex-col justify-end align-start pb-10 w-full pl-0 sm:p-5'} style={{background: '-webkit-linear-gradient(90deg,#181818,transparent 50%)'}}>
                                     <Dialog.Title className="text-6xl mb-10">{title}</Dialog.Title>
                                     <main className={'space-y-4'}>
                                         <div className={'flex space-x-10'}>
-                                            <button onClick={() => window.open(`https://www.imdb.com/title/${imdb_id}/`, '_blank')}  disabled={!imdb_id || !imdb_id.length} className={'bg-white disabled:opacity-50 text-black rounded min-h-[42px] px-4 font-semibold text-2xl'}>
+                                            <button onClick={() => window.open(`https://www.imdb.com/title/${imdb_id}/`, '_blank')}  disabled={!imdb_id || !imdb_id.length} className={'bg-white disabled:opacity-50 text-black rounded min-h-[42px] px-4 font-semibold sm:text-2xl'}>
                                                 ▶
                                                 View on IMDB
                                             </button>
@@ -327,13 +327,13 @@ const TitleDialog = ({_id, title, image, genres, description, age_certification,
                                     </main>
                                 </div>
                             </div>
-                            <main className={'p-5 mt-14'}>
+                            <main className={'pl-0 sm:p-5 mt-14'}>
                                 {/* TODO: Add loader for recommended */ }
                                 {
                                     !loadingRelated && related.length > 0 ? (
                                         <>
                                             <h3 className={'text-4xl text-center font-semibold my-4 mb-6'}>You may also like</h3>
-                                            <div className={'grid grid-cols-3 gap-2'}>
+                                            <div className={'flex flex-col sm:grid grid-cols-3 gap-2'}>
                                                 {
                                                     related.map((relatedTitle) => {
                                                         return <RelatedItem token={token} toast={toast} setToast={setToast} relatedTitle={relatedTitle}/>

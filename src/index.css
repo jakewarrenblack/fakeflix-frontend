@@ -26,6 +26,13 @@
     }
 }
 
+@media (max-width: 640px) {
+    .slick-slide div div {
+        margin-left:0!important;
+    }
+}
+
+
 @keyframes fadeOut {
     from {
         opacity: 1;

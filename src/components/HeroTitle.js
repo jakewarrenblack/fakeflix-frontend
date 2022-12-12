@@ -28,7 +28,7 @@ const HeroTitle = (heroTitle) => {
     }
 
     return (
-        <div className={'h-[70vh] pl-5 relative text-white flex flex-col justify-end overflow-hidden'} >
+        <div className={'h-[70vh] pl-5 relative text-white flex flex-col justify-end overflow-hidden hidden sm:flex'} >
             <div className={'brightness-50 h-full filter blur-md min-h-[90%]'} style={{background: image ? `no-repeat center/cover url(${image})` : 'rgba(7,7,8, 1)'}}/>
             <div className={'mb-14 ml-5 w-3/4 absolute bottom-[20%]'}>
                 <h1 className={'text-7xl'}>{title}</h1>

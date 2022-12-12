@@ -85,21 +85,28 @@ const Navbar = ({setResults, results}) => {
         }
     }, [pathname])
 
+    const [showLinks, setShowLinks] = useState(false)
+
     // Navbar position should be relative on all pages except for home (to allow scrolling for register), where it should be fixed
     return (
-        <nav className={clsx("flex flex-row bg-navBlack justify-between items-center text-grey-6 py-6 px-14 font-semibold w-full z-10", pathname === '/' ? 'fixed' : 'relative')}>
-            <div className={'w-1/3 flex justify-between items-center group'}>
+        <nav className={clsx("flex-col justify-center flex sm:flex-row bg-navBlack sm:justify-between items-center text-grey-6 py-6 px-14 font-semibold w-full z-10", pathname === '/' ? 'fixed' : 'relative')}>
+            <div className={'flex-col justify-center w-full sm:w-1/3 flex sm:flex-row sm:justify-between items-center group '}>
+                <div className={clsx('flex items-center w-full sm:w-max justify-between', showLinks && 'mb-10')}>
                 <Link to='/'><img className={'w-24'} src="/fakeflix.png"/></Link>
+                <button onClick={() => setShowLinks(!showLinks)} className={'block sm:hidden text-white '}>≡</button>
+                </div>
+                <>
                 {
                     links.map(({href, name, admin}) => (
-                        <NavLink key={name} className={({isActive}) => isActive ? 'text-white' : 'hover:text-grey-5'} to={href}>{name}</NavLink>
+                        <div className={clsx('sm:block', showLinks ? 'block' : 'hidden')}><NavLink key={name} className={({isActive}) => isActive ? 'text-white' : 'hover:text-grey-5'} to={href}>{name}</NavLink></div>
                     ))
                 }
+                </>
             </div>
 
-            <div className={'w-1/3 flex justify-around items-center'}>
+            <div className={clsx('flex flex-col sm:flex-row justify-center w-full sm:w-1/3 flex sm:justify-around items-center sm:visible', showLinks ? 'visible' : 'collapse')}>
                 <div className={clsx('flex items-center justify-end w-1/2 transition-all', !searchRoutes.find((route) => route === pathname) && 'invisible')}>
-                    <div>
+                    <div className={'flex justify-center w-full sm:w-max sm:block'}>
                         <input ref={inputRef} onChange={(e) => setSearchTerm(e.target.value)} className={'mr-5 p-1 rounded-sm'} type={'text'} name={'search'} placeholder={'Search for a title'}></input>
                     </div>
                     <button  className={'hover:cursor-pointer'}>

@@ -7,6 +7,7 @@
 }
 
 
+
 body{
     overflow-x:hidden;
     background-color: #141414;
@@ -22,10 +23,10 @@ body{
     height: 100%;
 }
 
-#video-container{
-    position: relative;
-    z-index: 9999;
-}
+/*#video-container{*/
+/*    position: absolute;*/
+/*    z-index: 100000;*/
+/*}*/
 
 .slick-arrow{
     position: sticky;

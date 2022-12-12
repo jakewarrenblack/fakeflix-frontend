@@ -8,7 +8,7 @@ import Portal from "./Portal";
 import clsx from "clsx";
 import loading from "./Loading";
 import {Oval} from "react-loader-spinner";
-import YouTube from "react-youtube";
+import ModalVideo from 'react-modal-video-new'
 
 
 const getStars = (number) => {
@@ -208,37 +208,25 @@ const TitleDialog = ({_id, title, image, genres, description, age_certification,
     const [trailer, setTrailer] = useState(null)
     const playerRef = useRef(null);
 
-    useEffect(() => {
-        axios.get(`***REMOVED***/3/movie/${imdb_id}/videos?api_key=***REMOVED***&external_source=imdb_id`).then((res) => {
-            console.log(res)
-            if(res?.data?.results[0]){
-                setTrailer(res.data.results[0])
-            }
+    const getTrailer = (imdb_id) => {
+        setTrailer(null)
+        if (imdb_id) {
+            console.log('running trailer effect')
+            axios.get(`***REMOVED***/3/movie/${imdb_id}/videos?api_key=***REMOVED***&external_source=imdb_id`).then((res) => {
+                console.log(res)
+                if (res?.data?.results[0]) {
+                    console.log(res.data)
+                    setTrailer(res.data.results[0])
+                }
 
 
-        }).catch((e) => {
-            console.log(e)
-            setTrailer(null)
-        })
-    }, [])
+            }).catch((e) => {
+                console.log(e)
+                setTrailer(null)
+            })
 
-    const _onReady = (e) => {
-        // access to player in all event handlers via event.target
-        e.target.pauseVideo();
+        }
     }
-
-    const opts = {
-        fluid: true,
-        controls: false,
-        height: '390',
-        width: '640',
-        playerVars: {
-            // https://developers.google.com/youtube/player_parameters
-            autoplay: 1,
-        },
-    };
-
-
 
     return (
         <>
@@ -246,6 +234,9 @@ const TitleDialog = ({_id, title, image, genres, description, age_certification,
             <Dialog.Trigger asChild>
                 <button
                     onClick={() => getRelated(genres, age_certification, _id, token).then((res => {
+                        // first job is to get a trailer, if available
+                        getTrailer(imdb_id)
+
                         setRelated(res.result)
                         console.log('SETTING RES STATE', res.result)
                         setLoadingRelated(false)
@@ -261,18 +252,21 @@ const TitleDialog = ({_id, title, image, genres, description, age_certification,
                 <Dialog.Overlay className="z-50 w-screen h-screen fixed bg-black/70 top-0 left-0 overflow-y-scroll grid place-items-center">
                     <Dialog.Content asChild className="rounded-lg text-white relative opacity-100 bg-grey-8 w-3/4 flex flex-col">
                         <div>
-                            <div id={'container'} className={'h-[500px] relative'}>
+                            <div id={'container'} className={clsx('h-[500px] relative', trailer?.key && 'flex justify-center items-center')}>
                                 {
-                                    !trailer ?
-                                    <div className={' bg-blend-color brightness-50 rounded-lg z-[99] h-full'} style={{background: image ? `no-repeat center/cover url(${image})` : 'rgba(7,7,8, 1)'}}></div>
-                                    : <div id={'video-container'} className={'bg-blend-color brightness-50 rounded-lg  h-full'}>
-                                            <YouTube
-                                                videoId={`${trailer.key}`}
-                                                opts={opts}
-                                                onReady={_onReady}
-                                                data-setup='{ "techOrder": ["youtube"], "sources": [{ "type": "video/youtube", "src", "youtube": { "ytControls": 2 } }'
-                                            />
+                                    !trailer?.key ?
+                                    <div className={'bg-blend-color brightness-50 rounded-lg z-[99] h-full'} style={{background: image ? `no-repeat center/cover url(${image})` : 'rgba(7,7,8, 1)'}}></div>
+                                    :
+                                        <>
+                                            <button className={clsx("hover:cursor-pointer text-white text-8xl z-[100000] transition-all", isOpen && 'opacity-0')} onClick={()=> setOpen(true)}>▶</button>
+
+                                        <div id={'video-container'} className={'bg-blend-color brightness-[25%] rounded-lg h-full absolute w-full'} style={{background: image ? `no-repeat center/cover url(${image})` : 'rgba(7,7,8, 1)'}}>
+
+                                            <Portal container={'#container'}>
+                                            <ModalVideo channel='youtube' autoplay isOpen={isOpen} videoId={trailer.key} onClose={() => setOpen(false)} />
+                                            </Portal>
                                         </div>
+                                        </>
                                 }
 
                                 {/* Has to be same height as bg image */}

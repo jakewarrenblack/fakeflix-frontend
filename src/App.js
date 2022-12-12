@@ -1,6 +1,7 @@
 import {BrowserRouter as Router, Routes, Route, Outlet} from 'react-router-dom';
 import {AuthContext} from "./utils/AuthContext";
 import './index.css'
+import '../node_modules/react-modal-video-new/scss/modal-video.scss';
 
 //import pages
 import Home from './pages/Home';

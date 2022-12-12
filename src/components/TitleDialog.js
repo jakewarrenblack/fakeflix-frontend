@@ -305,13 +305,6 @@ const TitleDialog = ({_id, title, image, genres, description, age_certification,
                                                 ▶
                                                 View on IMDB
                                             </button>
-                                            <button onClick={() => {
-                                                console.log('watch trailer click')
-                                                if(imdb_id){
-                                                    trailer(imdb_id)
-                                                }
-
-                                            }}>Watch Trailer</button>
                                             <button onClick={() => addToMyList(_id, token).then((res) => {
                                                 if(res){
                                                     console.log('got response from add to my list')

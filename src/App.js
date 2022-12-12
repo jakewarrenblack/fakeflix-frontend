@@ -1,4 +1,4 @@
-import {BrowserRouter as Router, Routes, Route, Outlet} from 'react-router-dom';
+import {BrowserRouter as Router, Routes, Route, Outlet, Switch, useLocation} from 'react-router-dom';
 import {AuthContext} from "./utils/AuthContext";
 import './index.css'
 import '../node_modules/react-modal-video-new/scss/modal-video.scss';

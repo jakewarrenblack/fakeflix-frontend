@@ -2,6 +2,7 @@ import {BrowserRouter as Router, Routes, Route, Outlet, Switch, useLocation} fro
 import {AuthContext} from "./utils/AuthContext";
 import './index.css'
 import '../node_modules/react-modal-video-new/scss/modal-video.scss';
+import MetaTags from 'react-meta-tags'
 
 //import pages
 import Home from './pages/Home';
@@ -29,6 +30,11 @@ const App = () => {
 
     return (
         <div>
+        <MetaTags>
+            <meta id="meta-description" name="description" content="IADT CCY4 Advanced JavaScript CA2, an approximation of Netflix's UI and functionality." />
+            <meta id="og-title" property="og:title" content="FakeFlix" />
+            <meta id="og-image" property="og:image" content="/fakeflix.png" />
+        </MetaTags>
         <AuthContext.Provider value={{
             loading,
             setLoading,

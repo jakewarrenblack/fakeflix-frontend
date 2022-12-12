@@ -87,6 +87,15 @@ const Navbar = ({setResults, results}) => {
 
     const [showLinks, setShowLinks] = useState(false)
 
+    if(pathname !== '/'){
+        document.title = pathname.toUpperCase().replace('/', '').replace('_', ' ')
+    }
+    else{
+        document.title = 'FakeFlix | Home'
+    }
+
+
+
     // Navbar position should be relative on all pages except for home (to allow scrolling for register), where it should be fixed
     return (
         <nav className={clsx("flex-col justify-center flex sm:flex-row bg-navBlack sm:justify-between items-center text-grey-6 py-6 px-14 font-semibold w-full z-10", pathname === '/' ? 'fixed' : 'relative')}>

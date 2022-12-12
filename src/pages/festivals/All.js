@@ -117,6 +117,7 @@ const All = ({type, results}) => {
     if(loading) return <Loading loadingMsg='Loading titles'/>
 
     return (
+
         <div className={clsx('bg-grey-2 overflow-hidden pt-24 sm:pt-0', results && 'h-screen')}>
             <HeroTitle {...firstTitle} />
             <div className={'-mt-24 relative z-20 mx-2'}>

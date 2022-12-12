@@ -23,6 +23,8 @@ import FlashMessage from "../../components/FlashMessage";
 import {useAuth} from "../../utils/useAuth";
 
 const EditUser = () => {
+    document.title = 'EDIT USER'
+
     const { id } = useParams();
     const token = localStorage.getItem('token')
     const navigate = useNavigate()
@@ -192,6 +194,8 @@ const EditUser = () => {
         'autoplay_enabled',
         'admin'
     ]
+
+
 
     return <>
         {showDialog && <FlashMessage setShowDialog={setShowDialog} translate={true} action={setDeleteConfirmed} msg={`${user.type === 'admin' ? 'Are you sure? As an admin, deleting your own account will also delete any users tied to your account.' : 'Are you sure you want to delete your profile?'}`}/>}

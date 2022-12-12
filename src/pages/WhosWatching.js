@@ -7,6 +7,8 @@ import {useImage} from 'react-image'
 import Loading from "../components/Loading";
 
 const WhosWatching = () => {
+    document.title = 'CHOOSE PROFILE'
+
     const location = useLocation()
     const [users, setUsers] = useState()
     const {token, user} = useContext(AuthContext)

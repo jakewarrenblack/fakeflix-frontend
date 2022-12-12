@@ -7,6 +7,8 @@ import FlashMessage from "../components/FlashMessage";
 
 
 const Home = () => {
+    document.title = 'FakeFlix | Home'
+
     const [form, switchForms] = useState('login')
 
     const {token, user} = useContext(AuthContext)

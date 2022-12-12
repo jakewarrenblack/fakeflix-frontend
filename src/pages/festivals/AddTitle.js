@@ -16,6 +16,8 @@ import TextArea from "../../components/TextArea";
 import MultiSelect from "../../components/MultiSelect";
 
 const AddTitle = () => {
+    document.title = 'ADD TITLE'
+
     const token = localStorage.getItem('token')
     const navigate = useNavigate()
 

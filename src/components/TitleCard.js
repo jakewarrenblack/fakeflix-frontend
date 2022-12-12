@@ -7,7 +7,7 @@ import clsx from "clsx";
 import Portal from "./Portal";
 import Toast from "./Toast";
 
-const TitleCard = ({title, showRemover=false, setReload}) => {
+const TitleCard = ({title, showRemover=false, setReload, type}) => {
     const [image, setImage] = useState(null)
     const {user} = useContext(AuthContext)
     const [toast, setToast] = useState()
@@ -31,7 +31,7 @@ const TitleCard = ({title, showRemover=false, setReload}) => {
 
     const passTitle = {
         ...title,
-        image
+        image,
     }
 
     const removeFromList = (_id, token) => {

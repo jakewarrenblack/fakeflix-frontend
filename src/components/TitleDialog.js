@@ -192,7 +192,7 @@ const RelatedItem = ({token, relatedTitle, toast, setToast}) => {
 
 
 // TODO: In the case of a show, use the ?moreDetail query param to get extra info for the modal
-const TitleDialog = ({_id, title, image, genres, description, age_certification, seasons, runtime, imdb_score, tmdb_score, release_year, imdb_id, variant}) => {
+const TitleDialog = ({_id, title, image, genres, description, age_certification, seasons, runtime, imdb_score, tmdb_score, release_year, imdb_id, variant, type}) => {
     let score = imdb_score ?? tmdb_score
 
 
@@ -209,24 +209,51 @@ const TitleDialog = ({_id, title, image, genres, description, age_certification,
     const playerRef = useRef(null);
 
     const getTrailer = (imdb_id) => {
+        // tmdb api doesn't officially support retrieving trailers for shows,
+        // as a workaround, we first search for the title, in order to get its tmdb id,
+        // then use the tmdb id to find the trailer
+        type = type.toLowerCase()
+
         setTrailer(null)
         if (imdb_id) {
-            console.log('running trailer effect')
-            axios.get(`***REMOVED***/3/movie/${imdb_id}/videos?api_key=***REMOVED***&external_source=imdb_id`).then((res) => {
-                console.log(res)
-                if (res?.data?.results[0]) {
-                    console.log(res.data)
-                    setTrailer(res.data.results[0])
-                }
-
-
-            }).catch((e) => {
-                console.log(e)
-                setTrailer(null)
-            })
-
+            // if type is movies, that's fine. just run a normal search.
+            if(type === 'movie') {
+                console.log('running trailer effect')
+                axios.get(`***REMOVED***/3/movie/${imdb_id}/videos?api_key=***REMOVED***&external_source=imdb_id`).then((res) => {
+                    console.log(res)
+                    if (res?.data?.results[0]) {
+                        console.log(res.data)
+                        setTrailer(res.data.results[0])
+                    }
+                }).catch((e) => {
+                    console.log(e)
+                    setTrailer(null)
+                })
+            }
+            else if(type === 'show'){
+                // ***REMOVED***/3/tv/1396/videos?api_key=***REMOVED***
+                axios.get(`***REMOVED***/3/find/${imdb_id}?api_key=***REMOVED***&external_source=imdb_id`).then((res) => {
+                    console.log(res)
+                    if (res?.data?.tv_results[0]) {
+                        axios.get(`***REMOVED***/3/tv/${res.data.tv_results[0].id}/videos?api_key=***REMOVED***`).then((res) => {
+                            console.log(res)
+                            if (res?.data?.results[0]) {
+                                console.log(res.data)
+                                setTrailer(res.data.results[0])
+                            }
+                        }).catch((e) => {
+                            console.log(e)
+                            setTrailer(null)
+                        })
+                    }
+                }).catch((e) => {
+                    console.log(e)
+                    setTrailer(null)
+                })
+            }
         }
     }
+
 
     return (
         <>

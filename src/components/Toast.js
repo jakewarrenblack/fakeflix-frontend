@@ -11,8 +11,8 @@ const Toast = ({setParentState, title, description}) => {
             setParentState(null)
         }}
             className={'bg-white p-5 rounded flex flex-col items-start space-y-2'}>
-            <ToastPrimitive.Title className={'text-lg font-semibold'}>{title}</ToastPrimitive.Title>
-            <ToastPrimitive.Description>
+            <ToastPrimitive.Title className={'text-lg text-black font-semibold'}>{title}</ToastPrimitive.Title>
+            <ToastPrimitive.Description className={'text-black'}>
                 {description}
             </ToastPrimitive.Description>
             <ToastPrimitive.Close className={'bg-red p-2 text-white rounded'}>Okay</ToastPrimitive.Close>

@@ -34,7 +34,7 @@ const AddAvatar = () => {
     };
 
     const uploadFile = async () => {
-        const url = 'http://localhost:3000/api/avatars/list-objects';
+        const url = `${process.env.REACT_APP_URL}/avatars/list-objects`;
 
         await axios.get(url, {
             headers: {
@@ -50,7 +50,7 @@ const AddAvatar = () => {
 
             console.log('filename', fileName)
 
-            const generatePutUrl = 'http://localhost:3000/api/avatars/generate-put-url';
+            const generatePutUrl = `${process.env.REACT_APP_URL}/avatars/generate-put-url`
             const options = {
                 params: {
                     Key: fileName,
@@ -75,7 +75,7 @@ const AddAvatar = () => {
                         }
 
                         axios
-                            .post(`http://localhost:3000/api/avatars`, {
+                            .post(`${process.env.REACT_APP_URL}/avatars`, {
                                 // Combine the user data with the stripe token, which is needed for checkout
                                 ...formData
                             }, {

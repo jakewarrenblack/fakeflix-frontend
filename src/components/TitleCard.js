@@ -17,7 +17,7 @@ const TitleCard = ({title, showRemover=false, setReload, type}) => {
 
     useEffect(() => {
         // Image is returned in JFIF format. https://logfetch.com/js-image-binary-jfif/
-       axios.get(`https://img.omdbapi.com/?i=${title.imdb_id}&h=600&apikey=***REMOVED***`, {
+       axios.get(`https://img.omdbapi.com/?i=${title.imdb_id}&h=600&apikey=${process.env.REACT_APP_OMDB_KEY}`, {
            responseType: "blob"
        }).then((res) => {
             const url = URL.createObjectURL(res.data);

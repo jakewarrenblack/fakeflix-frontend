@@ -8,7 +8,7 @@ const HeroTitle = (heroTitle) => {
 
     useEffect(() => {
         // https://logfetch.com/js-image-binary-jfif/
-        axios.get(`https://img.omdbapi.com/?i=${imdb_id}&h=600&apikey=***REMOVED***`, {
+        axios.get(`https://img.omdbapi.com/?i=${imdb_id}&h=600&apikey=${process.env.REACT_APP_OMDB_KEY}`, {
             responseType: "blob"
         })
             .then((res) => {

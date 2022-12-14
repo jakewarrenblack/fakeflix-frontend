@@ -44,10 +44,13 @@ Alerts/Modals displayed for errors or additional information where applicable.
 
 Video trailers load in modal via 3rd-party API.
 
+Add avatars (Image upload to S3)
+
 <h1>Figma Prototype</h1>
 https://www.figma.com/file/Vy9XTtoL2dThhjRJpHoWpF/Untitled?node-id=0%3A1&t=LdOrwiXDGB7Oq5co-1
 
 <h1>Component Hierarchy (Not exhaustive)</h1>
+
 ![hierarchy](https://user-images.githubusercontent.com/47800618/207691912-0dd15147-b050-4856-825d-c013d071e50f.png)
 
 <h1>Gallery</h1>

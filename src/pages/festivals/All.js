@@ -9,6 +9,7 @@ import { InView } from 'react-intersection-observer';
 import Loading from "../../components/Loading";
 import HeroTitle from "../../components/HeroTitle";
 import clsx from "clsx";
+import {Oval} from "react-loader-spinner";
 
 const All = ({type, results}) => {
     const [ rows, setRows ] = useState([]);
@@ -62,49 +63,49 @@ const All = ({type, results}) => {
         // default limit is 30
         axios.get(type ? `${process.env.REACT_APP_URL}/titles/type/${type}?page=${page}` : `${process.env.REACT_APP_URL}/titles/all?limit=50`,
             {
-                    headers: {
-                        Authorization : `Bearer ${token}`
-                    }
+                headers: {
+                    Authorization : `Bearer ${token}`
                 }
-            )
-             .then((response) => {
-                 let tempRows = response.data
-                 const dividedRows = tempRows.reduce((tenPerRow, title, index) => {
-                     const titleIndex = Math.floor(index/perRow)
+            }
+        )
+            .then((response) => {
+                let tempRows = response.data
+                const dividedRows = tempRows.reduce((tenPerRow, title, index) => {
+                    const titleIndex = Math.floor(index/perRow)
 
-                     if(!tenPerRow[titleIndex]) {
-                         tenPerRow[titleIndex] = [] // start a new row from here
-                     }
+                    if(!tenPerRow[titleIndex]) {
+                        tenPerRow[titleIndex] = [] // start a new row from here
+                    }
 
-                     tenPerRow[titleIndex].push(title)
+                    tenPerRow[titleIndex].push(title)
 
                     return tenPerRow
-                 }, [])
+                }, [])
 
-                 // if previously set rows and our recently fetched rows are the same, just set the recent ones
-                 // (user just visited this page)
-                 // if types changed, we also just reset. e.g. if we swapped from movies to shows, discard the existing movies and reload all from scratch.
-                 if(rows?.length && rows === dividedRows || typesChanged){
-                     //console.log('prev rows and dividedRows are equal')
-                     setRows(dividedRows)
-                     setLoading(false)
-                 }
-                 // OR, if we have old rows and new rows which are different, keep the old ones and combine them with the new ones
-                 // (user scrolling down page)
-                 else if(rows?.length && rows !== dividedRows || !rows.length){
-                     //console.log('prev rows and dividedRows are NOT equal')
-                     setRows([
-                         ...rows,
-                         ...dividedRows
-                     ])
-                     setLoading(false)
-                 }
-             })
-             .catch((err) => {
-                 console.error(err);
-                 // unauthorised
-                 if(err.response.status === 401) logout()
-             });
+                // if previously set rows and our recently fetched rows are the same, just set the recent ones
+                // (user just visited this page)
+                // if types changed, we also just reset. e.g. if we swapped from movies to shows, discard the existing movies and reload all from scratch.
+                if(rows?.length && rows === dividedRows || typesChanged){
+                    //console.log('prev rows and dividedRows are equal')
+                    setRows(dividedRows)
+                    setLoading(false)
+                }
+                    // OR, if we have old rows and new rows which are different, keep the old ones and combine them with the new ones
+                // (user scrolling down page)
+                else if(rows?.length && rows !== dividedRows || !rows.length){
+                    //console.log('prev rows and dividedRows are NOT equal')
+                    setRows([
+                        ...rows,
+                        ...dividedRows
+                    ])
+                    setLoading(false)
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+                // unauthorised
+                if(err.response.status === 401) logout()
+            });
 
     }, [type, page]);
 
@@ -117,44 +118,66 @@ const All = ({type, results}) => {
     if(loading) return <Loading loadingMsg='Loading titles'/>
 
     return (
-
         <div className={clsx('bg-grey-2 overflow-hidden pt-24 sm:pt-0', results && 'h-screen')}>
             <HeroTitle {...firstTitle} />
             <div className={'-mt-24 relative z-20 mx-2'}>
-            {
-                // Iterate over our 5 rows of 10
-                searchResults.length === 0 ? rows.map((row) => {
-                    // Each row has a containing div, within which is a carousel
-                    return <div className={'relative w-100 overflow-hidden'}>
-                        <Carousel>
-                        {
-                            // Each carousel contains 10 cards
-                            row.map((title) => {
-                                return <div className={'m-5'}><TitleCard title={title} /></div>
-                            })
-                        }
-                        </Carousel>
-                    </div>
-                })
-                : searchResults.map((row) => {
-                        // Each row has a containing div, within which is a carousel
-                        return <div className={'relative w-100 overflow-hidden'}>
-                            <Carousel>
-                                {
-                                    // Each carousel contains 10 cards
-                                    row.map((title) => {
-                                        return <div className={'m-5'}><TitleCard title={title} /></div>
-                                    })
-                                }
-                            </Carousel>
-                        </div>
-                    })
-            }
+                {
+                    // Iterate over our 5 rows of 10
+                    searchResults.length === 0 ? rows.map((row) => {
+                            // Each row has a containing div, within which is a carousel
+                            return <div className={'relative w-100 overflow-hidden'}>
+                                <Carousel>
+                                    {
+                                        // Each carousel contains 10 cards
+                                        row.map((title) => {
+                                            return <div className={'m-5'}><TitleCard title={title} /></div>
+                                        })
+                                    }
+                                </Carousel>
+                            </div>
+                        })
+                        : searchResults.map((row) => {
+                            // Each row has a containing div, within which is a carousel
+                            return <div className={'relative w-100 overflow-hidden'}>
+                                <Carousel>
+                                    {
+                                        // Each carousel contains 10 cards
+                                        row.map((title) => {
+                                            return <div className={'m-5'}><TitleCard title={title} /></div>
+                                        })
+                                    }
+                                </Carousel>
+                            </div>
+                        })
+                }
             </div>
 
             {/* Keep me at the bottom of the viewport. When a user reaches the bottom of the page, increase the pagination to load the next 50 titles.*/}
-            {!results && <div className={'relative w-1 h-1 bottom-1'}>
-                <InView onChange={() => setPage(page+1)}/>
+            {/* Don't show this if we're looking at set of search results, we don't paginate those */}
+            {!loading && !results && <div className={'sticky w-full h-1 bottom-1 pt-[50px] flex justify-center items-center text-white'}>
+                <InView onChange={(inView, entry) => {
+                    // This check is necessary to prevent the observer from running on mount, immediately incrementing the pagination, and loading 100 results instead of 50
+                    if (entry.intersectionRatio > 0) {
+                        setPage(page+1)
+                    }
+                }
+                }>
+                    <span className={'absolute top-0 flex justify-center'}>Loading more titles
+                        <Oval
+                            height={20}
+                            width={20}
+                            color="#CC0000"
+                            secondaryColor={'#CC0000'}
+                            wrapperStyle={{}}
+                            wrapperClass="ml-2"
+                            visible={true}
+                            ariaLabel='oval-loading'
+                            strokeWidth={2}
+                            strokeWidthSecondary={2}
+
+                        />
+                    </span>
+                </InView>
             </div>}
         </div>
     );

@@ -4,10 +4,6 @@ Register, or use testing user:
 
 Normal user: lolabrown22@email.com, secret
 
-***REMOVED***
-
-***REMOVED***
-
 <h1>
 Backend:
 </h1>

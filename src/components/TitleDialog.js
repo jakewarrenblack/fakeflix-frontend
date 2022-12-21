@@ -219,7 +219,7 @@ const TitleDialog = ({_id, title, image, genres, description, age_certification,
             // if type is movies, that's fine. just run a normal search.
             if(type === 'movie') {
                 console.log('running trailer effect')
-                axios.get(`***REMOVED***/3/movie/${imdb_id}/videos?api_key=${process.env.REACT_APP_TMDB_KEY}&external_source=imdb_id`).then((res) => {
+                axios.get(`https://api.themoviedb.org/3/movie/${imdb_id}/videos?api_key=${process.env.REACT_APP_TMDB_KEY}&external_source=imdb_id`).then((res) => {
                     console.log(res)
                     if (res?.data?.results[0]) {
                         console.log(res.data)
@@ -231,10 +231,10 @@ const TitleDialog = ({_id, title, image, genres, description, age_certification,
                 })
             }
             else if(type === 'show'){
-                axios.get(`***REMOVED***/3/find/${imdb_id}?api_key=${process.env.REACT_APP_TMDB_KEY}&external_source=imdb_id`).then((res) => {
+                axios.get(`https://api.themoviedb.org/3/find/${imdb_id}?api_key=${process.env.REACT_APP_TMDB_KEY}&external_source=imdb_id`).then((res) => {
                     console.log(res)
                     if (res?.data?.tv_results[0]) {
-                        axios.get(`***REMOVED***/3/tv/${res.data.tv_results[0].id}/videos?api_key=${process.env.REACT_APP_TMDB_KEY}`).then((res) => {
+                        axios.get(`https://api.themoviedb.org/3/tv/${res.data.tv_results[0].id}/videos?api_key=${process.env.REACT_APP_TMDB_KEY}`).then((res) => {
                             console.log(res)
                             if (res?.data?.results[0]) {
                                 console.log(res.data)

@@ -1,5 +1,3 @@
-<h1>http://www.fakeflix.online/</h1>
-
 Register, or use testing user:
 
 Normal user: lolabrown22@email.com, secret
